@@ -4,11 +4,6 @@ var remotes = require('../').create();
 // share some fs module code
 var fs = remotes.exports.fs = require('fs');
 
-// define a remote ctor
-// fs.sharedCtor = function (fn) {
-//   fn(null, fs);
-// }
-
 // specifically the readFile function
 fs.readFile.shared = true;
 

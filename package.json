@@ -7,7 +7,9 @@
   },
   "dependencies": {
     "debug": "latest",
-    "express": "~3.2.4"
+    "express": "~3.2.4",
+    "eventemitter2": "~0.4.11",
+    "task-emitter": "git+ssh://git@github.com:strongloop/task-emitter.git"
   },
   "devDependencies": {
     "mocha": "latest"
