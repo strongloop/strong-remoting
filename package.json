@@ -9,7 +9,9 @@
     "debug": "latest",
     "express": "~3.2.4",
     "eventemitter2": "~0.4.11",
-    "task-emitter": "git+ssh://git@github.com:strongloop/task-emitter.git"
+    "sl-task-emitter": "git+ssh://git@github.com:strongloop/sl-task-emitter",
+    "socket.io": "git://github.com/LearnBoost/socket.io.git",
+    "socket.io-client": "git://github.com/LearnBoost/socket.io-client.git"
   },
   "devDependencies": {
     "mocha": "latest"

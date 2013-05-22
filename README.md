@@ -1,107 +1,134 @@
-# remotes
-v0.0.1
+# sl-remoting
 
-A library for sharing server side JavaScript classes over various transports and protocols to clients written in various languages.
+Communicate between objects in servers, mobile apps, and other servers.
 
-## Usage
+## Background
 
-Define a shared class in JavaScript on the server. Give it a remote constructor. Mark which methods should be exposed and define their input and outut types.
+Communicating between objects that run in different processes, whether on the same computer, or in another programming language on a mobile device, is such a common application requirement that it should be simple. This library makes it easy to communicate accross these types of boundries without having to worry about the underlying transport mechanism. Once you determine your application's performance characteristics you can swap out the transport mechanism or build your own optimized transport for your app's specific needs.
 
-## Shared Classes
+### Supported Servers
 
-A class defined on the server that can be used on the client. Only exposes methods that are marked to be exposed. Requires a remote constructor that creates an instance of the class when constructed remotely.
+ - **Node.js** - the only planned server.
 
-**Example ~ Server**
+### Supported Clients
 
-    function Dog(name) {
-      this.name = name;
-    }
-    Dog.sharedCtor = function (name, fn) {
-      fn(null, new MyClass(name));
-    }
-    Dog.remoteConstructor.accepts = [
-      {arg: 'name', type: 'string'}
-    ];
+ - **Node.js**  **TODO** 
+ - **HTML5**  **TODO**
+ - **iOS**  **TODO**
+ - **Android**  **TODO**
+ 
+### Features
 
-    Dog.prototype.speak = function (fn) {
-      fn(null, 'roof! my name is ' + this.name);
-    }
-    Dog.prototype.speak.shared = true;
-    Dog.prototype.speak.returns = [
-      {arg: 'sound', type: 'string'}
-    ];
+#### Security and Encryption _TODO_
 
-## Source Generators
+All transports are runnable over secure channels (eg. TLS). All transports support authentication.
 
-Once a class is defined, a source generator may be used to generate client source code.
+#### Remote Objects
 
-**Example ~ Generated JS Client**
+Construct objects on the server from a connected client.
 
-    Remotes.Dog = function Dog(name) {
-      Remotes.Base.apply(this, arguments);
-    }
+#### Remote Methods
 
-    Dog.prototype.speak = function (fn) {
-      this.callRemote('speak', fn);
-    }
+Invoke methods on remote objects.
 
-## Servers / Transports
+#### Data Types
 
-Servers expose classes over one or more transports.
+**JSON**
 
-**Example ~ Server / Transport Usage**
+ - Number
+ - Boolean
+ - String
+ - Array
+ - Object
 
-    // a set of shared classes
-    var remotes = require('remotes').create();
-    
-    // expose classes
-    remotes.exports.dog = Dog;
-    
-    // server
+**Complex Types**
+
+ - Date
+ - Buffer
+ - ReadableStream **TODO**
+ - WriteableStream **TODO**
+ - EventEmitter **TODO**
+ 
+#### Hooks
+
+Run code before objects are constructed or methods are invoked. Prevent actions based context (http request, user info, etc).
+
+#### Binary Data **TODO**
+
+Send and recieve raw binary data such as files as a single `Buffer` or `Readable` / `Writeable` streams.
+
+#### Events **TODO**
+
+Reference event emitters from clients and listen to their events.
+
+#### Supported Transports
+
+ - **socket.io TODO**
+ - **http**
+ 
+#### Content Types
+
+ - **JSON** - only planned type
+ 
+## Basic Usage
+
+### Creating a Server
+
+    // create a set of shared classes
+    var remoteObjects = require('sl-remoting').create();
+
+    // expose the console
+    remoteObjects.exports.console = console;
+
+    // share the log method
+    console.log.shared = true;
+
+    // expose it over http
     require('http')
-      .createServer(remotes.handler('rest'))
+      .createServer(remotes.handler('http'))
       .listen(3000);
+      
+### Creating a Client (JavaScript)
 
-## Clients
-
-Clients point to a server and call methods.
-
-**Example ~ Client Usage**
-
-    // a set of shared classes
-    var remotes = require('remotes').create();
-  
-    remotes.client('rest').connect(3000);
-    var Dog = Remotes.Dog;
+    // connect to the server
+    var remoteObjects = Remoting.connect('http://localhost:3000', Remoting.adapters.http));
     
-    var dog = new Dog('fido');
-
-    dog.speak(function (err, result) {
-      console.log(result); // roof! my name is fido
+    // log hello world from the client
+    remoteObjects.invoke('console.log', 'hello world');
+    
+### Server Side Hooks
+    
+    // prevent non localhost requests
+    remoteObjects.before('console.log', function(ctx, next) {
+      if(ctx.req.remoteAddress !== '127.0.0.1') {
+        next(new Error('you are not allowed!'));
+      } else {
+        next();
+      }
+    });
+    
+    // run after console.log but before the response is sent
+    remoteObjects.after('console.log', function(ctx, next) {
+      // change the result
+      ctx.result = 'updated result...';
+      next();
     });
 
+### Events _TODO_
 
-## Docs
+Listen to events on server side emitters from a client.
 
-### Method Settings
-
-** General Settings **
-
-Mark a method as shared / exposed / remotable:
-
-    MyClass.prototype.myMethod.shared = true;
-
-** HTTP Settings **
-
-Override the default http routing.
-
-    // define a new base route for the entire class
-    MyClass.http = [
-      {path: '/:foo'} // `foo` can be used as an arg
-    ];
+    // server
+    var myEmitter = remoteObjects.exports.myEmitter = new EventEmitter();
     
-    // routes are relative to class namespace
-    MyClass.prototype.myMethod.http = [
-      {verb: 'POST', path: '/foo/:bar'}, // special route
-      {verb: 'PUT'} // uses default route
-    ];
+    setInterval(function() {
+      myEmitter.emit('my event', {foo: 'bar'});
+    }, 1000);
+    
+    // expose the on method
+    myEmitter.on.shared = true;
+
+    // client
+    remoteObjects.invoke('myEmitter.on', 'my event', function (data) {
+      console.log('this will be called multiple times...', data);
+    });

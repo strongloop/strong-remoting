@@ -17,12 +17,11 @@ var remotes = module.exports = require('../../').create();
 var Schema = require('jugglingdb').Schema;
 var schema = new Schema('memory');
 
-var Post = remotes.exports.post = schema.define('Post', {
+var Todo = remotes.exports.post = schema.define('Post', {
     title:     { type: String, length: 255 },
-    content:   { type: Schema.Text },
+    done:      { type: Boolean },
     date:      { type: Date,    default: function () { return new Date;} },
-    timestamp: { type: Number,  default: Date.now },
-    published: { type: Boolean, default: false, index: true }
+    changed: { type: Number,  default: Date.now }
 });
 
 var User = remotes.exports.user = schema.define('User', {
@@ -35,20 +34,20 @@ var User = remotes.exports.user = schema.define('User', {
 
 
 // // setup relationships
-User.hasMany(Post,   {as: 'posts',  foreignKey: 'userId'});
+// User.hasMany(Post,   {as: 'posts',  foreignKey: 'userId'});
 // creates instance methods:
 // user.posts(conds)
 // user.posts.build(data) // like new Post({userId: user.id});
 // user.posts.create(data) // build and save
 
-Post.belongsTo(User, {as: 'author', foreignKey: 'userId'});
+// Post.belongsTo(User, {as: 'author', foreignKey: 'userId'});
 // creates instance methods:
 // post.author(callback) -- getter when called with function
 // post.author() -- sync getter when called without params
 // post.author(user) -- setter when called with object
 
 // setup remote attributes
-setup(Post);
+setup(Todo);
 setup(User);
 
 // create some test data
@@ -57,13 +56,13 @@ User.create({name: 'bob', age: 30});
 User.create({name: 'jim', age: 40});
 User.create({name: 'jan', age: 50});
 
-Post.create({title: 'hello', content: 'world'});
-Post.create({title: 'foo', content: 'bar'});
-Post.create({title: 'lorem', content: 'ipsum'});
+Todo.create({title: 'hello', done: false});
+Todo.create({title: 'foo', done: false});
+Todo.create({title: 'lorem', done: true});
 
 // setup custom routes
 User.http = {path: '/u'};
-Post.http = {path: '/posts'};
+Todo.http = {path: '/t'};
 
 // annotate with remotes settings
 function setup(Model) {
@@ -72,7 +71,10 @@ function setup(Model) {
   }
   Model.sharedCtor.shared = true;
   Model.sharedCtor.accepts = {arg: 'id', type: 'string'};
-  Model.sharedCtor.http = {path: '/:id', verb: 'get'};
+  Model.sharedCtor.http = [
+    {path: '/:id', verb: 'get'},
+    {path: '/', verb: 'get'}
+  ];
   
   Model.prototype.save.shared = true;
   Model.prototype.save.http = [
@@ -86,16 +88,16 @@ function setup(Model) {
   Model.all.accepts = [
     {
       arg: 'query',
-      type: 'object',
-      http: function (ctx) {
-        var q = ctx.req.url.split('?')[1];
-        
-        if(q) {
-          q = decodeURIComponent(q);
-        }
-        
-        return JSON.parse(q);
-      }
+      type: 'object'
+      // http: function (ctx) {
+      //   var q = ctx.req.url.split('?')[1];
+      //   
+      //   if(q) {
+      //     q = decodeURIComponent(q);
+      //   }
+      //   
+      //   return JSON.parse(q);
+      // }
     }
   ];
 }
