@@ -1,5 +1,5 @@
 /**
  * remotes ~ public api
  */
- 
-exports.create = require('./lib/shared-class-collection').create;
+
+module.exports = require('./lib/shared-class-collection');
