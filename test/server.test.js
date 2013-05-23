@@ -70,6 +70,19 @@ describe('sl-remoting', function(){
         json('get', '/hello/world?foo=bar')
           .expect({data: 'bar'}, done);
       });
+      
+      it('should support binary', function(done) {
+        var fn = add('file', 'upload');
+        var buf = new Buffer('1234').toString('base64');
+
+        fn.accepts = {arg: 'file', type: 'buffer'};
+
+        app.use(objects.handler('rest'));
+
+        json('post', '/file/upload')
+          .send({file: {data: buf, type: 'base64'}})
+          .expect({data: buf, type: 'base64'}, done);
+      });
     });
   });
 });
