@@ -1,6 +1,6 @@
 {
-  "name": "remotes",
-  "description": "remotes",
+  "name": "sl-remoting",
+  "description": "",
   "version": "0.0.1",
   "scripts": {
     "test": "mocha"
@@ -14,6 +14,7 @@
     "socket.io-client": "git://github.com/LearnBoost/socket.io-client.git"
   },
   "devDependencies": {
-    "mocha": "latest"
+    "mocha": "latest",
+    "supertest": "latest"
   }
 }

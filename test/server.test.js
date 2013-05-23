@@ -1,22 +1,75 @@
-var Remotes = require('../');
+var RemoteObjects = require('../');
+var express = require('express');
+var request = require('supertest');
 
-describe('Server', function(){
+
+describe('sl-remoting', function(){
+  var app;
   var server;
+  var objects;
   
-  beforeEach(function(){
-    server = Remotes.createServer();
+  // setup
+  beforeEach(function(done){
+    if(server) server.close();
+    objects = RemoteObjects.create();
+    app = express();
+    server = require('http').createServer(app).listen(3000, done);
   });
   
-  describe('.exports', function(){
-    it('should exist', function() {
-      assert.equal(server.exports, {});
-    });
-  });
+  // add a method
+  function add(parent, name) {
+    // all test functions echo their arguments
+    function fn() {
+      var args = Array.prototype.slice.call(arguments, 0);
+      
+      // add null for err
+      args.unshift(null);
+      
+      // callback
+      args.pop().apply(this, args);
+    }
+    
+    function ctor() {
+      this.ctorArgs = arguments;
+    }
+    
+    var o = objects.exports;
+    
+    // a class
+    if(parent[0] === parent[0].toUpperCase()) {
+      o[parent] = ctor;
+      ctor.prototype[name] = fn;
+    } else {
+      o[parent] = {};
+      o[parent][name] = fn;
+    }
+    
+    // settings
+    fn.shared = true;
+    
+    return fn;
+  }
   
-  describe('.transport(name)', function(){
-    it('should add a handler', function() {
-      server.transport('rest');
-      assert(server.handler)
+  function json(method, url) {
+    return request(app)[method](url)
+      .set('Accept', 'application/json')
+      .expect(200)
+      .expect('Content-Type', /json/);
+  }
+  
+  describe('handlers', function(){
+    describe('rest', function(){
+      it('should support calling object methods', function(done) {
+        var fn = add('hello', 'world');
+
+        fn.accepts = {arg: 'foo', type: 'string'};
+        fn.returns = {arg: 'foo', type: 'string'};
+
+        app.use(objects.handler('rest'));
+
+        json('get', '/hello/world?foo=bar')
+          .expect({data: 'bar'}, done);
+      });
     });
   });
 });
