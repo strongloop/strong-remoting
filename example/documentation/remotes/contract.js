@@ -16,7 +16,7 @@ function getSecret(callback) {
  */
 helper.method(transform, {
   http: { verb: 'PUT', path: '/customizedTransform' },
-  accepts: [{ arg: 'str', type: 'string', required: true }],
+  accepts: [{ name: 'str', type: 'string', required: true }],
   returns: { name: 'str', type: 'string' }
 });
 function transform(str, callback) {

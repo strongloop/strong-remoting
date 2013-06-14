@@ -33,7 +33,7 @@ SimpleClass.prototype.greet = function(other, callback) {
 helper.method(SimpleClass.prototype.greet, {
   path: 'SimpleClass.prototype.greet',
   description: 'Takes in a name, returning a greeting for that name.',
-  accepts: [{ arg: 'other', type: 'string', required: true }],
+  accepts: [{ name: 'other', type: 'string', required: true }],
   returns: { name: 'greeting', type: 'string' }
 });
 

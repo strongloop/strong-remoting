@@ -1,11 +1,12 @@
 // This example shows using the helper for a type in a "definitive" fashion.
 var helper = require('../../../').extend(module.exports);
+var clshelper;
 
 /**
  * A simple class that contains a name, this time with a custom HTTP contract.
  */
-helper.type(ContractClass, {
-  accepts: [{ arg: 'name', type: 'string' }],
+clshelper = helper.type(ContractClass, {
+  accepts: [{ name: 'name', type: 'string', required: true }],
   http: { path: '/:name' }
 });
 function ContractClass(name) {
@@ -15,8 +16,7 @@ function ContractClass(name) {
 /**
  * Returns the ContractClass instance's name.
  */
-helper.method(getName, {
-  path: 'ContractClass.prototype.getName',
+clshelper.method(getName, {
   returns: { name: 'name', type: 'string' }
 });
 function getName(callback) {
@@ -26,9 +26,8 @@ function getName(callback) {
 /**
  * Takes in a name, returning a greeting for that name.
  */
-helper.method(greet, {
-  path: 'ContractClass.prototype.greet',
-  accepts: [{ arg: 'other', type: 'string', required: true }],
+clshelper.method(greet, {
+  accepts: [{ name: 'other', type: 'string', required: true }],
   returns: { name: 'greeting', type: 'string' }
 });
 function greet(other, callback) {
