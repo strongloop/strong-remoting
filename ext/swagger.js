@@ -11,29 +11,32 @@ var Remoting = require('../');
 /**
  * Create a remotable Swagger module for plugging into a SharedClassCollection.
  */
-function Swagger(remotes) {
+function Swagger(remotes, options) {
+  // Unfold options.
+  var _options = options || {};
+  var name = _options.name || 'swagger';
+  var version = _options.version;
+  var basePath = _options.basePath;
+
   // We need a temporary REST adapter to discover our available routes.
   var adapter = remotes.handler('rest').adapter;
   var routes = adapter.allRoutes();
-  var extension = {};
-  var helper = Remoting.extend(extension);
   var classes = remotes.classes();
 
+  var extension = {};
+  var helper = Remoting.extend(extension);
+
+  var apiDocs = {};
   var resourceDoc = {
-    apiVersion: '0.2', // TODO (optional)
+    apiVersion: version,
     swaggerVersion: '1.1',
-    basePath: 'http://localhost:3000', // TODO
+    basePath: basePath,
     apis: []
   };
 
-  var apiDocs = {};
-
   classes.forEach(function (item) {
     resourceDoc.apis.push({
-      path: '/swagger/' + item.name, // TODO(schoon) - This will break if this
-      // extension isn't installed at /swagger. Should the extension load itself
-      // into the remotes directly? (YES, but take options for renaming /
-      // avoiding collisions)
+      path: '/' + name + '/' + item.name,
       description: item.ctor.sharedCtor && item.ctor.sharedCtor.description
     });
 
@@ -60,7 +63,7 @@ function Swagger(remotes) {
     var doc = apiDocs[split[0]];
 
     if (!doc) {
-      console.error('No doc for %j', route);
+      console.error('Route exists with no class: %j', route);
       return;
     }
 
@@ -77,12 +80,13 @@ function Swagger(remotes) {
    * available on the system, and where to find more information about them.
    */
   helper.method(resources, {
-    returns : [{ type: 'object', root: true }]
+    returns: [{ type: 'object', root: true }]
   });
   function resources(callback) {
     callback(null, resourceDoc);
   }
 
+  remotes.exports[name] = extension;
   return extension;
 }
 
@@ -122,7 +126,7 @@ function acceptToParameter(route) {
     var name = accepts.name || accepts.arg;
     var paramType = type;
 
-    // TODO: Regex?
+    // TODO: Regex. This is leaky.
     if (route.path.indexOf(':' + name) !== -1) {
       paramType = 'path';
     }
@@ -147,7 +151,7 @@ function prepareDataType(type) {
     return 'void';
   }
 
-  // TODO(schoon) - Add support for complex dataTypes.
+  // TODO(schoon) - Add support for complex dataTypes, "models", etc.
   switch (type) {
     case 'buffer':
       return 'byte';

@@ -7,8 +7,10 @@ var handler;
 var adapter;
 
 // The installation order sets which routes are captured by Swagger.
-remotes.exports.swagger = swagger(remotes);
-remotes.exports.meta = meta(remotes);
+swagger(remotes, {
+  basePath: 'http://localhost:3000'
+});
+meta(remotes);
 
 http
   .createServer(remotes.handler('rest'))
