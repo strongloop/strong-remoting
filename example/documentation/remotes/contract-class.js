@@ -17,7 +17,7 @@ function ContractClass(name) {
  */
 helper.method(getName, {
   path: 'ContractClass.prototype.getName',
-  returns: 'string'
+  returns: { name: 'name', type: 'string' }
 });
 function getName(callback) {
   callback(null, this.name);
@@ -28,8 +28,8 @@ function getName(callback) {
  */
 helper.method(greet, {
   path: 'ContractClass.prototype.greet',
-  accepts: [{ arg: 'other', type: 'string' }],
-  returns: 'string'
+  accepts: [{ arg: 'other', type: 'string', required: true }],
+  returns: { name: 'greeting', type: 'string' }
 });
 function greet(other, callback) {
   callback(null, 'Hi, ' + other + '!');
@@ -40,7 +40,7 @@ function greet(other, callback) {
  */
 helper.method(getFavoritePerson, {
   path: 'ContractClass.getFavoritePerson',
-  returns: 'string'
+  returns: { name: 'name', type: 'string' }
 });
 function getFavoritePerson(callback) {
   callback(null, 'You');

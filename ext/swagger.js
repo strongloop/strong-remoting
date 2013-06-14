@@ -46,8 +46,10 @@ function Swagger(remotes) {
       apis: []
     };
 
-    helper.method(api, { path: item.name, returns: 'object' });
-
+    helper.method(api, {
+      path: item.name,
+      returns: { type: 'object', root: true }
+    });
     function api(callback) {
       callback(null, apiDocs[item.name]);
     }
@@ -74,7 +76,9 @@ function Swagger(remotes) {
    * The topmost Swagger resource is a description of all (non-Swagger) resources
    * available on the system, and where to find more information about them.
    */
-  helper.method(resources, { returns : 'object' });
+  helper.method(resources, {
+    returns : [{ type: 'object', root: true }]
+  });
   function resources(callback) {
     callback(null, resourceDoc);
   }
