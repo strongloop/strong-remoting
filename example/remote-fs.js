@@ -29,6 +29,6 @@ require('http')
 Test the above with curl or a rest client:
 
   $ node remote-fs.js
-  $ curl http://localhost:3000/fs/createReadStream?args[]=simple.js
+  $ curl http://localhost:3000/fs/createReadStream?path=simple.js
 
 */

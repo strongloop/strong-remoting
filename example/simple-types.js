@@ -4,7 +4,7 @@ var remotes = require('../').create();
 // expose a simple object
 var user = remotes.exports.user = {
   greet: function (fn) {
-    fn(null, 'hello world!');
+    fn(null, {msg: 'hello, world!'});
   }
 };
 
@@ -22,10 +22,8 @@ Test the above with curl or a rest client:
   
   $ node simple.js
   $ curl http://localhost:3000/user/greet 
-  # responds as an object, with the $data attribute
-  # set to the result of the function
   {
-    "$data": "hello, world!"
+    "msg": "hello, world!"
   }
 
 */
