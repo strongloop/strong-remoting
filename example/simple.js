@@ -10,6 +10,7 @@ var user = remotes.exports.user = {
 
 // share the greet method
 user.greet.shared = true;
+user.greet.returns = {arg: 'msg'};
 
 // expose it over http
 require('http')
@@ -22,6 +23,8 @@ Test the above with curl or a rest client:
   
   $ node simple.js
   $ curl http://localhost:3000/user/greet 
-  hello, world!
+  {
+    "msg": "hello, world!"
+  }
 
 */
