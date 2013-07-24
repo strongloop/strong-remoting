@@ -46,7 +46,7 @@ describe('strong-remoting', function(){
         greet.returns = {arg: 'msg', type: 'string'};
 
         json('get', '/user/greet?person=hello')
-          .expect({$data: 'hello'}, done);
+          .expect({msg: 'hello'}, done);
       });
       
       it('should allow arguments in the url', function(done) {
@@ -70,10 +70,10 @@ describe('strong-remoting', function(){
         };
         
         json('get', '/foo/1?b=2')
-          .expect({$data: 3}, done);
+          .expect({n: 3}, done);
       });
       
-      it('should respond with the result if returns is not defined', function(done) {
+      it('should respond with 204 if returns is not defined', function(done) {
         remotes.foo = {
           bar: function (a, b, fn) {
             fn(null, a + b);
@@ -93,7 +93,7 @@ describe('strong-remoting', function(){
         };
         
         json('get', '/foo/1?b=2')
-          .expect({$data: 3}, done);
+          .expect(204, done);
       });
       
       it('should respond with named results if returns has multiple args', function(done) {
@@ -133,6 +133,7 @@ describe('strong-remoting', function(){
         fn.accepts = [
           {arg: 'a', type: 'object'},
         ];
+        fn.returns = {root: true};
         
         json('get', '/foo/bar?a[foo]=true')
           .expect({foo: true}, done);
@@ -151,6 +152,7 @@ describe('strong-remoting', function(){
         fn.accepts = [
           {arg: 'a', type: 'object'},
         ];
+        fn.returns = {root: true};
         
         json('get', '/foo/bar?a[foo]=false')
           .expect({foo: false}, done);
@@ -170,9 +172,13 @@ describe('strong-remoting', function(){
           {arg: 'a'},
           {arg: 'b'}
         ];
+        fn.returns = {root: true};
         
         json('get', '/foo/bar?a=42&b=0.42')
-          .expect({$data: 42.42}, done);
+          .expect(200, function (err, res) {
+            assert.equal(res.body, 42.42);
+            done();
+          });
       });
       
       it('should coerce null strings', function(done) {
@@ -188,9 +194,13 @@ describe('strong-remoting', function(){
         fn.accepts = [
           {arg: 'a'},
         ];
+        fn.returns = {root: true};
         
         json('get', '/foo/bar?a=null')
-          .expect({$data: null}, done);
+          .expect(200, function (err, res) {
+            assert.equal(JSON.parse(res.text), null);
+            done();
+          });
       });
     });
   });
