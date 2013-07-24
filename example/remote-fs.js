@@ -11,11 +11,11 @@ fs.createReadStream.shared = true;
 fs.createReadStream.accepts = {arg: 'path', type: 'string'};
 
 // describe the stream destination
-fs.createReadStream.pipe = {
+fs.createReadStream.http = {
   // pipe to the response
   // for the http transport
-  dest: {
-    http: 'res'
+  pipe: {
+    dest: 'res'
   }
 };
 
