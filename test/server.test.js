@@ -46,7 +46,7 @@ describe('strong-remoting', function(){
         greet.returns = {arg: 'msg', type: 'string'};
 
         json('get', '/user/greet?person=hello')
-          .expect({msg: 'hello'}, done);
+          .expect({$data: 'hello'}, done);
       });
       
       it('should allow arguments in the url', function(done) {
@@ -70,7 +70,127 @@ describe('strong-remoting', function(){
         };
         
         json('get', '/foo/1?b=2')
-          .expect({n: 3}, done);
+          .expect({$data: 3}, done);
+      });
+      
+      it('should respond with the result if returns is not defined', function(done) {
+        remotes.foo = {
+          bar: function (a, b, fn) {
+            fn(null, a + b);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a', type: 'number', http: {source: 'url'}},
+          {arg: 'b', type: 'number'}
+        ];
+        fn.http = {
+          verb: 'get',
+          path: '/:a'
+        };
+        
+        json('get', '/foo/1?b=2')
+          .expect({$data: 3}, done);
+      });
+      
+      it('should respond with named results if returns has multiple args', function(done) {
+        remotes.foo = {
+          bar: function (a, b, fn) {
+            fn(null, a, b);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a', type: 'number'},
+          {arg: 'b', type: 'number'}
+        ];
+        
+        fn.returns = [
+          {arg: 'a', type: 'number'},
+          {arg: 'b', type: 'number'}
+        ];
+        
+        json('get', '/foo/bar?a=1&b=2')
+          .expect({a: 1, b: 2}, done);
+      });
+      
+      it('should coerce boolean strings - true', function(done) {
+        remotes.foo = {
+          bar: function (a, fn) {
+            fn(null, a);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a', type: 'object'},
+        ];
+        
+        json('get', '/foo/bar?a[foo]=true')
+          .expect({foo: true}, done);
+      });
+      
+      it('should coerce boolean strings - false', function(done) {
+        remotes.foo = {
+          bar: function (a, fn) {
+            fn(null, a);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a', type: 'object'},
+        ];
+        
+        json('get', '/foo/bar?a[foo]=false')
+          .expect({foo: false}, done);
+      });
+      
+      it('should coerce number strings', function(done) {
+        remotes.foo = {
+          bar: function (a, b, fn) {
+            fn(null, a + b);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a'},
+          {arg: 'b'}
+        ];
+        
+        json('get', '/foo/bar?a=42&b=0.42')
+          .expect({$data: 42.42}, done);
+      });
+      
+      it('should coerce null strings', function(done) {
+        remotes.foo = {
+          bar: function (a, fn) {
+            fn(null, a);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a'},
+        ];
+        
+        json('get', '/foo/bar?a=null')
+          .expect({$data: null}, done);
       });
     });
   });
