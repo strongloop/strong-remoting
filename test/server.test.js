@@ -60,8 +60,8 @@ describe('strong-remoting', function(){
         
         fn.shared = true;
         fn.accepts = [
-          {arg: 'a', type: 'number', http: {source: 'url'}},
-          {arg: 'b', type: 'number'}
+          {arg: 'b', type: 'number'},
+          {arg: 'a', type: 'number', http: {source: 'url'}}
         ];
         fn.returns = {arg: 'n', type: 'number'};
         fn.http = {
