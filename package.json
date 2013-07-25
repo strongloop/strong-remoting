@@ -10,7 +10,8 @@
     "express": "~3.2.4",
     "eventemitter2": "~0.4.11",
     "sl-task-emitter": "git+ssh://git@github.com:strongloop/sl-task-emitter",
-    "qs": "~0.6.5"
+    "qs": "~0.6.5",
+    "cors": "~1.0.1"
   },
   "devDependencies": {
     "mocha": "latest",
