@@ -3,52 +3,18 @@ var express = require('express');
 var request = require('supertest');
 
 
-describe('sl-remoting', function(){
+describe('strong-remoting', function(){
   var app;
   var server;
   var objects;
   
   // setup
-  beforeEach(function(done){
+  beforeEach(function(){
     if(server) server.close();
     objects = RemoteObjects.create();
+    remotes = objects.exports;
     app = express();
-    server = require('http').createServer(app).listen(3000, done);
   });
-  
-  // add a method
-  function add(parent, name) {
-    // all test functions echo their arguments
-    function fn() {
-      var args = Array.prototype.slice.call(arguments, 0);
-      
-      // add null for err
-      args.unshift(null);
-      
-      // callback
-      args.pop().apply(this, args);
-    }
-    
-    function ctor() {
-      this.ctorArgs = arguments;
-    }
-    
-    var o = objects.exports;
-    
-    // a class
-    if(parent[0] === parent[0].toUpperCase()) {
-      o[parent] = ctor;
-      ctor.prototype[name] = fn;
-    } else {
-      o[parent] = {};
-      o[parent][name] = fn;
-    }
-    
-    // settings
-    fn.shared = true;
-    
-    return fn;
-  }
   
   function json(method, url) {
     return request(app)[method](url)
@@ -59,29 +25,160 @@ describe('sl-remoting', function(){
   
   describe('handlers', function(){
     describe('rest', function(){
-      it('should support calling object methods', function(done) {
-        var fn = add('hello', 'world');
-
-        fn.accepts = {arg: 'foo', type: 'string'};
-        fn.returns = {arg: 'foo', type: 'string'};
-
-        app.use(objects.handler('rest'));
-
-        json('get', '/hello/world?foo=bar')
-          .expect({data: 'bar'}, done);
+      beforeEach(function () {
+        app.use(function (req, res, next) {
+          // create the handler for each request
+          objects.handler('rest').apply(objects, arguments);
+        });
       });
       
-      it('should support binary', function(done) {
-        var fn = add('file', 'upload');
-        var buf = new Buffer('1234').toString('base64');
+      it('should support calling object methods', function(done) {
+        function greet(msg, fn) {
+          fn(null, msg);
+        }
+        
+        remotes.user = {
+          greet: greet
+        };
 
-        fn.accepts = {arg: 'file', type: 'buffer'};
+        greet.shared = true;
+        greet.accepts = {arg: 'person', type: 'string'};
+        greet.returns = {arg: 'msg', type: 'string'};
 
-        app.use(objects.handler('rest'));
-
-        json('post', '/file/upload')
-          .send({file: {data: buf, type: 'base64'}})
-          .expect({data: buf, type: 'base64'}, done);
+        json('get', '/user/greet?person=hello')
+          .expect({msg: 'hello'}, done);
+      });
+      
+      it('should allow arguments in the url', function(done) {
+        remotes.foo = {
+          bar: function (a, b, fn) {
+            fn(null, a + b);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'b', type: 'number'},
+          {arg: 'a', type: 'number', http: {source: 'url'}}
+        ];
+        fn.returns = {arg: 'n', type: 'number'};
+        fn.http = {
+          verb: 'get',
+          path: '/:a'
+        };
+        
+        json('get', '/foo/1?b=2')
+          .expect({n: 3}, done);
+      });
+      
+      it('should respond with 204 if returns is not defined', function(done) {
+        remotes.foo = {
+          bar: function (a, b, fn) {
+            fn(null, a + b);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a', type: 'number', http: {source: 'url'}},
+          {arg: 'b', type: 'number'}
+        ];
+        fn.http = {
+          verb: 'get',
+          path: '/:a'
+        };
+        
+        json('get', '/foo/1?b=2')
+          .expect(204, done);
+      });
+      
+      it('should respond with named results if returns has multiple args', function(done) {
+        remotes.foo = {
+          bar: function (a, b, fn) {
+            fn(null, a, b);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a', type: 'number'},
+          {arg: 'b', type: 'number'}
+        ];
+        
+        fn.returns = [
+          {arg: 'a', type: 'number'},
+          {arg: 'b', type: 'number'}
+        ];
+        
+        json('get', '/foo/bar?a=1&b=2')
+          .expect({a: 1, b: 2}, done);
+      });
+      
+      it('should coerce boolean strings - true', function(done) {
+        remotes.foo = {
+          bar: function (a, fn) {
+            fn(null, a);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a', type: 'object'},
+        ];
+        fn.returns = {root: true};
+        
+        json('get', '/foo/bar?a[foo]=true')
+          .expect({foo: true}, done);
+      });
+      
+      it('should coerce boolean strings - false', function(done) {
+        remotes.foo = {
+          bar: function (a, fn) {
+            fn(null, a);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a', type: 'object'},
+        ];
+        fn.returns = {root: true};
+        
+        json('get', '/foo/bar?a[foo]=false')
+          .expect({foo: false}, done);
+      });
+      
+      it('should coerce number strings', function(done) {
+        remotes.foo = {
+          bar: function (a, b, fn) {
+            fn(null, a + b);
+          }
+        };
+        
+        var fn = remotes.foo.bar;
+        
+        fn.shared = true;
+        fn.accepts = [
+          {arg: 'a', type: 'number'},
+          {arg: 'b', type: 'number'}
+        ];
+        fn.returns = {root: true};
+        
+        json('get', '/foo/bar?a=42&b=0.42')
+          .expect(200, function (err, res) {
+            assert.equal(res.body, 42.42);
+            done();
+          });
       });
     });
   });

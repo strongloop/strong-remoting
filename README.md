@@ -1,4 +1,4 @@
-# sl-remoting
+# strong-remoting
 
 Communicate between objects in servers, mobile apps, and other servers.
 
@@ -75,7 +75,7 @@ Reference event emitters from clients and listen to their events.
 ### Creating a Server
 
     // create a set of shared classes
-    var remoteObjects = require('sl-remoting').create();
+    var remoteObjects = require('strong-remoting').create();
 
     // expose the console
     remoteObjects.exports.console = console;
