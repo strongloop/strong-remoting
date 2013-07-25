@@ -169,36 +169,14 @@ describe('strong-remoting', function(){
         
         fn.shared = true;
         fn.accepts = [
-          {arg: 'a'},
-          {arg: 'b'}
+          {arg: 'a', type: 'number'},
+          {arg: 'b', type: 'number'}
         ];
         fn.returns = {root: true};
         
         json('get', '/foo/bar?a=42&b=0.42')
           .expect(200, function (err, res) {
             assert.equal(res.body, 42.42);
-            done();
-          });
-      });
-      
-      it('should coerce null strings', function(done) {
-        remotes.foo = {
-          bar: function (a, fn) {
-            fn(null, a);
-          }
-        };
-        
-        var fn = remotes.foo.bar;
-        
-        fn.shared = true;
-        fn.accepts = [
-          {arg: 'a'},
-        ];
-        fn.returns = {root: true};
-        
-        json('get', '/foo/bar?a=null')
-          .expect(200, function (err, res) {
-            assert.equal(JSON.parse(res.text), null);
             done();
           });
       });
