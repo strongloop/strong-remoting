@@ -11,7 +11,7 @@ var Remoting = require('../');
 /**
  * Create a remotable Swagger module for plugging into a SharedClassCollection.
  */
-function Swagger(remotes, options) {
+function Swagger(remotes, options, models) {
   // Unfold options.
   var _options = options || {};
   var name = _options.name || 'swagger';
@@ -44,7 +44,8 @@ function Swagger(remotes, options) {
       apiVersion: resourceDoc.apiVersion,
       swaggerVersion: resourceDoc.swaggerVersion,
       basePath: resourceDoc.basePath,
-      apis: []
+      apis: [],
+      models: models
     };
 
     helper.method(api, {
@@ -98,12 +99,14 @@ function Swagger(remotes, options) {
  */
 
 function routeToAPI(route) {
+  var returnDesc = route.returns && route.returns[0];
+
   return {
     path: convertPathFragments(route.path),
     operations: [{
       httpMethod: (route.verb.toLowerCase() === 'all' ? 'POST' : route.verb.toUpperCase()),
       nickname: route.method,
-      responseClass: prepareDataType(route.returns && route.returns[0].type),
+      responseClass: returnDesc ? returnDesc.model || prepareDataType(returnDesc.type) : 'void',
       parameters: route.accepts ? route.accepts.map(acceptToParameter(route)) : [],
       errorResponses: [], // TODO(schoon) - We don't have descriptions for this yet.
       summary: route.description, // TODO(schoon) - Excerpt?
@@ -146,7 +149,7 @@ function acceptToParameter(route) {
       paramType: paramType || type,
       name: name,
       description: accepts.description,
-      dataType: prepareDataType(accepts.type),
+      dataType: accepts.model || prepareDataType(accepts.type),
       required: !!accepts.required,
       allowMultiple: false
     };
