@@ -9,7 +9,7 @@ function SimpleClass(name) {
 }
 helper.type(SimpleClass, {
   description: 'A simple class example',
-  accepts: [{ name: 'name', type: 'string' }]
+  accepts: [{ name: 'name', type: 'string', required: true }]
 });
 
 /**

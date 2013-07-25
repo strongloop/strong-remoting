@@ -40,8 +40,6 @@ function Swagger(remotes, options) {
       description: item.ctor.sharedCtor && item.ctor.sharedCtor.description
     });
 
-    console.log(item.name);
-
     apiDocs[item.name] = {
       apiVersion: resourceDoc.apiVersion,
       swaggerVersion: resourceDoc.swaggerVersion,
@@ -61,19 +59,23 @@ function Swagger(remotes, options) {
   routes.forEach(function (route) {
     var split = route.method.split('.');
     var doc = apiDocs[split[0]];
+    var classDef;
 
     if (!doc) {
       console.error('Route exists with no class: %j', route);
       return;
     }
 
+    classDef = classes.filter(function (item) {
+      return item.name === split[0];
+    })[0];
+
+    if (classDef && classDef.sharedCtor && classDef.sharedCtor.accepts && split.length > 2 /* HACK */) {
+      route.accepts = (route.accepts || []).concat(classDef.sharedCtor.accepts);
+    }
+
     doc.apis.push(routeToAPI(route));
   });
-
-  console.log('Classes:');
-  console.log(JSON.stringify(classes, null, 2));
-  console.log('Routes:');
-  console.log(JSON.stringify(routes, null, 2));
 
   /**
    * The topmost Swagger resource is a description of all (non-Swagger) resources
@@ -104,15 +106,24 @@ function routeToAPI(route) {
       responseClass: prepareDataType(route.returns && route.returns[0].type),
       parameters: route.accepts ? route.accepts.map(acceptToParameter(route)) : [],
       errorResponses: [], // TODO(schoon) - We don't have descriptions for this yet.
-      summary: route.description,
-      notes: '' // TODO(schoon) - `description` metadata
+      summary: route.description, // TODO(schoon) - Excerpt?
+      notes: '' // TODO(schoon) - `description` metadata?
     }]
   };
 }
 
+function convertPathFragments(path) {
+  return path.split('/').map(function (fragment) {
+    if (fragment.charAt(0) === ':') {
+      return '{' + fragment.slice(1) + '}';
+    }
+    return fragment;
+  }).join('/');
+}
+
 /**
- * Converts from an sl-remoting-formatted "Accepts" description to a
- * Swagger-formatted "Parameter" description.
+ * A generator to convert from an sl-remoting-formatted "Accepts" description to
+ * a Swagger-formatted "Parameter" description.
  */
 
 function acceptToParameter(route) {
