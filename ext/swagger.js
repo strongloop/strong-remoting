@@ -104,7 +104,7 @@ function routeToAPI(route) {
   return {
     path: convertPathFragments(route.path),
     operations: [{
-      httpMethod: (route.verb.toLowerCase() === 'all' ? 'POST' : route.verb.toUpperCase()),
+      httpMethod: convertVerb(route.verb),
       nickname: route.method,
       responseClass: returnDesc ? returnDesc.model || prepareDataType(returnDesc.type) : 'void',
       parameters: route.accepts ? route.accepts.map(acceptToParameter(route)) : [],
@@ -122,6 +122,18 @@ function convertPathFragments(path) {
     }
     return fragment;
   }).join('/');
+}
+
+function convertVerb(verb) {
+  if (verb.toLowerCase() === 'all') {
+    return 'POST';
+  }
+
+  if (verb.toLowerCase() === 'del') {
+    return 'DELETE';
+  }
+
+  return verb.toUpperCase();
 }
 
 /**
