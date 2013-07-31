@@ -105,7 +105,7 @@ function routeToAPI(route) {
     path: convertPathFragments(route.path),
     operations: [{
       httpMethod: convertVerb(route.verb),
-      nickname: route.method.replace('.', '_'), // [rfeng] Swagger UI doesn't escape '.' for jQuery selector
+      nickname: route.method.replace(/\./g, '_'), // [rfeng] Swagger UI doesn't escape '.' for jQuery selector
       responseClass: returnDesc ? returnDesc.model || prepareDataType(returnDesc.type) : 'void',
       parameters: route.accepts ? route.accepts.map(acceptToParameter(route)) : [],
       errorResponses: [], // TODO(schoon) - We don't have descriptions for this yet.
@@ -156,6 +156,10 @@ function acceptToParameter(route) {
     if (route.path.indexOf(':' + name) !== -1) {
       paramType = 'path';
     }
+
+      if(route.http && route.http.source) {
+          paramType = route.http.source;
+      }
 
     return {
       paramType: paramType || type,
