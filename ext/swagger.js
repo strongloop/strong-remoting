@@ -157,9 +157,10 @@ function acceptToParameter(route) {
       paramType = 'path';
     }
 
-      if(route.http && route.http.source) {
-          paramType = route.http.source;
-      }
+    // Check the http settings for the argument
+    if(accepts.http && accepts.http.source) {
+        paramType = accepts.http.source;
+    }
 
     return {
       paramType: paramType || type,
