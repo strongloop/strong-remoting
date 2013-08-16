@@ -160,14 +160,6 @@ function acceptToParameter(route) {
     // Check the http settings for the argument
     if(accepts.http && accepts.http.source) {
         paramType = accepts.http.source;
-        // Mapping url source to path or query
-        if('url' === paramType) {
-            if (route.path.indexOf(':' + name) !== -1) {
-                paramType = 'path';
-            } else {
-                paramType = 'query';
-            }
-        }
     }
 
     return {

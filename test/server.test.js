@@ -61,7 +61,7 @@ describe('strong-remoting', function(){
         fn.shared = true;
         fn.accepts = [
           {arg: 'b', type: 'number'},
-          {arg: 'a', type: 'number', http: {source: 'url'}}
+          {arg: 'a', type: 'number', http: {source: 'query'}}
         ];
         fn.returns = {arg: 'n', type: 'number'};
         fn.http = {
@@ -84,7 +84,7 @@ describe('strong-remoting', function(){
         
         fn.shared = true;
         fn.accepts = [
-          {arg: 'a', type: 'number', http: {source: 'url'}},
+          {arg: 'a', type: 'number', http: {source: 'query'}},
           {arg: 'b', type: 'number'}
         ];
         fn.http = {
