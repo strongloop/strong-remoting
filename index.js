@@ -2,4 +2,4 @@
  * remotes ~ public api
  */
 
-module.exports = require('./lib/shared-class-collection');
+module.exports = require('./lib/remote-objects');

@@ -1,134 +1,160 @@
 # strong-remoting
 
-Communicate between objects in servers, mobile apps, and other servers.
+_Communicate between objects in servers, mobile apps, and other servers._
 
-## Background
+**Overview**
 
 Communicating between objects that run in different processes, whether on the same computer, or in another programming language on a mobile device, is such a common application requirement that it should be simple. This library makes it easy to communicate accross these types of boundries without having to worry about the underlying transport mechanism. Once you determine your application's performance characteristics you can swap out the transport mechanism or build your own optimized transport for your app's specific needs.
 
-### Supported Servers
+## Install
 
- - **Node.js** - the only planned server.
+```sh
+$ npm install strong-remoting
+```
 
-### Supported Clients
+## Quick Start
 
- - **Node.js**  **TODO** 
- - **HTML5**  **TODO**
- - **iOS**  **TODO**
- - **Android**  **TODO**
+Setup a `strong-remoting` server.
+
+```js
+// create a collection of remote objects
+var remotes = require('strong-remoting').create();
+
+// export a `user` object
+var user = remotes.exports.user = {
+  greet: function (str, fn) {
+    fn(null, str + ' world');
+  }
+};
+
+// share the greet method
+user.greet.shared = true;
+user.greet.accepts = {arg: 'str'};
+user.greet.returns = {arg: 'msg'};
+
+// expose it over http
+require('http')
+  .createServer(remotes.handler('rest'))
+  .listen(3000);
+```
+
+Invoke `user.greet()` over http.
+
+```sh
+$ curl http://localhost:3000/user/greet?str=hello
+{
+  "msg": "hello world"
+}
+```
+
+## Concepts
+
+### Remote Objects
+
+Most node apps expose some sort of network available api. StrongRemoting allows you to build your app in regular JavaScript and export remote objects over the network the same way you export functions from a module. It also lets you swap out the underlying transport without changing any of your app specific code.
+
+### Adapters
+
+Adapters provide the transport specific mechanisms to allow remote clients to invoke methods on your remote objects. The rest adapter supports http and allows you to map your objects to RESTful resources. Other adapters provide a less opionated RPC style interface. Your application code doesn't need to know what adapter its using. You can always invoke methods on your remote objects locally in regular JavaScript. This is useful for testing or providing a node api that is also available over the network.
+
+### Servers and Clients
+
+**Servers**
+
+**Node.js** is the only planned server environment. This may change in the future if there is demand for other implementations.
+
+**Clients**
+
+For higher level transports, such as REST and SocketIO, existing clients will work well. If you want to be able to swap out your transport, use one of our supported clients. The same adapter model on the server applies to clients, so you can switch transports on both the server and client without changing your app specific code.
+
+ - [iOS](http://docs.strongloop.com/strong-remoting-clients#ios)
+ - _Node.js_  **In Development** 
+ - _HTML5_  **In Development**
+ - _Java_  **In Development**
  
-### Features
+### Hooks
 
-#### Security and Encryption _TODO_
+Hooks allow you to run code before objects are constructed or methods are invoked. Prevent actions based context (http request, user info, etc).
 
-All transports are runnable over secure channels (eg. TLS). All transports support authentication.
+```js
+// do something before greet
+remotes.before('user.greet', function (ctx, next) {
+  if((ctx.req.param('password') || '').toString() !== '1234') {
+    next(new Error('bad password!'));
+  } else {
+    next();
+  }
+});
 
-#### Remote Objects
+// do something before any user method
+remotes.before('user.*', function (ctx, next) {
+  console.log('calling a user method');
+  next();
+});
 
-Construct objects on the server from a connected client.
+// do something before a dog instance method
+remotes.before('dog.prototype.*', function (ctx, next) {
+  var dog = this;
+  console.log('calling a method on', dog.name);
+  next();
+});
 
-#### Remote Methods
+// do something after the dog speak method
+// note: you cannot cancel a method after
+// it has been called
+remotes.after('dog.prototype.speak', function (ctx, next) {
+  console.log('after speak!');
+  next();
+});
 
-Invoke methods on remote objects.
+// do something before all methods
+remotes.before('**', function (ctx, next, method) {
+  console.log('calling', method.name);
+  next();
+});
 
-#### Data Types
+// modify all results
+remotes.after('**', function (ctx, next) {
+  ctx.result += '!!!';
+  next();
+});
+```
 
-**JSON**
+[See the before-after example for more info](https://github.com/strongloop/strong-remoting/blob/master/example/before-after.js).
 
- - Number
- - Boolean
- - String
- - Array
- - Object
+### Streams
 
-**Complex Types**
+StrongRemoting supports methods that expect or return `Readable` / `Writeable` streams. This allows you to stream raw binary data such as files over the network without writing a custom server.
 
- - Date
- - Buffer
- - ReadableStream **TODO**
- - WriteableStream **TODO**
- - EventEmitter **TODO**
- 
-#### Hooks
+```js
+// create a set of shared classes
+var remotes = require('../').create();
 
-Run code before objects are constructed or methods are invoked. Prevent actions based context (http request, user info, etc).
+// share some fs module code
+var fs = remotes.exports.fs = require('fs');
 
-#### Binary Data **TODO**
+// specifically the createReadStream function
+fs.createReadStream.shared = true;
 
-Send and recieve raw binary data such as files as a single `Buffer` or `Readable` / `Writeable` streams.
+// describe the arguments
+fs.createReadStream.accepts = {arg: 'path', type: 'string'};
 
-#### Events **TODO**
+// describe the stream destination
+fs.createReadStream.http = {
+  // pipe to the response
+  pipe: {
+    dest: 'res'
+  }
+};
 
-Reference event emitters from clients and listen to their events.
+// over rest / http
+require('http')
+  .createServer(remotes.handler('rest'))
+  .listen(3000);
+```
 
-#### Supported Transports
+Invoke `fs.createReadStream()` using `curl`.
 
- - **socket.io TODO**
- - **http**
- 
-#### Content Types
-
- - **JSON** - only planned type
- 
-## Basic Usage
-
-### Creating a Server
-
-    // create a set of shared classes
-    var remoteObjects = require('strong-remoting').create();
-
-    // expose the console
-    remoteObjects.exports.console = console;
-
-    // share the log method
-    console.log.shared = true;
-
-    // expose it over http
-    require('http')
-      .createServer(remotes.handler('http'))
-      .listen(3000);
-      
-### Creating a Client (JavaScript)
-
-    // connect to the server
-    var remoteObjects = Remoting.connect('http://localhost:3000', Remoting.adapters.http));
-    
-    // log hello world from the client
-    remoteObjects.invoke('console.log', 'hello world');
-    
-### Server Side Hooks
-    
-    // prevent non localhost requests
-    remoteObjects.before('console.log', function(ctx, next) {
-      if(ctx.req.remoteAddress !== '127.0.0.1') {
-        next(new Error('you are not allowed!'));
-      } else {
-        next();
-      }
-    });
-    
-    // run after console.log but before the response is sent
-    remoteObjects.after('console.log', function(ctx, next) {
-      // change the result
-      ctx.result = 'updated result...';
-      next();
-    });
-
-### Events _TODO_
-
-Listen to events on server side emitters from a client.
-
-    // server
-    var myEmitter = remoteObjects.exports.myEmitter = new EventEmitter();
-    
-    setInterval(function() {
-      myEmitter.emit('my event', {foo: 'bar'});
-    }, 1000);
-    
-    // expose the on method
-    myEmitter.on.shared = true;
-
-    // client
-    remoteObjects.invoke('myEmitter.on', 'my event', function (data) {
-      console.log('this will be called multiple times...', data);
-    });
+```sh
+$ curl http://localhost:3000/fs/createReadStream?path=some-file.txt
+```

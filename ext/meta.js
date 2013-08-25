@@ -9,7 +9,7 @@ module.exports = Meta;
 var Remoting = require('../');
 
 /**
- * Create a remotable Meta module for plugging into a SharedClassCollection.
+ * Create a remotable Meta module for plugging into `RemoteObjects`.
  */
 function Meta(remotes, options) {
   // Unfold options.
