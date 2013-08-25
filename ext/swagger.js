@@ -9,7 +9,7 @@ module.exports = Swagger;
 var Remoting = require('../');
 
 /**
- * Create a remotable Swagger module for plugging into a SharedClassCollection.
+ * Create a remotable Swagger module for plugging into `RemoteObjects`.
  */
 function Swagger(remotes, options, models) {
   // Unfold options.

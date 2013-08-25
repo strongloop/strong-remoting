@@ -1,11 +1,8 @@
 {
   "content": [
     "README.md",
-    {"title": "Shared Class Collection", "depth": 2},
-    "lib/shared-class-collection.js",
-    {"title": "Exports Helper", "depth": 2},
-    "lib/exports-helper.js",
-    {"title": "REST Adapter", "depth": 2},
-    "lib/rest-adapter.js"
-  ]
+    {"title": "Remote Objects API", "depth": 2},
+    "lib/remote-objects.js"
+  ],
+  "codeSectionDepth": 3
 }
