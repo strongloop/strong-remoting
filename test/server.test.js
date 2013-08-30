@@ -19,6 +19,7 @@ describe('strong-remoting', function(){
   function json(method, url) {
     return request(app)[method](url)
       .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json')
       .expect(200)
       .expect('Content-Type', /json/);
   }
@@ -180,6 +181,30 @@ describe('strong-remoting', function(){
             done();
           });
       });
+
+        it('should allow empty body for json request', function(done) {
+            remotes.foo = {
+                bar: function (a, b, fn) {
+                    fn(null, a, b);
+                }
+            };
+
+            var fn = remotes.foo.bar;
+
+            fn.shared = true;
+            fn.accepts = [
+                {arg: 'a', type: 'number'},
+                {arg: 'b', type: 'number'}
+            ];
+
+            fn.returns = [
+                {arg: 'a', type: 'number'},
+                {arg: 'b', type: 'number'}
+            ];
+
+            json('post', '/foo/bar?a=1&b=2').set('Content-Length', 0)
+                .expect({a: 1, b: 2}, done);
+        });
     });
   });
 });
