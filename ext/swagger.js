@@ -55,6 +55,7 @@ function Swagger(remotes, options, models) {
     function api(callback) {
       callback(null, apiDocs[item.name]);
     }
+    addDynamicBasePathGetter(remotes, name + '.' + item.name, apiDocs[item.name]);
   });
 
   routes.forEach(function (route) {
@@ -88,9 +89,55 @@ function Swagger(remotes, options, models) {
   function resources(callback) {
     callback(null, resourceDoc);
   }
+  addDynamicBasePathGetter(remotes, name + '.resources', resourceDoc);
 
   remotes.exports[name] = extension;
   return extension;
+}
+
+/**
+ * There's a few forces at play that require this "hack". The Swagger spec
+ * requires a `basePath` to be set at various points in the API/Resource
+ * descriptions. However, we can't guarantee this path is either reachable or
+ * desirable if it's set as a part of the options.
+ *
+ * The simplest way around this is to reflect the value of the `Host` HTTP
+ * header as the `basePath`. Because we pre-build the Swagger data, we don't
+ * know that header at the time the data is built. Hence, the getter function.
+ * We can use a `before` hook to pluck the `Host`, then the getter kicks in to
+ * return that path as the `basePath` during JSON serialization.
+ *
+ * @param {SharedClassCollection} remotes The Collection to register a `before`
+ *                                        hook on.
+ * @param {String} path                   The full path of the route to register
+ *                                        a `before` hook on.
+ * @param {Object} obj                    The Object to install the `basePath`
+ *                                        getter on.
+ */
+function addDynamicBasePathGetter(remotes, path, obj) {
+  var basePath = String(obj.basePath) || '';
+
+  remotes.before(path, function (ctx, next) {
+    var headers = ctx.req.headers;
+    var host = headers.Host || headers.host;
+
+    basePath = 'http://' + host;
+    next();
+  });
+
+  return setter(obj);
+
+  function getter() {
+    return basePath;
+  }
+
+  function setter(obj) {
+    return Object.defineProperty(obj, 'basePath', {
+      configurable: false,
+      enumerable: true,
+      get: getter
+    });
+  }
 }
 
 /**
