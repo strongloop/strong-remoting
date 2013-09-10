@@ -18,5 +18,9 @@
     "socket.io": "~0.9.6",
     "socket.io-client": "~0.9.6"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/strongloop/strong-remoting"
+  },
   "license": "MIT"
 }
