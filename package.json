@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "debug": "~0.7.2",
-    "express": "~3.2.4",
+    "express": "~3.4.0",
     "eventemitter2": "~0.4.11",
     "qs": "~0.6.5",
     "cors": "~1.0.1"
@@ -15,8 +15,8 @@
   "devDependencies": {
     "mocha": "~1.12.1",
     "supertest": "~0.7.1",
-    "socket.io": "git://github.com/LearnBoost/socket.io.git",
-    "socket.io-client": "git://github.com/LearnBoost/socket.io-client.git"
+    "socket.io": "~0.9.6",
+    "socket.io-client": "~0.9.6"
   },
   "license": "MIT"
 }
