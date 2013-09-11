@@ -1,6 +1,7 @@
 {
   "name": "strong-remoting",
   "description": "StrongLoop Remoting Module",
+  "keywords": [ "StrongLoop", "LoopBack", "Remoting", "REST" ],
   "version": "1.0.0",
   "scripts": {
     "test": "mocha"
