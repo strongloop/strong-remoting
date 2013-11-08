@@ -29,7 +29,7 @@ supported clients. The same Adapter model available on the server applies to
 clients, so you can switch transports on both the server and all clients without
 changing your application-specific code.
 
- - **iOS** - [Documentation](http://docs.strongloop.com/strong-remoting-clients#ios)
+ - **iOS** 
  - **Node.js** - Coming Soon!
  - **HTML5** - Coming Soon!
  - **Java** - Coming Soon!
