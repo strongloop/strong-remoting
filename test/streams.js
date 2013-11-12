@@ -27,14 +27,17 @@ describe('strong-remoting', function () {
   it('should stream the file output', function (done) {
     remotes.fs = fs;
     fs.createReadStream.shared = true;
-    fs.createReadStream.accepts = {arg: 'path', type: 'string'};
+    fs.createReadStream.accepts = [{arg: 'path', type: 'string'}];
+    fs.createReadStream.returns = {arg: 'res', type: 'stream'};
     fs.createReadStream.http = {
+      verb: 'get',
+      // path: '/fs/createReadStream', 
       pipe: {
         dest: 'res'
       }
     };
 
-    json('get', '/fs/createReadStream?path=data/foo.json')
+    json('get', '/fs/createReadStream?path=' + __dirname + '/data/foo.json')
       .expect({bar: 'baz'}, done);
   });
 });
