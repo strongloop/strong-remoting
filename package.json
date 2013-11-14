@@ -1,7 +1,12 @@
 {
   "name": "strong-remoting",
   "description": "StrongLoop Remoting Module",
-  "keywords": [ "StrongLoop", "LoopBack", "Remoting", "REST" ],
+  "keywords": [
+    "StrongLoop",
+    "LoopBack",
+    "Remoting",
+    "REST"
+  ],
   "version": "1.0.0",
   "scripts": {
     "test": "mocha"
@@ -11,7 +16,8 @@
     "express": "~3.4.0",
     "eventemitter2": "~0.4.11",
     "qs": "~0.6.5",
-    "cors": "~1.0.1"
+    "cors": "~1.0.1",
+    "jayson": "~1.0.11"
   },
   "devDependencies": {
     "mocha": "~1.12.1",
