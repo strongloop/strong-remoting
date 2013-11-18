@@ -182,29 +182,63 @@ describe('strong-remoting', function(){
           });
       });
 
-        it('should allow empty body for json request', function(done) {
-            remotes.foo = {
-                bar: function (a, b, fn) {
-                    fn(null, a, b);
-                }
-            };
+      it('should allow empty body for json request', function(done) {
+          remotes.foo = {
+              bar: function (a, b, fn) {
+                  fn(null, a, b);
+              }
+          };
 
-            var fn = remotes.foo.bar;
+          var fn = remotes.foo.bar;
 
-            fn.shared = true;
-            fn.accepts = [
-                {arg: 'a', type: 'number'},
-                {arg: 'b', type: 'number'}
-            ];
+          fn.shared = true;
+          fn.accepts = [
+              {arg: 'a', type: 'number'},
+              {arg: 'b', type: 'number'}
+          ];
 
-            fn.returns = [
-                {arg: 'a', type: 'number'},
-                {arg: 'b', type: 'number'}
-            ];
+          fn.returns = [
+              {arg: 'a', type: 'number'},
+              {arg: 'b', type: 'number'}
+          ];
 
-            json('post', '/foo/bar?a=1&b=2').set('Content-Length', 0)
-                .expect({a: 1, b: 2}, done);
+          json('post', '/foo/bar?a=1&b=2').set('Content-Length', 0)
+              .expect({a: 1, b: 2}, done);
+      });
+      describe('uncaught errors', function () {
+        it('should return 500 if an error object is thrown', function (done) {
+          remotes.shouldThrow = {
+            bar: function (fn) {
+              throw new Error('an error');
+              fn(null);
+            }
+          };
+
+          var fn = remotes.shouldThrow.bar;
+          fn.shared = true;
+
+          json('get', '/shouldThrow/bar?a=1&b=2')
+            .expect(500)
+            .expect({error: 'an error'})
+            .end(done);
         });
+        it('should return 500 if an error string is thrown', function (done) {
+          remotes.shouldThrow = {
+            bar: function (fn) {
+              throw 'an error';
+              fn(null);
+            }
+          };
+
+          var fn = remotes.shouldThrow.bar;
+          fn.shared = true;
+
+          json('get', '/shouldThrow/bar?a=1&b=2')
+            .expect(500)
+            .expect({error: 'an error'})
+            .end(done);
+        });
+      });
     });
   });
 });
