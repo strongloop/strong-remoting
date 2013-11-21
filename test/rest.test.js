@@ -30,7 +30,6 @@ describe('strong-remoting-rest', function(){
     return request(app)[method](url)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
-      .expect(200)
       .expect('Content-Type', /json/);
   }
 
@@ -182,6 +181,37 @@ describe('strong-remoting-rest', function(){
 
       json('post', '/foo/bar?a=1&b=2').set('Content-Length', 0)
         .expect({a: 1, b: 2}, done);
+    });
+
+    it('should call rest hooks', function(done) {
+      var hooksCalled = [];
+
+      var method = givenSharedStaticMethod({
+        rest: {
+          before: createHook('beforeRest'),
+          after: createHook('afterRest')
+        }
+      });
+
+      objects.before(method.name, createHook('beforeRemote'));
+      objects.after(method.name, createHook('afterRemote'));
+
+      json(method.url)
+        .end(function(err) {
+          if (err) done(err);
+          assert.deepEqual(
+            hooksCalled,
+            ['beforeRest', 'beforeRemote', 'afterRemote', 'afterRest']
+          );
+          done();
+        });
+
+      function createHook(name) {
+        return function(ctx, next) {
+          hooksCalled.push(name);
+          next();
+        };
+      }
     });
 
     describe('uncaught errors', function () {
@@ -357,7 +387,12 @@ describe('strong-remoting-rest', function(){
   });
 
   function givenSharedStaticMethod(fn, config) {
+    if (typeof fn === 'object' && config === undefined) {
+      config = fn;
+      fn = null;
+    }
     fn = fn || function(cb) { cb(); };
+
     remotes.testClass = { testMethod: fn };
     config = extend({ shared: true }, config);
     extend(remotes.testClass.testMethod, config);
