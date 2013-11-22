@@ -1,7 +1,9 @@
 var extend = require('util')._extend;
+var inherits = require('util').inherits;
 var RemoteObjects = require('../');
 var express = require('express');
 var request = require('supertest');
+var expect = require('chai').expect;
 
 
 describe('strong-remoting-rest', function(){
@@ -228,8 +230,7 @@ describe('strong-remoting-rest', function(){
 
         json('get', '/shouldThrow/bar?a=1&b=2')
           .expect(500)
-          .expect({error: 'an error'})
-          .end(done);
+          .end(expectErrorResponseContaining({message: 'an error'}, done));
       });
 
       it('should return 500 if an error string is thrown', function (done) {
@@ -245,8 +246,7 @@ describe('strong-remoting-rest', function(){
 
         json('get', '/shouldThrow/bar?a=1&b=2')
           .expect(500)
-          .expect({error: 'an error'})
-          .end(done);
+          .end(expectErrorResponseContaining({message: 'an error'}, done));
       });
     });
 
@@ -257,9 +257,12 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      json(method.url)
-        .expect(500, { error: 'test-error' })
-        .end(done);
+      // Send a plain, non-json request to make sure the error handler
+      // always returns a json response.
+      request(app).get(method.url)
+        .expect('Content-Type', /json/)
+        .expect(500)
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
 
     it('should return 500 when "before" returns an error', function(done) {
@@ -269,8 +272,8 @@ describe('strong-remoting-rest', function(){
       });
 
       json(method.url)
-        .expect(500, { error: 'test-error' })
-        .end(done);
+        .expect(500)
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
 
     it('should return 500 when "after" returns an error', function(done) {
@@ -280,8 +283,8 @@ describe('strong-remoting-rest', function(){
       });
 
       json(method.url)
-        .expect(500, { error: 'test-error' })
-        .end(done);
+        .expect(500)
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
   });
 
@@ -359,8 +362,8 @@ describe('strong-remoting-rest', function(){
       );
 
       json(method.url)
-        .expect(500, { error: 'test-error' })
-        .end(done);
+        .expect(500)
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
 
     it('should return 500 when "before" returns an error', function(done) {
@@ -370,8 +373,8 @@ describe('strong-remoting-rest', function(){
       });
 
       json(method.url)
-        .expect(500, { error: 'test-error' })
-        .end(done);
+        .expect(500)
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
 
     it('should return 500 when "after" returns an error', function(done) {
@@ -381,8 +384,8 @@ describe('strong-remoting-rest', function(){
       });
 
       json(method.url)
-        .expect(500, { error: 'test-error' })
-        .end(done);
+        .expect(500)
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
   });
 
@@ -391,6 +394,37 @@ describe('strong-remoting-rest', function(){
 
     json(classUrl + '/unknown-method')
       .expect(404, done);
+  });
+
+  it('returns correct error response body', function(done) {
+    function TestError() {
+      Error.captureStackTrace(this, TestError);
+      this.name = 'TestError';
+      this.message = 'a test error';
+      this.status = 444;
+      this.aCustomProperty = 'a-custom-value';
+    }
+    inherits(TestError, Error);
+
+    var method = givenSharedStaticMethod(function(cb) { cb(new TestError()); });
+
+    json(method.url)
+      .expect(444)
+      .end(function(err, result) {
+        if (err) done(err);
+        expect(result.body).to.have.keys(['error']);
+        var expected = {
+          name: 'TestError',
+          status: 444,
+          message: 'a test error',
+          aCustomProperty: 'a-custom-value'
+        };
+        for (var prop in expected) {
+          expect(result.body.error[prop], prop).to.equal(expected[prop]);
+        }
+        expect(result.body.error.stack, 'stack').to.contain(__filename);
+        done();
+      });
   });
 
   function givenSharedStaticMethod(fn, config) {
@@ -447,5 +481,15 @@ describe('strong-remoting-rest', function(){
     });
 
     return SharedClass;
+  }
+
+  function expectErrorResponseContaining(keyValues, done) {
+    return function(err, resp) {
+      if (err) return done(err);
+      for (var prop in keyValues) {
+        expect(resp.body.error).to.have.property(prop, keyValues[prop]);
+      }
+      done();
+    }
   }
 });

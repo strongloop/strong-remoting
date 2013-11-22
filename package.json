@@ -24,7 +24,8 @@
     "mocha": "~1.14.0",
     "supertest": "~0.8.1",
     "socket.io": "~0.9.16",
-    "socket.io-client": "~0.9.16"
+    "socket.io-client": "~0.9.16",
+    "chai": "~1.8.1"
   },
   "repository": {
     "type": "git",
