@@ -386,6 +386,13 @@ describe('strong-remoting-rest', function(){
     });
   });
 
+  it('returns 404 for unknown method of a shared class', function(done) {
+    var classUrl = givenSharedStaticMethod().classUrl;
+
+    json(classUrl + '/unknown-method')
+      .expect(404, done);
+  });
+
   function givenSharedStaticMethod(fn, config) {
     if (typeof fn === 'object' && config === undefined) {
       config = fn;
