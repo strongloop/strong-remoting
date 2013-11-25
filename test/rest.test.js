@@ -397,6 +397,12 @@ describe('strong-remoting-rest', function(){
       .expect(404, done);
   });
 
+  it('returns 404 with standard JSON body for uknown URL', function(done) {
+    json('/unknown-url')
+      .expect(404)
+      .end(expectErrorResponseContaining({status: 404}, done));
+  });
+
   it('returns correct error response body', function(done) {
     function TestError() {
       Error.captureStackTrace(this, TestError);
