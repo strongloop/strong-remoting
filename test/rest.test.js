@@ -4,6 +4,7 @@ var RemoteObjects = require('../');
 var express = require('express');
 var request = require('supertest');
 var expect = require('chai').expect;
+var factory = require('./helpers/shared-objects-factory.js');
 
 
 describe('strong-remoting-rest', function(){
@@ -446,7 +447,7 @@ describe('strong-remoting-rest', function(){
 
   function givenSharedPrototypeMethod(fn, config) {
     fn = fn || function(cb) { cb(); };
-    remotes.testClass = createSharedClass();
+    remotes.testClass = factory.createSharedClass();
     remotes.testClass.prototype.testMethod = fn;
     config = extend({ shared: true }, config);
     extend(remotes.testClass.prototype.testMethod, config);
@@ -460,27 +461,6 @@ describe('strong-remoting-rest', function(){
       },
       url: '/testClass/an-id/testMethod'
     };
-  }
-
-  function createSharedClass() {
-    var SharedClass = function(id) {
-      this.id = id;
-    };
-
-    SharedClass.shared = true;
-
-    SharedClass.sharedCtor = function(id, cb) {
-      cb(null, new SharedClass(id));
-    };
-
-    extend(SharedClass.sharedCtor, {
-      shared: true,
-      accepts: [ { arg: 'id', type: 'any', http: { source: 'path' }}],
-      http: { path: '/:id' },
-      returns: { root: true }
-    });
-
-    return SharedClass;
   }
 
   function expectErrorResponseContaining(keyValues, done) {
