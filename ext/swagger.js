@@ -115,15 +115,19 @@ function Swagger(remotes, options, models) {
  *                                        getter on.
  */
 function addDynamicBasePathGetter(remotes, path, obj) {
+  var initialPath = obj.basePath || '/';
   var basePath = String(obj.basePath) || '';
 
-  remotes.before(path, function (ctx, next) {
-    var headers = ctx.req.headers;
-    var host = headers.Host || headers.host;
+  if (!/^https?:\/\//.test(basePath)) {
+    remotes.before(path, function (ctx, next) {
+      var headers = ctx.req.headers;
+      var host = headers.Host || headers.host;
 
-    basePath = 'http://' + host;
-    next();
-  });
+      basePath = 'http://' + host + initialPath;
+
+      next();
+    });
+  }
 
   return setter(obj);
 
