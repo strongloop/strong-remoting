@@ -478,4 +478,41 @@ describe('strong-remoting-rest', function(){
       done();
     }
   }
+
+  it('should skip the super class and only expose user defined remote methods',
+    function (done) {
+
+      function base() {
+      }
+
+      function foo() {
+      }
+
+      foo.bar = function() {
+      };
+
+      foo.bar.shared = true;
+
+      inherits(foo, base);
+      base.shared = true;
+      foo.shared = true;
+
+      foo.sharedCtor = function() {};
+
+      remotes.foo = foo;
+
+      var methodNames = [];
+      var methods = objects.methods();
+
+      for (var i = 0; i < methods.length; i++) {
+        methodNames.push(methods[i].stringName);
+      }
+
+      expect(methodNames).not.to.contain('super_');
+      expect(methodNames).to.contain('foo.bar');
+      expect(methodNames.length).to.equal(1);
+      done();
+
+  });
+
 });
