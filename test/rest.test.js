@@ -4,6 +4,7 @@ var RemoteObjects = require('../');
 var express = require('express');
 var request = require('supertest');
 var expect = require('chai').expect;
+var factory = require('./helpers/shared-objects-factory.js');
 
 
 describe('strong-remoting-rest', function(){
@@ -396,6 +397,12 @@ describe('strong-remoting-rest', function(){
       .expect(404, done);
   });
 
+  it('returns 404 with standard JSON body for uknown URL', function(done) {
+    json('/unknown-url')
+      .expect(404)
+      .end(expectErrorResponseContaining({status: 404}, done));
+  });
+
   it('returns correct error response body', function(done) {
     function TestError() {
       Error.captureStackTrace(this, TestError);
@@ -446,7 +453,7 @@ describe('strong-remoting-rest', function(){
 
   function givenSharedPrototypeMethod(fn, config) {
     fn = fn || function(cb) { cb(); };
-    remotes.testClass = createSharedClass();
+    remotes.testClass = factory.createSharedClass();
     remotes.testClass.prototype.testMethod = fn;
     config = extend({ shared: true }, config);
     extend(remotes.testClass.prototype.testMethod, config);
@@ -462,27 +469,6 @@ describe('strong-remoting-rest', function(){
     };
   }
 
-  function createSharedClass() {
-    var SharedClass = function(id) {
-      this.id = id;
-    };
-
-    SharedClass.shared = true;
-
-    SharedClass.sharedCtor = function(id, cb) {
-      cb(null, new SharedClass(id));
-    };
-
-    extend(SharedClass.sharedCtor, {
-      shared: true,
-      accepts: [ { arg: 'id', type: 'any', http: { source: 'path' }}],
-      http: { path: '/:id' },
-      returns: { root: true }
-    });
-
-    return SharedClass;
-  }
-
   function expectErrorResponseContaining(keyValues, done) {
     return function(err, resp) {
       if (err) return done(err);
@@ -492,4 +478,41 @@ describe('strong-remoting-rest', function(){
       done();
     }
   }
+
+  it('should skip the super class and only expose user defined remote methods',
+    function (done) {
+
+      function base() {
+      }
+
+      function foo() {
+      }
+
+      foo.bar = function() {
+      };
+
+      foo.bar.shared = true;
+
+      inherits(foo, base);
+      base.shared = true;
+      foo.shared = true;
+
+      foo.sharedCtor = function() {};
+
+      remotes.foo = foo;
+
+      var methodNames = [];
+      var methods = objects.methods();
+
+      for (var i = 0; i < methods.length; i++) {
+        methodNames.push(methods[i].stringName);
+      }
+
+      expect(methodNames).not.to.contain('super_');
+      expect(methodNames).to.contain('foo.bar');
+      expect(methodNames.length).to.equal(1);
+      done();
+
+  });
+
 });
