@@ -52,7 +52,26 @@ describe('strong-remoting-rest', function(){
         .expect(200, { msg: 'hello' }, done);
     });
 
-    it('should allow arguments in the url', function(done) {
+    it('should allow arguments in the path', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number' },
+            { arg: 'a', type: 'number', http: {source: 'path' } }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { path: '/:a' }
+        }
+      );
+
+      json(method.classUrl +'/1?b=2')
+        .expect({ n: 3 }, done);
+    });
+
+    it('should allow arguments in the query', function(done) {
       var method = givenSharedStaticMethod(
         function bar(a, b, cb) {
           cb(null, a + b);
@@ -63,11 +82,34 @@ describe('strong-remoting-rest', function(){
             { arg: 'a', type: 'number', http: {source: 'query' } }
           ],
           returns: { arg: 'n', type: 'number' },
-          http: { path: '/:a' }
+          http: { path: '/' }
         }
       );
 
-      json(method.classUrl +'/1?b=2')
+      json(method.classUrl +'/?a=1&b=2')
+        .expect({ n: 3 }, done);
+    });
+
+    it('should allow arguments in the form', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number', http: {source: 'form' }  },
+            { arg: 'a', type: 'number', http: {source: 'form' } }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { path: '/' }
+        }
+      );
+
+      request(app)['post'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .send('a=1&b=2')
+        .expect('Content-Type', /json/)
         .expect({ n: 3 }, done);
     });
 
@@ -305,7 +347,26 @@ describe('strong-remoting-rest', function(){
         .expect(200, { msg: 'world:hello' }, done);
     });
 
-    it('should allow arguments in the url', function(done) {
+    it('should allow arguments in the path', function(done) {
+      var method = givenSharedPrototypeMethod(
+        function bar(a, b, cb) {
+          cb(null, this.id + ':' + (a + b));
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number' },
+            { arg: 'a', type: 'number', http: {source: 'path' } }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { path: '/:a' }
+        }
+      );
+
+      json(method.getClassUrlForId('sum') +'/1?b=2')
+        .expect({ n: 'sum:3' }, done);
+    });
+
+    it('should allow arguments in the query', function(done) {
       var method = givenSharedPrototypeMethod(
         function bar(a, b, cb) {
           cb(null, this.id + ':' + (a + b));
@@ -316,11 +377,11 @@ describe('strong-remoting-rest', function(){
             { arg: 'a', type: 'number', http: {source: 'query' } }
           ],
           returns: { arg: 'n', type: 'number' },
-          http: { path: '/:a' }
+          http: { path: '/' }
         }
       );
 
-      json(method.getClassUrlForId('sum') +'/1?b=2')
+      json(method.getClassUrlForId('sum') +'/?b=2&a=1')
         .expect({ n: 'sum:3' }, done);
     });
 
