@@ -90,6 +90,29 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 3 }, done);
     });
 
+    it('should allow arguments in the form', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number', http: {source: 'form' }  },
+            { arg: 'a', type: 'number', http: {source: 'form' } }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { path: '/' }
+        }
+      );
+
+      request(app)['post'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .send('a=1&b=2')
+        .expect('Content-Type', /json/)
+        .expect({ n: 3 }, done);
+    });
+
     it('should respond with 204 if returns is not defined', function(done) {
       var method = givenSharedStaticMethod(
         function(cb) { cb(null, 'value-to-ignore'); }
