@@ -329,6 +329,22 @@ describe('strong-remoting-rest', function(){
         .expect(500)
         .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
+
+    it('should return 400 when a required arg is missing', function (done) {
+      var method = givenSharedPrototypeMethod(
+        function(a, cb) {
+          cb();
+        },
+        {
+          accepts: [
+            { arg: 'a', type: 'number', required: true }
+          ]
+        }
+      );
+
+      json(method.url)
+        .expect(400, done);
+    });
   });
 
   describe('call of prototype method', function(){
