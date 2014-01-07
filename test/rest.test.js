@@ -90,6 +90,27 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 3 }, done);
     });
 
+    it('should pass undefined if the argument isnt supplied', function (done) {
+      var called = false;
+      var method = givenSharedStaticMethod(
+        function bar(a, cb) {
+          called = true;
+          assert(a === undefined, 'a should be undefined');
+          cb();
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number' }
+          ]
+        }
+      );
+
+      json(method.url).end(function() {
+        assert(called);
+        done();
+      });
+    });
+
     it('should allow arguments in the form', function(done) {
       var method = givenSharedStaticMethod(
         function bar(a, b, cb) {
