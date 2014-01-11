@@ -111,6 +111,57 @@ describe('strong-remoting-rest', function(){
       });
     });
 
+    it('should allow arguments in the body', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, cb) {
+          cb(null, a);
+        },
+        {
+          accepts: [
+            { arg: 'a', type: 'object', http: {source: 'body' }  }
+          ],
+          returns: { arg: 'data', type: 'object', root: true },
+          http: { path: '/' }
+        }
+      );
+
+      request(app)['post'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .send('{"x": 1, "y": "Y"}')
+        .expect('Content-Type', /json/)
+        .expect(200, function(err, res){
+          expect(res.body).to.deep.equal({"x": 1, "y": "Y"});
+          done(err, res);
+        });
+    });
+
+    it('should allow arguments in the body with date', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, cb) {
+          cb(null, a);
+        },
+        {
+          accepts: [
+            { arg: 'a', type: 'object', http: {source: 'body' }  }
+          ],
+          returns: { arg: 'data', type: 'object', root: true },
+          http: { path: '/' }
+        }
+      );
+
+      var data = {date: {$type: 'date', $data: new Date()}};
+      request(app)['post'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .send(data)
+        .expect('Content-Type', /json/)
+        .expect(200, function(err, res){
+          expect(res.body).to.deep.equal({date: data.date.$data.toISOString()});
+          done(err, res);
+      });
+    });
+
     it('should allow arguments in the form', function(done) {
       var method = givenSharedStaticMethod(
         function bar(a, b, cb) {
