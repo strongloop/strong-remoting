@@ -185,6 +185,33 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 3 }, done);
     });
 
+    it('should allow arguments from http req and res', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(req, res, cb) {
+          res.send(200, req.body);
+          // cb(null, req.body);
+        },
+        {
+          accepts: [
+            { arg: 'req', type: 'object', http: {source: 'req' }  },
+            { arg: 'res', type: 'object', http: {source: 'res' }  }
+          ],
+          // returns: { arg: 'data', type: 'object', root: true },
+          http: { path: '/' }
+        }
+      );
+
+      request(app)['post'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .send('{"x": 1, "y": "Y"}')
+        .expect('Content-Type', /json/)
+        .expect(200, function(err, res){
+          expect(res.body).to.deep.equal({"x": 1, "y": "Y"});
+          done(err, res);
+        });
+    });
+
     it('should respond with 204 if returns is not defined', function(done) {
       var method = givenSharedStaticMethod(
         function(cb) { cb(null, 'value-to-ignore'); }
