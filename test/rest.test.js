@@ -189,14 +189,12 @@ describe('strong-remoting-rest', function(){
       var method = givenSharedStaticMethod(
         function bar(req, res, cb) {
           res.send(200, req.body);
-          // cb(null, req.body);
         },
         {
           accepts: [
             { arg: 'req', type: 'object', http: {source: 'req' }  },
             { arg: 'res', type: 'object', http: {source: 'res' }  }
           ],
-          // returns: { arg: 'data', type: 'object', root: true },
           http: { path: '/' }
         }
       );
@@ -216,13 +214,11 @@ describe('strong-remoting-rest', function(){
       var method = givenSharedStaticMethod(
         function bar(ctx, cb) {
           ctx.res.send(200, ctx.req.body);
-          // cb(null, req.body);
         },
         {
           accepts: [
             { arg: 'ctx', type: 'object', http: {source: 'context' }  }
           ],
-          // returns: { arg: 'data', type: 'object', root: true },
           http: { path: '/' }
         }
       );
