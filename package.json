@@ -7,7 +7,7 @@
     "Remoting",
     "REST"
   ],
-  "version": "1.1.7",
+  "version": "1.1.8",
   "scripts": {
     "test": "mocha"
   },
@@ -17,7 +17,8 @@
     "eventemitter2": "~0.4.11",
     "cors": "~2.1.0",
     "jayson": "~1.0.11",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "traverse": "~0.6.6"
   },
   "devDependencies": {
     "mocha": "~1.14.0",
