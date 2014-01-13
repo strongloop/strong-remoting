@@ -212,6 +212,32 @@ describe('strong-remoting-rest', function(){
         });
     });
 
+    it('should allow arguments from http context', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(ctx, cb) {
+          ctx.res.send(200, ctx.req.body);
+          // cb(null, req.body);
+        },
+        {
+          accepts: [
+            { arg: 'ctx', type: 'object', http: {source: 'context' }  }
+          ],
+          // returns: { arg: 'data', type: 'object', root: true },
+          http: { path: '/' }
+        }
+      );
+
+      request(app)['post'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .send('{"x": 1, "y": "Y"}')
+        .expect('Content-Type', /json/)
+        .expect(200, function(err, res){
+          expect(res.body).to.deep.equal({"x": 1, "y": "Y"});
+          done(err, res);
+        });
+    });
+
     it('should respond with 204 if returns is not defined', function(done) {
       var method = givenSharedStaticMethod(
         function(cb) { cb(null, 'value-to-ignore'); }
