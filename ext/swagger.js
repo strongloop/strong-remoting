@@ -36,7 +36,7 @@ function Swagger(remotes, options, models) {
 
   classes.forEach(function (item) {
     resourceDoc.apis.push({
-      path: '/' + name + '/' + item.name,
+      path: '/' + name + item.http.path,
       description: item.ctor.sharedCtor && item.ctor.sharedCtor.description
     });
 
@@ -50,6 +50,7 @@ function Swagger(remotes, options, models) {
 
     helper.method(api, {
       path: item.name,
+      http: { path: item.http.path },
       returns: { type: 'object', root: true }
     });
     function api(callback) {
