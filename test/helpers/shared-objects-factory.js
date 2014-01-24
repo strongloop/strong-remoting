@@ -21,10 +21,11 @@
 
 var extend = require('util')._extend;
 
-exports.createSharedClass =  function createSharedClass() {
+exports.createSharedClass =  function createSharedClass(config) {
   var SharedClass = function(id) {
     this.id = id;
   };
+  extend(SharedClass, config);
 
   SharedClass.shared = true;
 

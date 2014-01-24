@@ -522,6 +522,16 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 'sum:3' }, done);
     });
 
+    it('should support methods on `/` path', function(done) {
+      var method = givenSharedPrototypeMethod({
+        http: { path: '/', verb: 'get'}
+      });
+
+      json('get', method.getClassUrlForId(0))
+        .expect(204) // 204 No Content
+        .end(done);
+    });
+
     it('should respond with 204 if returns is not defined', function(done) {
       var method = givenSharedPrototypeMethod(
         function(cb) { cb(null, 'value-to-ignore'); }
@@ -650,6 +660,11 @@ describe('strong-remoting-rest', function(){
   }
 
   function givenSharedPrototypeMethod(fn, config) {
+    if (typeof fn === 'object' && config === undefined) {
+      config = fn;
+      fn = undefined;
+    }
+
     fn = fn || function(cb) { cb(); };
     remotes.testClass = factory.createSharedClass();
     remotes.testClass.prototype.testMethod = fn;
