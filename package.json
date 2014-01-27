@@ -7,7 +7,7 @@
     "Remoting",
     "REST"
   ],
-  "version": "1.1.8",
+  "version": "1.2.1",
   "scripts": {
     "test": "mocha"
   },
