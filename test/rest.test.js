@@ -512,14 +512,14 @@ describe('strong-remoting-rest', function(){
           accepts: [
             { arg: 'a', type: 'number', http: {source: 'path'} }
           ],
-          returns: { arg: 'n', type: 'number' },
+          returns: { arg: 'n', type: 'number', root: true},
           http: { path: '/:a' }
         }
       );
 
       request(app)['get'](method.classUrl + '/1?callback=boo')
         .expect('Content-Type', /javascript/)
-        .expect('typeof boo === \'function\' && boo({\n  "n": 1\n});', done);
+        .expect('typeof boo === \'function\' && boo(1);', done);
     });
 
     it('should allow arguments in the query', function(done) {
