@@ -512,14 +512,35 @@ describe('strong-remoting-rest', function(){
           accepts: [
             { arg: 'a', type: 'number', http: {source: 'path'} }
           ],
-          returns: { arg: 'n', type: 'number' },
+          returns: { arg: 'n', type: 'number', root: true},
           http: { path: '/:a' }
         }
       );
 
       request(app)['get'](method.classUrl + '/1?callback=boo')
+        .set('Accept', 'application/javascript')
         .expect('Content-Type', /javascript/)
-        .expect('typeof boo === \'function\' && boo({\n  "n": 1\n});', done);
+        .expect('typeof boo === \'function\' && boo(1);', done);
+    });
+
+    it('should allow jsonp requests with null response', function (done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, cb) {
+          cb(null, null);
+        },
+        {
+          accepts: [
+            { arg: 'a', type: 'number', http: {source: 'path'} }
+          ],
+          returns: { arg: 'n', type: 'number', root: true},
+          http: { path: '/:a' }
+        }
+      );
+
+      request(app)['get'](method.classUrl + '/1?callback=boo')
+        .set('Accept', 'application/javascript')
+        .expect('Content-Type', /javascript/)
+        .expect('typeof boo === \'function\' && boo(null);', done);
     });
 
     it('should allow arguments in the query', function(done) {
