@@ -518,6 +518,7 @@ describe('strong-remoting-rest', function(){
       );
 
       request(app)['get'](method.classUrl + '/1?callback=boo')
+        .set('Accept', 'application/javascript')
         .expect('Content-Type', /javascript/)
         .expect('typeof boo === \'function\' && boo(1);', done);
     });
