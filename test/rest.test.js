@@ -503,6 +503,25 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 'sum:3' }, done);
     });
 
+    it('should allow jsonp requests', function (done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, cb) {
+          cb(null, a);
+        },
+        {
+          accepts: [
+            { arg: 'a', type: 'number', http: {source: 'path'} }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { path: '/:a' }
+        }
+      );
+
+      request(app)['get'](method.classUrl + '/1?callback=boo')
+        .expect('Content-Type', /javascript/)
+        .expect('typeof boo === \'function\' && boo({\n  "n": 1\n});', done);
+    });
+
     it('should allow arguments in the query', function(done) {
       var method = givenSharedPrototypeMethod(
         function bar(a, b, cb) {
