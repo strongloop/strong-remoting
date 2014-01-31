@@ -124,7 +124,7 @@ function addDynamicBasePathGetter(remotes, path, obj) {
       var headers = ctx.req.headers;
       var host = headers.Host || headers.host;
 
-      basePath = 'http://' + host + initialPath;
+      basePath = ctx.req.protocol + '://' + host + initialPath;
 
       next();
     });
