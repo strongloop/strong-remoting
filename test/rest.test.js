@@ -90,7 +90,7 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 3 }, done);
     });
 
-    it('should pass undefined if the argument isnt supplied', function (done) {
+    it('should pass undefined if the argument is not supplied', function (done) {
       var called = false;
       var method = givenSharedStaticMethod(
         function bar(a, cb) {
@@ -262,6 +262,16 @@ describe('strong-remoting-rest', function(){
 
       json(method.url + '?a=1&b=2')
         .expect({a: 1, b: 2}, done);
+    });
+
+    it('should set X-Powered-By header to LoopBack', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, 'value-to-ignore'); }
+      );
+
+      json(method.url)
+        .expect('X-Powered-By', 'LoopBack')
+        .expect(204, done);
     });
 
     it('should coerce boolean strings - true', function(done) {
