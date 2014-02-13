@@ -14,7 +14,6 @@ describe('RestAdapter', function() {
     remotes = RemoteObjects.create();
   });
 
-
   describe('getClasses()', function() {
     it('fills `name`', function() {
       remotes.exports.testClass = factory.createSharedClass();

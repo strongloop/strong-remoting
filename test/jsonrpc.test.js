@@ -7,6 +7,7 @@ describe('strong-remoting-jsonrpc', function () {
     var app;
     var server;
     var objects;
+    var remotes;
 
     // setup
     beforeEach(function () {
