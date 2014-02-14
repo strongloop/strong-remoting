@@ -31,5 +31,8 @@
     "type": "git",
     "url": "https://github.com/strongloop/strong-remoting"
   },
-  "license": "MIT"
+  "license": {
+    "name": "Dual MIT/StrongLoop",
+    "url": "https://github.com/strongloop/strong-remoting/blob/master/LICENSE"
+  }
 }
