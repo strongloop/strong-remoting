@@ -9,26 +9,27 @@ var SERVER_PORT = 3000;
 
 describe('strong-remoting-rest', function(){
   var app;
+  var server;
   var objects;
   var remotes;
-
-  // setup
-  beforeEach(function(done){
-    objects = RemoteObjects.create();
-    remotes = objects.exports;
+  var adapterName = 'rest';
+  
+  before(function(done) {
     app = express();
-    
-    var adapterName = 'rest';
-    
-    // connect to the app
-    objects.connect('http://localhost:' + SERVER_PORT, adapterName);
-
     app.use(function (req, res, next) {
       // create the handler for each request
       objects.handler(adapterName).apply(objects, arguments);
     });
+    server = app.listen(SERVER_PORT, done);
+  });
+
+  // setup
+  beforeEach(function(){
+    objects = RemoteObjects.create();
+    remotes = objects.exports;
     
-    app.listen(SERVER_PORT, done);
+    // connect to the app
+    objects.connect('http://localhost:' + SERVER_PORT, adapterName);
   });
 
   function json(method, url) {
