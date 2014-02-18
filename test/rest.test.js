@@ -803,7 +803,7 @@ describe('strong-remoting-rest', function(){
         };
 
         objects.invoke(method.name, [obj], function(err, data) {
-          expect(res.body).to.deep.equal(data);
+          expect(obj).to.deep.equal(data);
           done();
         });
       });
@@ -824,7 +824,7 @@ describe('strong-remoting-rest', function(){
 
         var data = {date: {$type: 'date', $data: new Date()}};
         objects.invoke(method.name, [data], function(err, resData) {
-          expect(resData).to.deep.equal(data);
+          expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
           done();
         });
       });
@@ -844,7 +844,7 @@ describe('strong-remoting-rest', function(){
           }
         );
         
-        objects.invoke(method.name, [1, 2], function(err) {
+        objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
         });
@@ -884,7 +884,7 @@ describe('strong-remoting-rest', function(){
           );
           
           objects.invoke(method.name, function(err) {
-            assert.equal(err instanceof Error);
+            assert(err instanceof Error);
             assert.equal(err.message, errMsg);
             done();
           });
