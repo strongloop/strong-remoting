@@ -14,7 +14,7 @@ describe('strong-remoting-rest', function(){
 
   // setup
   beforeEach(function(){
-    objects = RemoteObjects.create();
+    objects = RemoteObjects.create({json: {limit: '1kb'}});
     remotes = objects.exports;
     app = express();
 
@@ -35,6 +35,32 @@ describe('strong-remoting-rest', function(){
       .set('Content-Type', 'application/json')
       .expect('Content-Type', /json/);
   }
+
+  describe('remoting options', function(){
+    it('should reject json payload larger than 1kb', function(done) {
+      var method = givenSharedStaticMethod(
+        function greet(msg, cb) {
+          cb(null, msg);
+        },
+        {
+          accepts: { arg: 'person', type: 'string', http: {source: 'body'} },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+
+      // Build an object that is larger than 1kb
+      var name = "";
+      for (var i = 0; i < 2048; i++) {
+        name += "11111111111";
+      }
+
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .send(name)
+        .expect(413, done);
+    });
+  });
 
   describe('call of constructor method', function(){
     it('should work', function(done) {
