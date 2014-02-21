@@ -37,6 +37,7 @@ describe('strong-remoting-rest', function(){
   }
 
   describe('remoting options', function(){
+    // The 1kb limit is set by RemoteObjects.create({json: {limit: '1kb'}});
     it('should reject json payload larger than 1kb', function(done) {
       var method = givenSharedStaticMethod(
         function greet(msg, cb) {
