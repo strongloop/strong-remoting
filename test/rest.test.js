@@ -5,7 +5,6 @@ var express = require('express');
 var request = require('supertest');
 var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
-var SERVER_PORT = 3000;
 
 describe('strong-remoting-rest', function(){
   var app;
@@ -20,7 +19,7 @@ describe('strong-remoting-rest', function(){
       // create the handler for each request
       objects.handler(adapterName).apply(objects, arguments);
     });
-    server = app.listen(SERVER_PORT, done);
+    server = app.listen(done);
   });
 
   // setup
@@ -29,7 +28,7 @@ describe('strong-remoting-rest', function(){
     remotes = objects.exports;
     
     // connect to the app
-    objects.connect('http://localhost:' + SERVER_PORT, adapterName);
+    objects.connect('http://localhost:' + server.address().port, adapterName);
   });
 
   function json(method, url) {
