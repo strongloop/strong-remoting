@@ -113,6 +113,7 @@ describe('strong-remoting-rest', function(){
       );
 
       json(method.url).end(function() {
+        console.log(assert) ;
         assert(called);
         done();
       });
