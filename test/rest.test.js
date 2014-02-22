@@ -301,6 +301,25 @@ describe('strong-remoting-rest', function(){
         .expect(204, done);
     });
 
+    it('should report error for mismatched arg type', function(done) {
+      remotes.foo = {
+        bar: function (a, fn) {
+          fn(null, a);
+        }
+      };
+
+      var fn = remotes.foo.bar;
+
+      fn.shared = true;
+      fn.accepts = [
+        {arg: 'a', type: 'object'}
+      ];
+      fn.returns = {root: true};
+
+      json('get', '/foo/bar?a=foo')
+        .expect(500, done);
+    });
+
     it('should coerce boolean strings - true', function(done) {
       remotes.foo = {
         bar: function (a, fn) {
@@ -312,7 +331,7 @@ describe('strong-remoting-rest', function(){
 
       fn.shared = true;
       fn.accepts = [
-        {arg: 'a', type: 'object'},
+        {arg: 'a', type: 'object'}
       ];
       fn.returns = {root: true};
 
