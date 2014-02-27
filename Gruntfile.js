@@ -64,8 +64,8 @@ module.exports = function(grunt) {
 
           // list of files / patterns to load in the browser
           files: [
-            'test/support.js',
-            'test/rest.test.js'
+            'test/e2e/fixtures/*.js',
+            'test/e2e/smoke.test.js'
           ],
 
           // list of files to exclude
@@ -126,12 +126,20 @@ module.exports = function(grunt) {
           },
 
           // Add browserify to preprocessors
-          preprocessors: {'test/*': ['browserify']}
+          preprocessors: {
+            'test/e2e/**': ['browserify'],
+            'lib/*.js': ['browserify']
+          }
         }
       }
     }
 
   });
+  
+  grunt.registerTask('e2e-server', 'Run the e2e server', function() {
+    require('test/e2e/e2e-server.js');
+  });
+
 
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-browserify');
@@ -142,5 +150,8 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('default', ['browserify']);
+
+  // browser / e2e testing...
+  grunt.registerTask('e2e', ['e2e-server', 'karma']);
 
 };

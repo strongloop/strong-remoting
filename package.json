@@ -53,7 +53,8 @@
     "url": "https://github.com/strongloop/strong-remoting"
   },
   "browser": {
-    "express": false
+    "express": false,
+    "request": "browser-request"
   },
   "license": "MIT"
 }
