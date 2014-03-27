@@ -117,6 +117,27 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 3 }, done);
     });
 
+    it('should allow custom argument functions', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number' },
+            { arg: 'a', type: 'number', http: function(ctx) {
+              return ctx.req.query.a;
+            } }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { path: '/' }
+        }
+      );
+
+      json(method.classUrl +'/?a=1&b=2')
+        .expect({ n: 3 }, done);
+    });
+
     it('should pass undefined if the argument is not supplied', function (done) {
       var called = false;
       var method = givenSharedStaticMethod(
