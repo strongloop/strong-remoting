@@ -131,6 +131,13 @@ describe('RestAdapter', function() {
         });
         expect(method.isReturningArray()).to.equal(false);
       });
+
+      it('handles invalid type', function() {
+        var method = givenRestStaticMethod({
+          returns: { root: true }
+        });
+        expect(method.isReturningArray()).to.equal(false);
+      });
     });
 
     describe('acceptsSingleBodyArgument()', function() {

@@ -24,7 +24,7 @@ describe('strong-remoting-rest', function(){
 
   // setup
   beforeEach(function(){
-    objects = RemoteObjects.create();
+    objects = RemoteObjects.create({json: {limit: '1kb'}});
     remotes = objects.exports;
     
     // connect to the app
@@ -42,6 +42,33 @@ describe('strong-remoting-rest', function(){
       .set('Content-Type', 'application/json')
       .expect('Content-Type', /json/);
   }
+
+  describe('remoting options', function(){
+    // The 1kb limit is set by RemoteObjects.create({json: {limit: '1kb'}});
+    it('should reject json payload larger than 1kb', function(done) {
+      var method = givenSharedStaticMethod(
+        function greet(msg, cb) {
+          cb(null, msg);
+        },
+        {
+          accepts: { arg: 'person', type: 'string', http: {source: 'body'} },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+
+      // Build an object that is larger than 1kb
+      var name = "";
+      for (var i = 0; i < 2048; i++) {
+        name += "11111111111";
+      }
+
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .send(name)
+        .expect(413, done);
+    });
+  });
 
   describe('call of constructor method', function(){
     it('should work', function(done) {
@@ -87,6 +114,27 @@ describe('strong-remoting-rest', function(){
           accepts: [
             { arg: 'b', type: 'number' },
             { arg: 'a', type: 'number', http: {source: 'query' } }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { path: '/' }
+        }
+      );
+
+      json(method.classUrl +'/?a=1&b=2')
+        .expect({ n: 3 }, done);
+    });
+
+    it('should allow custom argument functions', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number' },
+            { arg: 'a', type: 'number', http: function(ctx) {
+              return ctx.req.query.a;
+            } }
           ],
           returns: { arg: 'n', type: 'number' },
           http: { path: '/' }
@@ -281,6 +329,25 @@ describe('strong-remoting-rest', function(){
         .expect(204, done);
     });
 
+    it('should report error for mismatched arg type', function(done) {
+      remotes.foo = {
+        bar: function (a, fn) {
+          fn(null, a);
+        }
+      };
+
+      var fn = remotes.foo.bar;
+
+      fn.shared = true;
+      fn.accepts = [
+        {arg: 'a', type: 'object'}
+      ];
+      fn.returns = {root: true};
+
+      json('get', '/foo/bar?a=foo')
+        .expect(500, done);
+    });
+
     it('should coerce boolean strings - true', function(done) {
       remotes.foo = {
         bar: function (a, fn) {
@@ -292,7 +359,7 @@ describe('strong-remoting-rest', function(){
 
       fn.shared = true;
       fn.accepts = [
-        {arg: 'a', type: 'object'},
+        {arg: 'a', type: 'object'}
       ];
       fn.returns = {root: true};
 
