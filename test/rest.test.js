@@ -319,16 +319,6 @@ describe('strong-remoting-rest', function(){
         .expect({a: 1, b: 2}, done);
     });
 
-    it('should set X-Powered-By header to LoopBack', function(done) {
-      var method = givenSharedStaticMethod(
-        function(cb) { cb(null, 'value-to-ignore'); }
-      );
-
-      json(method.url)
-        .expect('X-Powered-By', 'LoopBack')
-        .expect(204, done);
-    });
-
     it('should report error for mismatched arg type', function(done) {
       remotes.foo = {
         bar: function (a, fn) {
