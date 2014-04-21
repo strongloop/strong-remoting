@@ -14,6 +14,9 @@ describe('strong-remoting-jsonrpc', function () {
     objects = RemoteObjects.create({json: {limit: '1kb'}});
     remotes = objects.exports;
     app = express();
+
+    // Disable X-Powered-By header
+    app.disable('x-powered-by');
   });
 
   function jsonrpc(url, method, parameters) {

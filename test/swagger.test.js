@@ -30,33 +30,33 @@ var swagger = require('../ext/swagger.js');
 var request = require('supertest');
 var expect = require('chai').expect;
 
-describe('swagger definition', function() {
+describe('swagger definition', function () {
   var objects;
   var remotes;
 
   // setup
-  beforeEach(function(){
+  beforeEach(function () {
     objects = RemoteObjects.create();
     remotes = objects.exports;
   });
 
-  describe('basePath', function() {
-    it('is "http://{host}/" by default', function(done) {
+  describe('basePath', function () {
+    it('is "http://{host}/" by default', function (done) {
       swagger(objects);
 
       var getReq = getSwaggerResources();
-      getReq.end(function(err, res) {
-          if (err) return done(err);
-          expect(res.body.basePath).to.equal(url.resolve(getReq.url, '/'));
-          done();
-        });
+      getReq.end(function (err, res) {
+        if (err) return done(err);
+        expect(res.body.basePath).to.equal(url.resolve(getReq.url, '/'));
+        done();
+      });
     });
 
-    it('is "http://{host}/{basePath}" when basePath is a path', function(done){
+    it('is "http://{host}/{basePath}" when basePath is a path', function (done) {
       swagger(objects, { basePath: '/api-root'});
 
       var getReq = getSwaggerResources();
-      getReq.end(function(err, res) {
+      getReq.end(function (err, res) {
         if (err) return done(err);
         var apiRoot = url.resolve(getReq.url, '/api-root');
         expect(res.body.basePath).to.equal(apiRoot);
@@ -64,13 +64,13 @@ describe('swagger definition', function() {
       });
     });
 
-    it('is custom URL when basePath is a http(s) URL', function(done) {
+    it('is custom URL when basePath is a http(s) URL', function (done) {
       var apiUrl = 'http://custom-api-url/';
 
       swagger(objects, { basePath: apiUrl });
 
       var getReq = getSwaggerResources();
-      getReq.end(function(err, res) {
+      getReq.end(function (err, res) {
         if (err) return done(err);
         expect(res.body.basePath).to.equal(apiUrl);
         done();
@@ -92,6 +92,10 @@ describe('swagger definition', function() {
     restPath = restPath || '/';
 
     var app = express();
+
+    // Disable X-Powered-By header
+    app.disable('x-powered-by');
+
     app.use(restPath, function (req, res, next) {
       // create the handler for each request
       objects.handler('rest').apply(objects, arguments);
