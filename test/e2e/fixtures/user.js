@@ -1,4 +1,4 @@
-var debug = require('debug')('test user')
+var debug = require('debug')('test:user')
 
 module.exports = User;
 
@@ -30,6 +30,18 @@ var login = User.login = function(credentials, callback) {
 login.shared = true;
 login.accepts = {arg: 'credentials', type: 'object'};
 login.returns = {arg: 'session', type: 'object'};
+
+var logout = User.__logout = function(session, callback) {
+  debug('logout with session: %j', session);
+  setTimeout(function() {
+    callback(null, true);
+  }, 0);
+}
+logout.shared = true;
+logout.accepts = {arg: 'session', type: 'object'};
+logout.returns = {arg: 'status', type: 'boolean'};
+logout.alias = 'logout'; // Set the alias
+
 
 var hasUsername = User.prototype.hasUsername = function(username, callback) {
   callback(null, username === this.username);

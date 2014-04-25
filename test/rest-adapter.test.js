@@ -110,6 +110,36 @@ describe('RestAdapter', function() {
       expect(method.description).to.equal('a-desc');
     });
 
+    it('has `fullName`', function() {
+      var method = givenRestStaticMethod({});
+      expect(method.fullName).to.equal('testClass.testMethod');
+    });
+
+    it('has `fullName` from alias', function() {
+      var method = givenRestStaticMethod({ alias: 'aliasToTestMethod' });
+      expect(method.fullName).to.equal('testClass.aliasToTestMethod');
+    });
+
+    it('has `fullName` from operationName', function() {
+      var method = givenRestStaticMethod({ operationName: 'aliasToTestMethod' });
+      expect(method.fullName).to.equal('testClass.aliasToTestMethod');
+    });
+
+    it('has `name`', function() {
+      var method = givenRestStaticMethod({});
+      expect(method.name).to.equal('testMethod');
+    });
+
+    it('has `name` from alias', function() {
+      var method = givenRestStaticMethod({ alias: 'aliasToTestMethod' });
+      expect(method.name).to.equal('aliasToTestMethod');
+    });
+
+    it('has `name` from operationName', function() {
+      var method = givenRestStaticMethod({ operationName: 'aliasToTestMethod' });
+      expect(method.name).to.equal('aliasToTestMethod');
+    });
+
     describe('isReturningArray()', function() {
       it('returns true when there is single root Array arg', function() {
         var method = givenRestStaticMethod({

@@ -290,6 +290,26 @@ describe('strong-remoting-rest', function(){
         });
     });
 
+    it('should allow method alias', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          alias: 'aliasToTestMethod',
+          accepts: [
+            { arg: 'b', type: 'number' },
+            { arg: 'a', type: 'number', http: {source: 'query' } }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { path: '/' }
+        }
+      );
+
+      json(method.classUrl +'/?a=1&b=2')
+        .expect({ n: 3 }, done);
+    });
+
     it('should respond with 204 if returns is not defined', function(done) {
       var method = givenSharedStaticMethod(
         function(cb) { cb(null, 'value-to-ignore'); }
@@ -975,8 +995,8 @@ describe('strong-remoting-rest', function(){
     config = extend({ shared: true }, config);
     extend(remotes.testClass.testMethod, config);
     return {
-      name: 'testClass.testMethod',
-      url: '/testClass/testMethod',
+      name: 'testClass.' + (config.alias || 'testMethod'),
+      url: '/testClass/' + (config.alias || 'testMethod'),
       classUrl: '/testClass'
     };
   }
