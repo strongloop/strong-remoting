@@ -290,23 +290,22 @@ describe('strong-remoting-rest', function(){
         });
     });
 
-    it('should allow method alias', function(done) {
+    it('should allow operation name', function(done) {
       var method = givenSharedStaticMethod(
         function bar(a, b, cb) {
           cb(null, a + b);
         },
         {
-          alias: 'aliasToTestMethod',
+          operationName: 'aliasToTestMethod',
           accepts: [
             { arg: 'b', type: 'number' },
             { arg: 'a', type: 'number', http: {source: 'query' } }
           ],
-          returns: { arg: 'n', type: 'number' },
-          http: { path: '/' }
+          returns: { arg: 'n', type: 'number' }
         }
       );
 
-      json(method.classUrl +'/?a=1&b=2')
+      json(method.classUrl +'/aliasToTestMethod?a=1&b=2')
         .expect({ n: 3 }, done);
     });
 
@@ -1060,7 +1059,7 @@ describe('strong-remoting-rest', function(){
       var methods = objects.methods();
 
       for (var i = 0; i < methods.length; i++) {
-        methodNames.push(methods[i].stringName);
+        methodNames.push(methods[i].methodName);
       }
 
       expect(methodNames).not.to.contain('super_');

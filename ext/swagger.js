@@ -157,7 +157,7 @@ function routeToAPI(route) {
     path: convertPathFragments(route.path),
     operations: [{
       httpMethod: convertVerb(route.verb),
-      nickname: route.method.replace(/\./g, '_'), // [rfeng] Swagger UI doesn't escape '.' for jQuery selector
+      nickname: route.operation.replace(/\./g, '_'), // [rfeng] Swagger UI doesn't escape '.' for jQuery selector
       responseClass: returnDesc ? returnDesc.model || prepareDataType(returnDesc.type) : 'void',
       parameters: route.accepts ? route.accepts.map(acceptToParameter(route)) : [],
       errorResponses: [], // TODO(schoon) - We don't have descriptions for this yet.
