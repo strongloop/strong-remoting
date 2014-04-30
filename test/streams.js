@@ -10,6 +10,7 @@ describe('strong-remoting', function () {
     objects = RemoteObjects.create();
     remotes = objects.exports;
     app = express();
+    app.disable('x-powered-by');
 
     app.use(function (req, res, next) {
       objects.handler('rest').apply(objects, arguments);

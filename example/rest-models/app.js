@@ -7,6 +7,7 @@
 
 var express = require('express');
 var app = express();
+app.disable('x-powered-by');
 var remotes = require('./remotes');
 
 app.use(remotes.handler('rest'));
