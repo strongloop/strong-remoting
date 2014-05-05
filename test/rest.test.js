@@ -15,6 +15,7 @@ describe('strong-remoting-rest', function(){
   
   before(function(done) {
     app = express();
+    app.disable('x-powered-by');
     app.use(function (req, res, next) {
       // create the handler for each request
       objects.handler(adapterName).apply(objects, arguments);
