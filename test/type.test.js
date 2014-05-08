@@ -60,9 +60,19 @@ describe('types', function () {
         shouldConvert('0', 0);
         shouldConvert('1', 1);
         shouldConvert('0.1', 0.1);
+        shouldConvert(1, 1);
+        shouldConvert(true, 1);
+        shouldConvert(false, 0);
+        shouldConvert({}, 'NaN');
+        shouldConvert([], 0);
         
         function shouldConvert(val, expected) {
           var dyn = new Dynamic(val);
+          
+          if(expected === 'NaN') {
+            return assert(Number.isNaN(dyn.to('number')));
+          }
+          
           assert.equal(dyn.to('number'), expected);
         }
       });
