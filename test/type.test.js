@@ -49,6 +49,7 @@ describe('types', function () {
         shouldConvert('256', true);
         shouldConvert('null', false);
         shouldConvert('undefined', false);
+        shouldConvert('', false);
         
         function shouldConvert(val, expected) {
           var dyn = new Dynamic(val);
