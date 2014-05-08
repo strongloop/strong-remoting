@@ -33,5 +33,39 @@ describe('types', function () {
         assert(!Dynamic.canConvert('FauxType'));
       });
     });
+    describe('Build in converters', function(){
+      it('should convert Boolean values', function() {
+        shouldConvert(true, true);
+        shouldConvert(false, false);
+        shouldConvert(256, true);
+        shouldConvert(-1, true);
+        shouldConvert(1, true);
+        shouldConvert(0, false);
+        shouldConvert('true', true);
+        shouldConvert('false', false);
+        shouldConvert('0', false);
+        shouldConvert('1', true);
+        shouldConvert('-1', true);
+        shouldConvert('256', true);
+        shouldConvert('null', false);
+        shouldConvert('undefined', false);
+        
+        function shouldConvert(val, expected) {
+          var dyn = new Dynamic(val);
+          assert.equal(dyn.to('boolean'), expected);
+        }
+      });
+      it('should convert Number values', function() {
+        shouldConvert('-1', -1);
+        shouldConvert('0', 0);
+        shouldConvert('1', 1);
+        shouldConvert('0.1', 0.1);
+        
+        function shouldConvert(val, expected) {
+          var dyn = new Dynamic(val);
+          assert.equal(dyn.to('number'), expected);
+        }
+      });
+    });
   });
 });
