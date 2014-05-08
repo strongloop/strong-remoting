@@ -33,7 +33,7 @@ describe('types', function () {
         assert(!Dynamic.canConvert('FauxType'));
       });
     });
-    describe('Build in converters', function(){
+    describe('Built in converters', function(){
       it('should convert Boolean values', function() {
         shouldConvert(true, true);
         shouldConvert(false, false);
