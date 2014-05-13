@@ -15,7 +15,7 @@
     "debug": "~0.7.2",
     "express": "~3.4.7",
     "eventemitter2": "~0.4.11",
-    "cors": "~2.1.0",
+    "cors": "~2.3.0",
     "jayson": "~1.0.11",
     "async": "~0.2.9",
     "traverse": "~0.6.6",
