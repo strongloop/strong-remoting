@@ -1,16 +1,16 @@
-var HttpInvokation = require('../lib/http-invokation');
+var HttpInvocation = require('../lib/http-invocation');
 var SharedMethod = require('../lib/shared-method');
 var extend = require('util')._extend;
 var expect = require('chai').expect;
 
-describe('HttpInvokation', function() {
+describe('HttpInvocation', function() {
   describe('namedArgs', function() {
     
     function expectNamedArgs(accepts, inputArgs, expectedNamedArgs) {
       var method = givenSharedStaticMethod({
         accepts: accepts
       });
-      var inv = new HttpInvokation(method, inputArgs);
+      var inv = new HttpInvocation(method, inputArgs);
       expect(inv.namedArgs).to.deep.equal(expectedNamedArgs);
     }
     
