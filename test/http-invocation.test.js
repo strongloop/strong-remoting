@@ -50,5 +50,5 @@ function givenSharedStaticMethod(fn, config) {
   var testClass = { testMethod: fn };
   config = extend({ shared: true }, config);
   extend(testClass.testMethod, config);
-  return new SharedMethod(fn, 'testStaticMethodName');
+  return SharedMethod.fromFunction(fn, 'testStaticMethodName');
 }
