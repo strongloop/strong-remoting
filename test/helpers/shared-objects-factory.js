@@ -22,6 +22,7 @@
 var extend = require('util')._extend;
 
 exports.createSharedClass =  function createSharedClass(config) {
+  // create a class that can be remoted
   var SharedClass = function(id) {
     this.id = id;
   };
