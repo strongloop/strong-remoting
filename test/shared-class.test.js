@@ -21,6 +21,50 @@ describe('SharedClass', function() {
     });
   });
 
+  describe('sharedClass.methods()', function() {
+    it('discovers remote methods', function() {
+      var sc = new SharedClass('some', SomeClass);
+      SomeClass.staticMethod = function() {};
+      SomeClass.staticMethod.shared = true;
+      SomeClass.prototype.instanceMethod = function() {};
+      SomeClass.prototype.instanceMethod.shared = true;
+      var fns = sc.methods().map(function(m) {return m.fn});
+      expect(fns).to.contain(SomeClass.staticMethod);
+      expect(fns).to.contain(SomeClass.prototype.instanceMethod);
+    });
+    it('only discovers a function once', function() {
+      function MyClass() {};
+      var sc = new SharedClass('some', MyClass);
+      var fn = function() {};
+      fn.shared = true;
+      MyClass.a = fn;
+      MyClass.b = fn;
+      MyClass.prototype.a = fn;
+      MyClass.prototype.b = fn;
+      var fns = sc.methods().map(function(m) {return m.fn});
+      expect(fns.length).to.equal(1);
+    });
+    it('discovers multiple functions correctly', function() {
+      function MyClass() {};
+      var sc = new SharedClass('some', MyClass);
+      MyClass.a = createSharedFn();
+      MyClass.b = createSharedFn();
+      MyClass.prototype.a = createSharedFn();
+      MyClass.prototype.b = createSharedFn();
+      var fns = sc.methods().map(function(m) {return m.fn});
+      expect(fns.length).to.equal(4);
+      expect(fns).to.contain(MyClass.a);
+      expect(fns).to.contain(MyClass.b);
+      expect(fns).to.contain(MyClass.prototype.a);
+      expect(fns).to.contain(MyClass.prototype.b);
+      function createSharedFn() {
+        var fn = function() {};
+        fn.shared = true;
+        return fn;
+      }
+    });
+  });
+
   describe('sharedClass.defineMethod(name, options)', function() {
     it('defines a remote method', function () {
       var sc = new SharedClass('SomeClass', SomeClass);
