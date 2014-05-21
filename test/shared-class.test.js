@@ -80,12 +80,12 @@ describe('SharedClass', function() {
       function (done) {
         var MyClass = function() {};
         var METHOD_NAME = 'dynFn';
-        setTimeout(function() {
+        process.nextTick(function() {
           MyClass[METHOD_NAME] = function(str, cb) {
             cb(null,  str);
           }
           done();
-        }, 1);
+        });
 
         var sharedClass = new SharedClass('MyClass', MyClass);
 
@@ -109,9 +109,7 @@ describe('SharedClass', function() {
       };
       var sharedClass = new SharedClass('MyClass', MyClass);
       sharedClass.resolve(function(define) {
-        define('dyn', {
-          http: {path: '/dyn'}
-        }, MyClass.obj.dyn);
+        define('dyn', {}, MyClass.obj.dyn);
       });
       var methods = sharedClass.methods().map(function(m) {return m.name});
       expect(methods).to.contain('dyn');
@@ -129,3 +127,4 @@ describe('SharedClass', function() {
     });
   });
 });
+6
