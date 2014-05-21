@@ -89,10 +89,7 @@ describe('SharedClass', function() {
 
         var sharedClass = new SharedClass('MyClass', MyClass);
 
-        sharedClass.defineMethod(METHOD_NAME, {
-          accepts: {arg: 'str', type: 'string'},
-          returns: {arg: 'str', type: 'string'}
-        });
+        sharedClass.defineMethod(METHOD_NAME, {});
         var methods = sharedClass.methods().map(function(m) {return m.name});
         expect(methods).to.contain(METHOD_NAME);
       }
@@ -127,4 +124,3 @@ describe('SharedClass', function() {
     });
   });
 });
-6
