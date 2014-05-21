@@ -7,6 +7,7 @@ module.exports = Swagger;
  * Module dependencies.
  */
 var Remoting = require('../');
+var debug = require('debug')('strong-remoting:swagger');
 
 /**
  * Create a remotable Swagger module for plugging into `RemoteObjects`.
@@ -77,6 +78,7 @@ function Swagger(remotes, options, models) {
       route.accepts = (route.accepts || []).concat(classDef.sharedCtor.accepts);
     }
 
+    debug('route %j', route);
     doc.apis.push(routeToAPI(route));
   });
 
@@ -232,6 +234,10 @@ function acceptToParameter(route) {
 function prepareDataType(type) {
   if (!type) {
     return 'void';
+  }
+
+  if(Array.isArray(type)) {
+    return 'array'; // todo items support
   }
 
   // TODO(schoon) - Add support for complex dataTypes, "models", etc.
