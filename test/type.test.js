@@ -6,10 +6,10 @@ describe('types', function () {
   beforeEach(function() {
     remotes = RemoteObjects.create();
   });
-  describe('remotes.convert(name, fn)', function () {
+  describe('remotes.defineType(name, fn)', function () {
     it('should define a new type converter', function () {
       var name = 'MyType';
-      remotes.convert(name, function(val, ctx) {
+      remotes.defineType(name, function(val, ctx) {
         return val;
       });
       assert(Dynamic.getConverter(name));
