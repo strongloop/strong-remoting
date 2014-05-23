@@ -19,6 +19,18 @@ describe('SharedClass', function() {
       var sc = new SharedClass('some', SomeClass);
       expect(sc.http.path).to.equal('/some');
     });
+
+    it('does not require a sharedConstructor', function() {
+      var myClass = {};
+      myClass.remoteNamespace = 'bar';
+      myClass.foo = function() {};
+      myClass.foo.shared = true;
+
+      var sc = new SharedClass(undefined, myClass);
+      var fns = sc.methods().map(function(m) {return m.name});
+      expect(fns).to.contain('foo');
+      expect(sc.http).to.eql({ path: '/bar' });
+    });
   });
 
   describe('sharedClass.methods()', function() {
@@ -112,6 +124,7 @@ describe('SharedClass', function() {
       expect(methods).to.contain('dyn');
     });
   });
+
 
   describe('remotes.addClass(sharedClass)', function() {
     it('should make the class available', function () {
