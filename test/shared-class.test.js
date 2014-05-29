@@ -19,6 +19,18 @@ describe('SharedClass', function() {
       var sc = new SharedClass('some', SomeClass);
       expect(sc.http.path).to.equal('/some');
     });
+
+    it('does not require a sharedConstructor', function() {
+      var myClass = {};
+      myClass.remoteNamespace = 'bar';
+      myClass.foo = function() {};
+      myClass.foo.shared = true;
+
+      var sc = new SharedClass(undefined, myClass);
+      var fns = sc.methods().map(function(m) {return m.name});
+      expect(fns).to.contain('foo');
+      expect(sc.http).to.eql({ path: '/bar' });
+    });
   });
 
   describe('sharedClass.methods()', function() {
@@ -80,19 +92,16 @@ describe('SharedClass', function() {
       function (done) {
         var MyClass = function() {};
         var METHOD_NAME = 'dynFn';
-        setTimeout(function() {
+        process.nextTick(function() {
           MyClass[METHOD_NAME] = function(str, cb) {
             cb(null,  str);
           }
           done();
-        }, 1);
+        });
 
         var sharedClass = new SharedClass('MyClass', MyClass);
 
-        sharedClass.defineMethod(METHOD_NAME, {
-          accepts: {arg: 'str', type: 'string'},
-          returns: {arg: 'str', type: 'string'}
-        });
+        sharedClass.defineMethod(METHOD_NAME, {});
         var methods = sharedClass.methods().map(function(m) {return m.name});
         expect(methods).to.contain(METHOD_NAME);
       }
@@ -109,14 +118,13 @@ describe('SharedClass', function() {
       };
       var sharedClass = new SharedClass('MyClass', MyClass);
       sharedClass.resolve(function(define) {
-        define('dyn', {
-          http: {path: '/dyn'}
-        }, MyClass.obj.dyn);
+        define('dyn', {}, MyClass.obj.dyn);
       });
       var methods = sharedClass.methods().map(function(m) {return m.name});
       expect(methods).to.contain('dyn');
     });
   });
+
 
   describe('remotes.addClass(sharedClass)', function() {
     it('should make the class available', function () {
