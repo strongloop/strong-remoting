@@ -212,6 +212,35 @@ describe('RestAdapter', function() {
       return new RestAdapter.RestMethod(restClass, sharedMethod);
     }
   });
+
+  describe('sortRoutes', function() {
+    it('should sort routes based on verb & path', function() {
+      var routes = [
+        {route: {verb: 'get', path: '/'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/findOne'}},
+        {route: {verb: 'delete', path: '/'}},
+        {route: {verb: 'del', path: '/:id'}},
+      ];
+
+      routes.sort(RestAdapter.sortRoutes);
+
+      expect(routes[0].route.verb).to.be.equal('get');
+      expect(routes[0].route.path).to.be.equal('/findOne');
+
+      expect(routes[1].route.verb).to.be.equal('get');
+      expect(routes[1].route.path).to.be.equal('/:id');
+
+      expect(routes[2].route.verb).to.be.equal('get');
+      expect(routes[2].route.path).to.be.equal('/');
+
+      expect(routes[3].route.verb).to.be.equal('del');
+      expect(routes[3].route.path).to.be.equal('/:id');
+
+      expect(routes[4].route.verb).to.be.equal('delete');
+      expect(routes[4].route.path).to.be.equal('/');
+    });
+  });
 });
 
 function someFunc() {
