@@ -573,6 +573,22 @@ describe('strong-remoting-rest', function(){
         .expect(200, { msg: 'world:hello' }, done);
     });
 
+    it('should have the correct scope', function(done) {
+      var method = givenSharedPrototypeMethod(
+        function greet(msg, cb) {
+          assert.equal(this.constructor, method.ctor);
+          cb(null, this.id + ':' + msg);
+        },
+        {
+          accepts: { arg: 'person', type: 'string' },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+
+      json(method.getUrlForId('world') + '?person=hello')
+        .expect(200, { msg: 'world:hello' }, done);
+    });
+
     it('should allow arguments in the path', function(done) {
       var method = givenSharedPrototypeMethod(
         function bar(a, b, cb) {
@@ -1000,7 +1016,8 @@ describe('strong-remoting-rest', function(){
       getUrlForId: function(id) {
         return this.getClassUrlForId(id) + '/testMethod';
       },
-      url: '/testClass/an-id/testMethod'
+      url: '/testClass/an-id/testMethod',
+      ctor: remotes.testClass
     };
   }
 
