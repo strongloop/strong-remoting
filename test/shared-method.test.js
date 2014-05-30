@@ -28,6 +28,13 @@ describe('SharedMethod', function() {
 
       function myFunction() {}
     });
+    it('check by alias if static function is going to be invoked', function () {
+      var mockSharedClass = {myName: myFunction};
+      var options = {isStatic: true, aliases: ['myAlias']};
+      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      assert.equal(sharedMethod.willInvoke('myAlias', true), true);
+
+      function myFunction() {}
+    });
   });
 });
-
