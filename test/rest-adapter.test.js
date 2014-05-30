@@ -220,26 +220,71 @@ describe('RestAdapter', function() {
         {route: {verb: 'get', path: '/:id'}},
         {route: {verb: 'get', path: '/findOne'}},
         {route: {verb: 'delete', path: '/'}},
-        {route: {verb: 'del', path: '/:id'}},
+        {route: {verb: 'del', path: '/:id'}}
       ];
 
       routes.sort(RestAdapter.sortRoutes);
 
-      expect(routes[0].route.verb).to.be.equal('get');
-      expect(routes[0].route.path).to.be.equal('/findOne');
+      expect(routes).to.eql([
+        {route: {verb: 'get', path: '/findOne'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/'}},
+        {route: {verb: 'del', path: '/:id'}},
+        {route: {verb: 'delete', path: '/'}}
+      ]);
 
-      expect(routes[1].route.verb).to.be.equal('get');
-      expect(routes[1].route.path).to.be.equal('/:id');
-
-      expect(routes[2].route.verb).to.be.equal('get');
-      expect(routes[2].route.path).to.be.equal('/');
-
-      expect(routes[3].route.verb).to.be.equal('del');
-      expect(routes[3].route.path).to.be.equal('/:id');
-
-      expect(routes[4].route.verb).to.be.equal('delete');
-      expect(routes[4].route.path).to.be.equal('/');
     });
+
+    it('should sort routes based on path accuracy', function() {
+      var routes = [
+        {route: {verb: 'get', path: '/'}},
+        {route: {verb: 'get', path: '/:id/docs'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/findOne'}}
+      ];
+
+      routes.sort(RestAdapter.sortRoutes);
+
+      expect(routes).to.eql([
+        {route: {verb: 'get', path: '/findOne'}},
+        {route: {verb: 'get', path: '/:id/docs'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/'}}
+      ]);
+
+    });
+
+    it('should sort routes with common parts', function() {
+      var routes = [
+        {route: {verb: 'get', path: '/sum'}},
+        {route: {verb: 'get', path: '/sum/1'}}
+      ];
+
+      routes.sort(RestAdapter.sortRoutes);
+
+      expect(routes).to.eql([
+        {route: {verb: 'get', path: '/sum/1'}},
+        {route: {verb: 'get', path: '/sum'}}
+      ]);
+
+    });
+
+    it('should sort routes with trailing /', function() {
+      var routes = [
+        {route: {verb: 'get', path: '/sum/'}},
+        {route: {verb: 'get', path: '/sum/1'}}
+      ];
+
+      routes.sort(RestAdapter.sortRoutes);
+
+      expect(routes).to.eql([
+        {route: {verb: 'get', path: '/sum/1'}},
+        {route: {verb: 'get', path: '/sum/'}}
+      ]);
+
+    });
+
+
   });
 });
 
