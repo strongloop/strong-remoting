@@ -49,7 +49,7 @@ describe('RestAdapter', function() {
 
       expect(methods).to.have.length(1);
       expect(methods[0]).to.have.property('name', 'staticMethod');
-      expect(methods[0]).to.have.property('fullName', 'testClass.staticMethod');
+      expect(methods[0]).to.have.property('methodName', 'testClass.staticMethod');
       expect(methods[0])
         .to.have.deep.property('routes[0].path', '/staticMethod');
     });
@@ -62,7 +62,7 @@ describe('RestAdapter', function() {
 
       expect(methods).to.have.length(1);
       expect(methods[0])
-        .to.have.property('fullName', 'testClass.prototype.instanceMethod');
+        .to.have.property('methodName', 'testClass.prototype.instanceMethod');
       expect(methods[0])
         // Note: the `/id:` part is coming from testClass.sharedCtor
         .to.have.deep.property('routes[0].path', '/:id/instanceMethod');
@@ -108,6 +108,39 @@ describe('RestAdapter', function() {
     it('has `description`', function() {
       var method = givenRestStaticMethod({ description: 'a-desc' });
       expect(method.description).to.equal('a-desc');
+    });
+
+    it('has `methodName` or `operationName', function() {
+      var method = givenRestStaticMethod({});
+      expect(method.methodName).to.equal('testClass.testMethod');
+      expect(method.operationName).to.equal('testClass.testMethod');
+    });
+
+    it('has `methodName` from alias', function() {
+      var method = givenRestStaticMethod({ alias: 'aliasToTestMethod' });
+      expect(method.methodName).to.equal('testClass.testMethod');
+      expect(method.operationName).to.equal('testClass.aliasToTestMethod');
+    });
+
+    it('has `methodName` from operationName', function() {
+      var method = givenRestStaticMethod({ operationName: 'aliasToTestMethod' });
+      expect(method.methodName).to.equal('testClass.testMethod');
+      expect(method.operationName).to.equal('testClass.aliasToTestMethod');
+    });
+
+    it('has `name`', function() {
+      var method = givenRestStaticMethod({});
+      expect(method.name).to.equal('testMethod');
+    });
+
+    it('has `name` from alias', function() {
+      var method = givenRestStaticMethod({ alias: 'aliasToTestMethod' });
+      expect(method.name).to.equal('aliasToTestMethod');
+    });
+
+    it('has `name` from operationName', function() {
+      var method = givenRestStaticMethod({ operationName: 'aliasToTestMethod' });
+      expect(method.name).to.equal('aliasToTestMethod');
     });
 
     describe('isReturningArray()', function() {

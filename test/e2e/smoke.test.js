@@ -18,5 +18,18 @@ describe('smoke test', function () {
         }
       );
     });
+
+    it('invokes a remote static method', function (done) {
+      remotes.invoke(
+        'User.logout',
+        [{userId: '123'}],
+        function(err, status) {
+          expect(err).to.not.exist;
+          expect(status).to.equal(true);
+          done();
+        }
+      );
+    });
+
   });
 });
