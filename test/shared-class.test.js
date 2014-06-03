@@ -44,7 +44,7 @@ describe('SharedClass', function() {
       expect(fns).to.contain(SomeClass.staticMethod);
       expect(fns).to.contain(SomeClass.prototype.instanceMethod);
     });
-    it('only discovers a function once', function() {
+    it('only discovers a function once with aliases', function() {
       function MyClass() {};
       var sc = new SharedClass('some', MyClass);
       var fn = function() {};
@@ -53,8 +53,10 @@ describe('SharedClass', function() {
       MyClass.b = fn;
       MyClass.prototype.a = fn;
       MyClass.prototype.b = fn;
-      var fns = sc.methods().map(function(m) {return m.fn});
+      var methods = sc.methods();
+      var fns = methods.map(function(m) {return m.fn});
       expect(fns.length).to.equal(1);
+      expect(methods[0].aliases.sort()).to.eql(['a', 'b']);
     });
     it('discovers multiple functions correctly', function() {
       function MyClass() {};
@@ -122,6 +124,25 @@ describe('SharedClass', function() {
       });
       var methods = sharedClass.methods().map(function(m) {return m.name});
       expect(methods).to.contain('dyn');
+    });
+  });
+
+  describe('sharedClass.find()', function () {
+    var sc;
+    var sm;
+    beforeEach(function() {
+      sc = new SharedClass('SomeClass', SomeClass);
+      SomeClass.prototype.myMethod = function() {};
+      var METHOD_NAME = 'myMethod';
+      sm = sc.defineMethod(METHOD_NAME, {
+        prototype: true
+      });
+    });
+    it('finds sharedMethod for the given function', function () {
+      assert(sc.find(SomeClass.prototype.myMethod) === sm);
+    });
+    it('find sharedMethod by name', function () {
+      assert(sc.find('myMethod') === sm);
     });
   });
 
