@@ -16,7 +16,7 @@ describe('SharedMethod', function() {
     });
     
     it('checks by name if a function is going to be invoked', function () {
-      var mockSharedClass = {prototype: {myName: myFunction}};
+      var mockSharedClass = { prototype: { myName: myFunction } };
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass);
       assert.equal(sharedMethod.isDelegateFor('myName', false), true);
       assert.equal(sharedMethod.isDelegateFor('myName', true), false);
@@ -24,16 +24,16 @@ describe('SharedMethod', function() {
     });
     
     it('checks by name if static function is going to be invoked', function () {
-      var mockSharedClass = {myName: myFunction};
-      var options = {isStatic: true};
+      var mockSharedClass = { myName: myFunction };
+      var options = { isStatic: true };
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
       assert.equal(sharedMethod.isDelegateFor('myName', true), true);
       assert.equal(sharedMethod.isDelegateFor('myName', false), false);
     });
     
     it('checks by alias if static function is going to be invoked', function () {
-      var mockSharedClass = {myName: myFunction};
-      var options = {isStatic: true, aliases: ['myAlias']};
+      var mockSharedClass = { myName: myFunction };
+      var options = { isStatic: true, aliases: ['myAlias'] };
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
       assert.equal(sharedMethod.isDelegateFor('myAlias', true), true);
       assert.equal(sharedMethod.isDelegateFor('myAlias', false), false);
