@@ -128,17 +128,21 @@ describe('SharedClass', function() {
   });
 
   describe('sharedClass.find()', function () {
-    it('find sharedMethod for the given function', function () {
-      var sc = new SharedClass('SomeClass', SomeClass);
+    var sc;
+    var sm;
+    beforeEach(function() {
+      sc = new SharedClass('SomeClass', SomeClass);
       SomeClass.prototype.myMethod = function() {};
       var METHOD_NAME = 'myMethod';
-      var sm = sc.defineMethod(METHOD_NAME, {
+      sm = sc.defineMethod(METHOD_NAME, {
         prototype: true
       });
+    });
+    it('finds sharedMethod for the given function', function () {
       assert(sc.find(SomeClass.prototype.myMethod) === sm);
     });
     it('find sharedMethod by name', function () {
-
+      assert(sc.find('myMethod') === sm);
     });
   });
 
