@@ -55,6 +55,7 @@
   },
   "browser": {
     "express": false,
+    "body-parser": false,
     "request": "browser-request"
   },
   "license": {
