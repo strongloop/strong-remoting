@@ -200,12 +200,12 @@ describe('RestAdapter', function() {
 
     function givenRestStaticMethod(methodConfig, classConfig) {
       var name = 'testMethod';
-      methodConfig = extend({ shared: true, isStatic: true }, methodConfig);
+      methodConfig = extend({ shared: true }, methodConfig);
       classConfig = extend({ shared: true}, classConfig);
       remotes.testClass = extend({}, classConfig);
       var fn = remotes.testClass[name] = extend(function(){}, methodConfig);
 
-      var sharedClass = new SharedClass('testClass', remotes.testClass);
+      var sharedClass = new SharedClass('testClass', remotes.testClass, true);
       var restClass = new RestAdapter.RestClass(sharedClass);
 
       var sharedMethod = new SharedMethod(fn, name, sharedClass, methodConfig);
