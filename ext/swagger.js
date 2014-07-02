@@ -173,7 +173,8 @@ function routeToAPI(route) {
       parameters: route.accepts ? route.accepts.map(acceptToParameter(route)) : [],
       errorResponses: [], // TODO(schoon) - We don't have descriptions for this yet.
       summary: route.description, // TODO(schoon) - Excerpt?
-      notes: '' // TODO(schoon) - `description` metadata?
+      notes: '', // TODO(schoon) - `description` metadata?
+      produces: ['application/json', 'application/xml']
     }]
   };
 }
