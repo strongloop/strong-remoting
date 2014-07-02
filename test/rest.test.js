@@ -13,7 +13,7 @@ describe('strong-remoting-rest', function(){
   var objects;
   var remotes;
   var adapterName = 'rest';
-  
+
   before(function(done) {
     app = express();
     app.disable('x-powered-by');
@@ -32,7 +32,7 @@ describe('strong-remoting-rest', function(){
     objects = RemoteObjects.create({json: {limit: '1kb'},
       errorHandler: {disableStackTrace: false}});
     remotes = objects.exports;
-    
+
     // connect to the app
     objects.connect('http://localhost:' + server.address().port, adapterName);
   });
@@ -1023,7 +1023,7 @@ describe('strong-remoting-rest', function(){
             returns: { arg: 'msg', type: 'string' }
           }
         );
-        
+
         var msg = 'hello';
         objects.invoke(method.name, [msg], function(err, resMsg) {
           assert.equal(resMsg, msg);
@@ -1049,7 +1049,7 @@ describe('strong-remoting-rest', function(){
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
-        });  
+        });
       });
 
       it('should allow arguments in the query', function(done) {
@@ -1066,7 +1066,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
@@ -1087,7 +1087,7 @@ describe('strong-remoting-rest', function(){
             ]
           }
         );
-        
+
         objects.invoke(method.name, [], function(err) {
           assert(called);
           done();
@@ -1107,7 +1107,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         var obj = {
           foo: 'bar'
         };
@@ -1153,7 +1153,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
@@ -1183,7 +1183,7 @@ describe('strong-remoting-rest', function(){
           done();
         });
       });
-      
+
       describe('uncaught errors', function () {
         it('should return 500 if an error object is thrown', function (done) {
           var errMsg = 'an error';
@@ -1192,7 +1192,7 @@ describe('strong-remoting-rest', function(){
               throw new Error(errMsg);
             }
           );
-          
+
           objects.invoke(method.name, function(err) {
             assert(err instanceof Error);
             assert.equal(err.message, errMsg);
