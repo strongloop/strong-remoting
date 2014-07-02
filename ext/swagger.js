@@ -78,9 +78,13 @@ function Swagger(remotes, options, models) {
       route.accepts = (route.accepts || []).concat(classDef.sharedCtor.accepts);
     }
 
-    // Don't show derived params.
-    route.accepts = route.accepts.filter(function(accept){
-      return !accept.http;
+    route.accepts = (route.accepts || []).filter(function(arg){
+      if (!arg.http) return true;
+      // Don't show derived arguments.
+      if (typeof arg.http === 'function') return false;
+      // Don't show arguments set to the incoming http request.
+      if (arg.http.source === 'req') return false;
+      return true;
     });
 
     debug('route %j', route);
