@@ -78,13 +78,30 @@ describe('swagger definition', function() {
     });
   });
 
-  function getSwaggerResources(restPath) {
+  describe('should honor Accept:', function() {
+    CONTENT_TYPES = ['application/json', 'application/javascript', 'application/xml', 'text/javascript', 'text/xml'];
+
+    for (var contentType in CONTENT_TYPES) {
+      it(CONTENT_TYPES[contentType], function (done) {
+        swagger(objects);
+
+        var getReq = getSwaggerResources(null, CONTENT_TYPES[contentType]);
+        getReq.end(function (err, res) {
+          if (err) return done(err);
+          done();
+        });
+      });
+    }
+  });
+
+  function getSwaggerResources(restPath, contentType) {
     var app = createRestApiApp(restPath);
     var prefix = restPath || '';
+    contentType = contentType || 'application/json';
     return request(app)
       .get(prefix + '/swagger/resources')
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
+      .set('Accept', contentType)
+      .expect('Content-Type', new RegExp('^' + contentType + '.*'))
       .expect(200);
   }
 

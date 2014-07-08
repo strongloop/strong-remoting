@@ -16,7 +16,7 @@ function Swagger(remotes, options, models) {
   // Unfold options.
   var _options = options || {};
   var name = _options.name || 'swagger';
-  var version = _options.version;
+  var version = _options.version || '1';
   var basePath = _options.basePath;
 
   // We need a temporary REST adapter to discover our available routes.
@@ -174,7 +174,7 @@ function routeToAPI(route) {
       errorResponses: [], // TODO(schoon) - We don't have descriptions for this yet.
       summary: route.description, // TODO(schoon) - Excerpt?
       notes: '', // TODO(schoon) - `description` metadata?
-      produces: ['application/json', 'application/xml']
+      produces: ['application/json', 'application/javascript', 'application/xml', 'text/javascript', 'text/xml']
     }]
   };
 }
