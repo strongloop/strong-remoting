@@ -36,10 +36,13 @@ function Swagger(remotes, options, models) {
   };
 
   classes.forEach(function (item) {
-    resourceDoc.apis.push({
-      path: '/' + name + item.http.path,
-      description: item.ctor.sharedCtor && item.ctor.sharedCtor.description
-    });
+    var api = {
+      path: '/' + name + item.http.path
+    };
+    if (item.ctor.sharedCtor && item.ctor.sharedCtor.description) {
+      api.description = item.ctor.sharedCtor.description;
+    }
+    resourceDoc.apis.push(api);
 
     apiDocs[item.name] = {
       apiVersion: resourceDoc.apiVersion,
