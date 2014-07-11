@@ -14,4 +14,4 @@ $ npm install strong-remoting
 
 ## Documentation
 
-Please see the [official StrongLoop documentation](http://docs.strongloop.com/display/DOC/Strong+Remoting).
+Please see the [official StrongLoop documentation](http://docs.strongloop.com/display/NODE/Strong+Remoting).

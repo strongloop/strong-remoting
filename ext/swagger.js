@@ -78,6 +78,15 @@ function Swagger(remotes, options, models) {
       route.accepts = (route.accepts || []).concat(classDef.sharedCtor.accepts);
     }
 
+    route.accepts = (route.accepts || []).filter(function(arg){
+      if (!arg.http) return true;
+      // Don't show derived arguments.
+      if (typeof arg.http === 'function') return false;
+      // Don't show arguments set to the incoming http request.
+      if (arg.http.source === 'req') return false;
+      return true;
+    });
+
     debug('route %j', route);
     doc.apis.push(routeToAPI(route));
   });

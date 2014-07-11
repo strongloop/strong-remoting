@@ -77,6 +77,21 @@ describe('SharedClass', function() {
         return fn;
       }
     });
+    it('should skip properties that are model classes', function() {
+      var sc = new SharedClass('some', SomeClass);
+      function MockModel1() {};
+      MockModel1.modelName = 'M1';
+      MockModel1.shared = true;
+      SomeClass.staticMethod = MockModel1;
+
+      function MockModel2() {};
+      MockModel2.modelName = 'M2';
+      MockModel2.shared = true;
+      SomeClass.prototype.instanceMethod = MockModel2;
+      var fns = sc.methods().map(function(m) {return m.fn});
+      expect(fns).to.not.contain(SomeClass.staticMethod);
+      expect(fns).to.not.contain(SomeClass.prototype.instanceMethod);
+    });
   });
 
   describe('sharedClass.defineMethod(name, options)', function() {
