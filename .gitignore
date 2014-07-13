@@ -3,6 +3,7 @@
 *.log
 *.csv
 *.dat
+*.iml
 *.out
 *.pid
 *.swp
