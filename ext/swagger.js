@@ -30,8 +30,10 @@ function Swagger(remotes, options, models) {
   var apiDocs = {};
   var resourceDoc = {
     apiVersion: version,
-    swaggerVersion: '1.1',
+    swaggerVersion: '1.2',
     basePath: basePath,
+    consumes: ['application/json', 'application/xml', 'text/xml'],
+    produces: ['application/json', 'application/javascript', 'application/xml', 'text/javascript', 'text/xml'],
     apis: []
   };
 
@@ -163,18 +165,29 @@ function addDynamicBasePathGetter(remotes, path, obj) {
 
 function routeToAPI(route) {
   var returnDesc = route.returns && route.returns[0];
+  var responseMessages = [
+    {
+      code: 200,
+      message: null,
+      responseModel: returnDesc ? returnDesc.model || prepareDataType(returnDesc.type) : 'void'
+    }
+  ];
+  if (route.errors) {
+    responseMessages.push.apply(responseMessages, route.errors);
+  }
 
   return {
     path: convertPathFragments(route.path),
     operations: [{
-      httpMethod: convertVerb(route.verb),
+      method: convertVerb(route.verb),
+      deprecated: route.deprecated,
       nickname: route.method.replace(/\./g, '_'), // [rfeng] Swagger UI doesn't escape '.' for jQuery selector
-      responseClass: returnDesc ? returnDesc.model || prepareDataType(returnDesc.type) : 'void',
-      parameters: route.accepts ? route.accepts.map(acceptToParameter(route)) : [],
-      errorResponses: [], // TODO(schoon) - We don't have descriptions for this yet.
       summary: route.description, // TODO(schoon) - Excerpt?
       notes: '', // TODO(schoon) - `description` metadata?
-      produces: ['application/json', 'application/javascript', 'application/xml', 'text/javascript', 'text/xml']
+      parameters: route.accepts ? route.accepts.map(acceptToParameter(route)) : [],
+      consumes: ['application/json', 'application/xml', 'text/xml'],
+      produces: ['application/json', 'application/javascript', 'application/xml', 'text/javascript', 'text/xml'],
+      responseMessages: responseMessages
     }]
   };
 }
@@ -227,12 +240,20 @@ function acceptToParameter(route) {
     }
 
     return {
-      paramType: paramType || type,
       name: name,
-      description: accepts.description,
-      dataType: accepts.model || prepareDataType(accepts.type),
       required: !!accepts.required,
-      allowMultiple: false
+      paramType: paramType || type,
+      type: prepareDataType(accepts.type),
+      $ref: accepts.model,
+      items: accepts.items,
+      format: accepts.format,
+      defaultValue: accepts.defaultValue,
+      enum: accepts.enum,
+      minimum: accepts.minimum,
+      maximum: accepts.maximum,
+      uniqueItems: accepts.uniqueItems,
+      allowMultiple: accepts.allowMultiple,
+      description: accepts.description
     };
   };
 }

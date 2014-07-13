@@ -4,6 +4,7 @@
 *.log
 *.csv
 *.dat
+*.iml
 *.out
 *.pid
 *.swp
@@ -11,4 +12,3 @@
 node_modules/
 /coverage/
 dist
-StrongRemoting.iml
