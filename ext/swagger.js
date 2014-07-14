@@ -168,7 +168,7 @@ function routeToAPI(route) {
   var responseMessages = [
     {
       code: 200,
-      message: null,
+      message: 'Request was successful',
       responseModel: returnDesc ? returnDesc.model || prepareDataType(returnDesc.type) : 'void'
     }
   ];
