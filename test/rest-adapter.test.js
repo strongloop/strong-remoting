@@ -122,6 +122,11 @@ describe('RestAdapter', function() {
       expect(method.returns).to.eql([anArg]);
     });
 
+    it('has `errors`', function() {
+      var method = givenRestStaticMethod({ errors: anArg });
+      expect(method.errors).to.eql([anArg]);
+    });
+
     it('has `description`', function() {
       var method = givenRestStaticMethod({ description: 'a-desc' });
       expect(method.description).to.equal('a-desc');
