@@ -7,7 +7,7 @@
     "Remoting",
     "REST"
   ],
-  "version": "1.5.1",
+  "version": "1.5.2",
   "scripts": {
     "test": "mocha"
   },
@@ -26,7 +26,6 @@
   "devDependencies": {
     "mocha": "~1.20.1",
     "supertest": "~0.13.0",
-    "socket.io": "~1.0.6",
     "socket.io": "~1.0.6",
     "chai": "~1.9.1",
     "grunt": "~0.4.5",
