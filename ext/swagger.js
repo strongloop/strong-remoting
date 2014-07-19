@@ -136,8 +136,9 @@ function addDynamicBasePathGetter(remotes, path, obj) {
     remotes.before(path, function (ctx, next) {
       var headers = ctx.req.headers;
       var host = headers.Host || headers.host;
+      var protocol = headers['x-forwarded-proto'] || headers['X-Forwarded-Proto'] || ctx.req.protocol
 
-      basePath = ctx.req.protocol + '://' + host + initialPath;
+      basePath = protocol + '://' + host + initialPath;
 
       next();
     });
