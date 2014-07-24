@@ -125,6 +125,13 @@ describe('RestAdapter', function() {
         expect(method.isReturningArray()).to.equal(true);
       });
 
+      it('returns true when there is single root [Model] arg', function() {
+        var method = givenRestStaticMethod({
+          returns: { root: true, type: ['string'] }
+        });
+        expect(method.isReturningArray()).to.equal(true);
+      });
+
       it('returns false otherwise', function() {
         var method = givenRestStaticMethod({
           returns: { arg: 'result', type: Array }
