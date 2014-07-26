@@ -244,7 +244,7 @@ describe('strong-remoting-rest', function(){
     it('should allow arguments from http req and res', function(done) {
       var method = givenSharedStaticMethod(
         function bar(req, res, cb) {
-          res.send(200, req.body);
+          res.status(200).send(req.body);
         },
         {
           accepts: [
@@ -269,7 +269,7 @@ describe('strong-remoting-rest', function(){
     it('should allow arguments from http context', function(done) {
       var method = givenSharedStaticMethod(
         function bar(ctx, cb) {
-          ctx.res.send(200, ctx.req.body);
+          ctx.res.status(200).send(ctx.req.body);
         },
         {
           accepts: [
