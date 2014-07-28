@@ -25,7 +25,11 @@ describe('strong-remoting-rest', function(){
 
   // setup
   beforeEach(function(){
-    objects = RemoteObjects.create({json: {limit: '1kb'}});
+    if (process.env.NODE_ENV === 'production') {
+      process.env.NODE_ENV = 'test';
+    }
+    objects = RemoteObjects.create({json: {limit: '1kb'},
+      errorHandler: {disableStackTrace: false}});
     remotes = objects.exports;
     
     // connect to the app
@@ -69,6 +73,39 @@ describe('strong-remoting-rest', function(){
         .send(name)
         .expect(413, done);
     });
+
+    it('should disable stack trace', function(done) {
+      objects.options.errorHandler.disableStackTrace = true;
+      var method = givenSharedStaticMethod(
+        function(cb) {
+          cb(new Error('test-error'));
+        }
+      );
+
+      // Send a plain, non-json request to make sure the error handler
+      // always returns a json response.
+      request(app).get(method.url)
+        .expect('Content-Type', /json/)
+        .expect(500)
+        .end(expectErrorResponseContaining({message: 'test-error'}, ['stack'], done));
+    });
+
+    it('should disable stack trace', function(done) {
+      process.env.NODE_ENV = 'production';
+      var method = givenSharedStaticMethod(
+        function(cb) {
+          cb(new Error('test-error'));
+        }
+      );
+
+      // Send a plain, non-json request to make sure the error handler
+      // always returns a json response.
+      request(app).get(method.url)
+        .expect('Content-Type', /json/)
+        .expect(500)
+        .end(expectErrorResponseContaining({message: 'test-error'}, ['stack'], done));
+    });
+
   });
 
   describe('call of constructor method', function(){
@@ -1021,14 +1058,21 @@ describe('strong-remoting-rest', function(){
     };
   }
 
-  function expectErrorResponseContaining(keyValues, done) {
+  function expectErrorResponseContaining(keyValues, excludedKeyValues, done) {
+    if(done === undefined && typeof excludedKeyValues === 'function') {
+      done = excludedKeyValues;
+      excludedKeyValues = {};
+    }
     return function(err, resp) {
       if (err) return done(err);
       for (var prop in keyValues) {
         expect(resp.body.error).to.have.property(prop, keyValues[prop]);
       }
+      for (var i = 0, n = excludedKeyValues.length; i < n; i++) {
+        expect(resp.body.error).to.not.have.property(excludedKeyValues[i]);
+      }
       done();
-    }
+    };
   }
 
   it('should skip the super class and only expose user defined remote methods',
