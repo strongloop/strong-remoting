@@ -1,3 +1,5 @@
+var express = require('express');
+
 // define a vanilla JavaScript class
 function Dog(name) {
   this.name = name;
@@ -9,7 +11,7 @@ Dog.sharedCtor = function (name, fn) {
 }
 
 // define the args for the shared constructor
-Dog.sharedCtor.accepts = {arg: 'name', type: 'string'};
+Dog.sharedCtor.accepts = {arg: 'name', type: 'string', http: {source: 'path'}};
 
 // change the default routing
 Dog.sharedCtor.http = {path: '/:name'};
@@ -20,6 +22,7 @@ Dog.prototype.speak = function (fn) {
 }
 
 // mark it as shared
+Dog.prototype.speak.returns = {arg: 'result', type: 'string', root: true};
 Dog.prototype.speak.shared = true;
 
 // create a set of shared classes
@@ -28,10 +31,10 @@ var remotes = require('../').create();
 // expose the Dog class
 remotes.exports.dog = Dog;
 
-// over http
-require('http')
-  .createServer(remotes.handler('rest'))
-  .listen(3000);
+var app = express();
+app.use(remotes.handler('rest'));
+
+app.listen(3000);
   
 /*
 
