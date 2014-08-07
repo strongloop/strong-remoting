@@ -49,6 +49,18 @@ describe('strong-remoting-rest', function(){
       .expect('Content-Type', /json/);
   }
 
+  function xml(method, url) {
+    if (url === undefined) {
+      url = method;
+      method = 'get';
+    }
+
+    return request(app)[method](url)
+      .set('Accept', 'text/xml')
+      .set('Content-Type', 'text/xml')
+      .expect('Content-Type', /xml/);
+  }
+
   describe('remoting options', function(){
     // The 1kb limit is set by RemoteObjects.create({json: {limit: '1kb'}});
     it('should reject json payload larger than 1kb', function(done) {
@@ -228,6 +240,51 @@ describe('strong-remoting-rest', function(){
 
       json(method.url + '?person=hello')
         .expect(200, { msg: 'hello' }, done);
+    });
+
+    it('should honor Accept: header', function(done) {
+      var method = givenSharedStaticMethod(
+        function greet2(msg, cb) {
+          cb(null, msg);
+        },
+        {
+          accepts: { arg: 'person', type: 'string' },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+
+      xml(method.url + '?person=hello')
+        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <msg>hello</msg>\n</response>', done);
+    });
+
+    it('should handle returns of array', function(done) {
+      var method = givenSharedStaticMethod(
+        function greet3(msg, cb) {
+          cb(null, [msg]);
+        },
+        {
+          accepts: { arg: 'person', type: 'string' },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+
+      xml(method.url + '?person=hello')
+        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <msg>hello</msg>\n</response>', done);
+    });
+
+    it('should handle returns of array to XML', function(done) {
+      var method = givenSharedStaticMethod(
+        function greet4(msg, cb) {
+          cb(null, [msg]);
+        },
+        {
+          accepts: { arg: 'person', type: 'string' },
+          returns: { arg: 'msg', type: ['string'], root: true }
+        }
+      );
+
+      xml(method.url + '?person=hello')
+        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <result>hello</result>\n</response>', done);
     });
 
     it('should allow arguments in the path', function(done) {
