@@ -618,6 +618,7 @@ describe('strong-remoting-rest', function(){
             { arg: 'a', type: 'number', http: {source: 'path'} }
           ],
           returns: { arg: 'n', type: 'number', root: true},
+          errors: [],
           http: { path: '/:a' }
         }
       );
