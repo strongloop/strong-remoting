@@ -625,7 +625,7 @@ describe('strong-remoting-rest', function(){
       request(app)['get'](method.classUrl + '/1?callback=boo')
         .set('Accept', 'application/javascript')
         .expect('Content-Type', /javascript/)
-        .expect('typeof boo === \'function\' && boo(1);', done);
+        .expect('/**/ typeof boo === \'function\' && boo(1);', done);
     });
 
     it('should allow jsonp requests with null response', function (done) {
@@ -645,7 +645,7 @@ describe('strong-remoting-rest', function(){
       request(app)['get'](method.classUrl + '/1?callback=boo')
         .set('Accept', 'application/javascript')
         .expect('Content-Type', /javascript/)
-        .expect('typeof boo === \'function\' && boo(null);', done);
+        .expect('/**/ typeof boo === \'function\' && boo(null);', done);
     });
 
     it('should allow arguments in the query', function(done) {
