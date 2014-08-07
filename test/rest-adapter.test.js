@@ -115,6 +115,11 @@ describe('RestAdapter', function() {
       expect(method.description).to.equal('a-desc');
     });
 
+    it('has `notes`', function() {
+      var method = givenRestStaticMethod({ notes: 'some-notes' });
+      expect(method.notes).to.equal('some-notes');
+    });
+
     describe('isReturningArray()', function() {
       it('returns true when there is single root Array arg', function() {
         var method = givenRestStaticMethod({
@@ -126,6 +131,13 @@ describe('RestAdapter', function() {
       it('returns true when there is single root "array" arg', function() {
         var method = givenRestStaticMethod({
           returns: { root: true, type: Array }
+        });
+        expect(method.isReturningArray()).to.equal(true);
+      });
+
+      it('returns true when there is single root [Model] arg', function() {
+        var method = givenRestStaticMethod({
+          returns: { root: true, type: ['string'] }
         });
         expect(method.isReturningArray()).to.equal(true);
       });
@@ -216,6 +228,80 @@ describe('RestAdapter', function() {
       var sharedMethod = new SharedMethod(fn, name, sharedClass, methodConfig);
       return new RestAdapter.RestMethod(restClass, sharedMethod);
     }
+  });
+
+  describe('sortRoutes', function() {
+    it('should sort routes based on verb & path', function() {
+      var routes = [
+        {route: {verb: 'get', path: '/'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/findOne'}},
+        {route: {verb: 'delete', path: '/'}},
+        {route: {verb: 'del', path: '/:id'}}
+      ];
+
+      routes.sort(RestAdapter.sortRoutes);
+
+      expect(routes).to.eql([
+        {route: {verb: 'get', path: '/findOne'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/'}},
+        {route: {verb: 'del', path: '/:id'}},
+        {route: {verb: 'delete', path: '/'}}
+      ]);
+
+    });
+
+    it('should sort routes based on path accuracy', function() {
+      var routes = [
+        {route: {verb: 'get', path: '/'}},
+        {route: {verb: 'get', path: '/:id/docs'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/findOne'}}
+      ];
+
+      routes.sort(RestAdapter.sortRoutes);
+
+      expect(routes).to.eql([
+        {route: {verb: 'get', path: '/findOne'}},
+        {route: {verb: 'get', path: '/:id/docs'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/'}}
+      ]);
+
+    });
+
+    it('should sort routes with common parts', function() {
+      var routes = [
+        {route: {verb: 'get', path: '/sum'}},
+        {route: {verb: 'get', path: '/sum/1'}}
+      ];
+
+      routes.sort(RestAdapter.sortRoutes);
+
+      expect(routes).to.eql([
+        {route: {verb: 'get', path: '/sum/1'}},
+        {route: {verb: 'get', path: '/sum'}}
+      ]);
+
+    });
+
+    it('should sort routes with trailing /', function() {
+      var routes = [
+        {route: {verb: 'get', path: '/sum/'}},
+        {route: {verb: 'get', path: '/sum/1'}}
+      ];
+
+      routes.sort(RestAdapter.sortRoutes);
+
+      expect(routes).to.eql([
+        {route: {verb: 'get', path: '/sum/1'}},
+        {route: {verb: 'get', path: '/sum/'}}
+      ]);
+
+    });
+
+
   });
 });
 
