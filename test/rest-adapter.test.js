@@ -115,6 +115,11 @@ describe('RestAdapter', function() {
       expect(method.description).to.equal('a-desc');
     });
 
+    it('has `notes`', function() {
+      var method = givenRestStaticMethod({ notes: 'some-notes' });
+      expect(method.notes).to.equal('some-notes');
+    });
+
     describe('isReturningArray()', function() {
       it('returns true when there is single root Array arg', function() {
         var method = givenRestStaticMethod({
