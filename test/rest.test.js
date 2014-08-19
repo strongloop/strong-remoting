@@ -74,6 +74,30 @@ describe('strong-remoting-rest', function(){
         .expect(413, done);
     });
 
+    it('should support cors', function(done) {
+      var method = givenSharedStaticMethod(
+        function greet(msg, cb) {
+          cb(null, msg);
+        },
+        {
+          accepts: { arg: 'person', type: 'string', http: {source: 'body'} },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+
+      // Build an object that is larger than 1kb
+      var name = {person: 'ABC'};
+
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3000')
+        .send(name)
+        .expect('Access-Control-Allow-Origin', 'http://localhost:3000')
+        .expect('Access-Control-Allow-Credentials', 'true')
+        .expect(200, done);
+    });
+
     it('should disable stack trace', function(done) {
       objects.options.errorHandler.disableStackTrace = true;
       var method = givenSharedStaticMethod(
