@@ -34,6 +34,11 @@ describe('SharedClass', function() {
   });
 
   describe('sharedClass.methods()', function() {
+    function createSharedFn() {
+      var fn = function() {};
+      fn.shared = true;
+      return fn;
+    }
     it('discovers remote methods', function() {
       var sc = new SharedClass('some', SomeClass);
       SomeClass.staticMethod = function() {};
@@ -71,11 +76,6 @@ describe('SharedClass', function() {
       expect(fns).to.contain(MyClass.b);
       expect(fns).to.contain(MyClass.prototype.a);
       expect(fns).to.contain(MyClass.prototype.b);
-      function createSharedFn() {
-        var fn = function() {};
-        fn.shared = true;
-        return fn;
-      }
     });
     it('should skip properties that are model classes', function() {
       var sc = new SharedClass('some', SomeClass);
@@ -92,6 +92,60 @@ describe('SharedClass', function() {
       expect(fns).to.not.contain(SomeClass.staticMethod);
       expect(fns).to.not.contain(SomeClass.prototype.instanceMethod);
     });
+    it('should share the state of sharedMethod for static method cross calls', function() {
+      function MyClass() {}
+      var sc = new SharedClass('SomeClass', MyClass);
+      MyClass.myMethod = createSharedFn();
+      var methods1 = sc.methods();
+      expect(methods1).to.have.length(1);
+      methods1[0].shared = false;
+      var methods2 = sc.methods();
+      expect(methods2).to.have.length(0);
+      expect(sc._methods).to.have.length(1);
+      expect(sc._methods[0].shared).to.equal(false);
+    });
+    it('should share the state of sharedMethod for instance method cross calls', function() {
+      function MyClass() {}
+      var sc = new SharedClass('SomeClass', MyClass);
+      MyClass.prototype.myMethod = createSharedFn();
+      var methods1 = sc.methods();
+      expect(methods1).to.have.length(1);
+      methods1[0].shared = false;
+      var methods2 = sc.methods();
+      expect(methods2).to.have.length(0);
+      expect(sc._methods).to.have.length(1);
+      expect(sc._methods[0].shared).to.equal(false);
+    });
+    it('should share the state of sharedMethod for dynamic resolve instance method cross calls', function() {
+      function MyClass() {}
+      var myMethod = function() {};
+      var sc = new SharedClass('SomeClass', MyClass);
+      sc.resolve(function(define) {
+        define('myMethod', {/* isStatic: false */}, myMethod);
+      });
+      var methods1 = sc.methods();
+      expect(methods1).to.have.length(1);
+      methods1[0].shared = false;
+      var methods2 = sc.methods();
+      expect(methods2).to.have.length(0);
+      expect(sc._methods).to.have.length(1);
+      expect(sc._methods[0].shared).to.equal(false);
+    });
+    it('should share the state of sharedMethod for dynamic resolve static method cross calls', function() {
+      function MyClass() {}
+      var myMethod = function() {};
+      var sc = new SharedClass('SomeClass', MyClass);
+      sc.resolve(function(define) {
+        define('myMethod', { isStatic: true }, myMethod);
+      });
+      var methods1 = sc.methods();
+      expect(methods1).to.have.length(1);
+      methods1[0].shared = false;
+      var methods2 = sc.methods();
+      expect(methods2).to.have.length(0);
+      expect(sc._methods).to.have.length(1);
+      expect(sc._methods[0].shared).to.equal(false);
+    });
   });
 
   describe('sharedClass.defineMethod(name, options)', function() {
@@ -99,9 +153,7 @@ describe('SharedClass', function() {
       var sc = new SharedClass('SomeClass', SomeClass);
       SomeClass.prototype.myMethod = function() {};
       var METHOD_NAME = 'myMethod';
-      sc.defineMethod(METHOD_NAME, {
-        prototype: true
-      });
+      sc.defineMethod(METHOD_NAME, { isStatic: false });
       var methods = sc.methods().map(function(m) {return m.name});
       expect(methods).to.contain(METHOD_NAME);
     });
@@ -112,7 +164,7 @@ describe('SharedClass', function() {
         process.nextTick(function() {
           MyClass[METHOD_NAME] = function(str, cb) {
             cb(null,  str);
-          }
+          };
           done();
         });
 
@@ -123,6 +175,24 @@ describe('SharedClass', function() {
         expect(methods).to.contain(METHOD_NAME);
       }
     );
+    it('should ONLY define same remote instance method once', function() {
+      var sc = new SharedClass('SomeClass', SomeClass);
+      SomeClass.prototype.myMethod = function() {};
+      var METHOD_NAME = 'myMethod';
+      var method1 = sc.defineMethod(METHOD_NAME, { isStatic: false });
+      var method2 = sc.defineMethod(METHOD_NAME, { isStatic: false });
+      assert(method1 === method2);
+      expect(sc._methods).to.have.length(1);
+    });
+    it('should ONLY define same remote static method once', function() {
+      var sc = new SharedClass('SomeClass', SomeClass);
+      SomeClass.myMethod = function() {};
+      var METHOD_NAME = 'myMethod';
+      var method1 = sc.defineMethod(METHOD_NAME, { isStatic: true });
+      var method2 = sc.defineMethod(METHOD_NAME, { isStatic: true });
+      assert(method1 === method2);
+      expect(sc._methods).to.have.length(1);
+    });
   });
 
   describe('sharedClass.resolve(resolver)', function () {
@@ -144,20 +214,27 @@ describe('SharedClass', function() {
 
   describe('sharedClass.find()', function () {
     var sc;
-    var sm;
+    var sm1;
+    var sm2;
     beforeEach(function() {
       sc = new SharedClass('SomeClass', SomeClass);
       SomeClass.prototype.myMethod = function() {};
+      SomeClass.myMethod = function () {};
       var METHOD_NAME = 'myMethod';
-      sm = sc.defineMethod(METHOD_NAME, {
-        prototype: true
-      });
+      sm1 = sc.defineMethod(METHOD_NAME, { isStatic: false });
+      sm2 = sc.defineMethod(METHOD_NAME, { isStatic: true });
     });
-    it('finds sharedMethod for the given function', function () {
-      assert(sc.find(SomeClass.prototype.myMethod) === sm);
+    it('finds sharedMethod for the given instance function', function () {
+      assert(sc.find(SomeClass.prototype.myMethod) === sm1);
     });
     it('find sharedMethod by name', function () {
-      assert(sc.find('myMethod') === sm);
+      assert(sc.find('myMethod') === sm1);
+    });
+    it('finds sharedMethod for the given static function', function () {
+      assert(sc.find(SomeClass.myMethod, true) === sm2);
+    });
+    it('find sharedMethod by name', function () {
+      assert(sc.find('myMethod', true) === sm2);
     });
   });
 
