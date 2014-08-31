@@ -227,13 +227,13 @@ describe('SharedClass', function() {
     it('finds sharedMethod for the given instance function', function () {
       assert(sc.find(SomeClass.prototype.myMethod) === sm1);
     });
-    it('find sharedMethod by name', function () {
+    it('find instance sharedMethod by name', function () {
       assert(sc.find('myMethod') === sm1);
     });
     it('finds sharedMethod for the given static function', function () {
       assert(sc.find(SomeClass.myMethod, true) === sm2);
     });
-    it('find sharedMethod by name', function () {
+    it('find static sharedMethod by name', function () {
       assert(sc.find('myMethod', true) === sm2);
     });
   });
