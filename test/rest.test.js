@@ -206,6 +206,27 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 'xyz' }, done);
     });
 
+    it('should allow string[] arg in the query with stringified value',
+      function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          console.log(a, b, typeof b);
+          cb(null, b.join('') + a);
+        },
+        {
+          accepts: [
+            { arg: 'a', type: 'string' },
+            { arg: 'b', type: ['string'], http: {source: 'query' } }
+          ],
+          returns: { arg: 'n', type: 'string' },
+          http: { path: '/' }
+        }
+      );
+
+      json(method.classUrl +'/?a=z&b=["x", "y"]')
+        .expect({ n: 'xyz' }, done);
+    });
+
     it('should allow custom argument functions', function(done) {
       var method = givenSharedStaticMethod(
         function bar(a, b, cb) {
