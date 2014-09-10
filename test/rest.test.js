@@ -380,6 +380,19 @@ describe('strong-remoting-rest', function(){
         .expect(204, done);
     });
 
+    it('should accept custom content-type header if respond with 204', function(done) {
+      var method = givenSharedStaticMethod();
+      objects.before(method.name, function(ctx, next) {
+        ctx.res.set('Content-Type', 'application/json; charset=utf-8; profile=http://example.org/');
+        next();
+      });
+
+      request(app).get(method.url)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', 'application/json; charset=utf-8; profile=http://example.org/')
+        .expect(204, done);
+    });
+
     it('should respond with named results if returns has multiple args', function(done) {
       var method = givenSharedStaticMethod(
         function(a, b, cb) {
