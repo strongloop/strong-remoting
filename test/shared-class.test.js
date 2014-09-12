@@ -19,6 +19,11 @@ describe('SharedClass', function() {
       var sc = new SharedClass('some', SomeClass);
       expect(sc.http.path).to.equal('/some');
     });
+    
+    it('fills http.path using a normalized path', function() {
+      var sc = new SharedClass('SomeClass', SomeClass, { normalizeHttpPath: true });
+      expect(sc.http.path).to.equal('/some-class');
+    });
 
     it('does not require a sharedConstructor', function() {
       var myClass = {};
