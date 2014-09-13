@@ -72,6 +72,22 @@ describe('RestAdapter', function() {
       return new RestAdapter(remotes).getClasses();
     }
   });
+  
+  describe('path normalization', function() {
+    it('fills `routes`', function() {
+      remotes.exports.testClass = factory.createSharedClass();
+      remotes.exports.testClass.http = { path: '/testClass', verb: 'any' };
+
+      var classes = getRestClasses();
+
+      expect(classes[0]).to.have.property('routes')
+        .eql([{ path: '/test-class', verb: 'any' }]);
+    });
+
+    function getRestClasses() {
+      return new RestAdapter(remotes, { normalizeHttpPath: true }).getClasses();
+    }
+  });
 
   describe('RestClass', function() {
     describe('getPath', function() {
