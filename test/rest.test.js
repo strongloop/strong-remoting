@@ -266,6 +266,51 @@ describe('strong-remoting-rest', function(){
         .expect(200, { msg: 'hello' }, done);
     });
 
+    it('should honor Accept: header', function(done) {
+      var method = givenSharedStaticMethod(
+        function greet2(msg, cb) {
+          cb(null, msg);
+        },
+        {
+          accepts: { arg: 'person', type: 'string' },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+
+      xml(method.url + '?person=hello')
+        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <msg>hello</msg>\n</response>', done);
+    });
+
+    it('should handle returns of array', function(done) {
+      var method = givenSharedStaticMethod(
+        function greet3(msg, cb) {
+          cb(null, [msg]);
+        },
+        {
+          accepts: { arg: 'person', type: ['string'] },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+
+      xml(method.url + '?person=hello')
+        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <msg>hello</msg>\n</response>', done);
+    });
+
+    it('should handle returns of array to XML', function(done) {
+      var method = givenSharedStaticMethod(
+        function greet4(msg, cb) {
+          cb(null, [msg]);
+        },
+        {
+          accepts: { arg: 'person', type: ['string'] },
+          returns: { arg: 'msg', type: ['string'], root: true }
+        }
+      );
+
+      xml(method.url + '?person=hello')
+        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <result>hello</result>\n</response>', done);
+    });
+
     it('should allow arguments in the path', function(done) {
       var method = givenSharedStaticMethod(
         function bar(a, b, cb) {
