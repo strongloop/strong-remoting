@@ -38,5 +38,16 @@ describe('SharedMethod', function() {
       assert.equal(sharedMethod.isDelegateFor('myAlias', true), true);
       assert.equal(sharedMethod.isDelegateFor('myAlias', false), false);
     });
+
+    it('checks if the given name is a string', function () {
+      var mockSharedClass = {};
+      var err;
+      try {
+        var sharedMethod = new SharedMethod(myFunction, Number, mockSharedClass);
+      } catch(e) {
+        err = e;
+      }
+      assert(err);
+    });
   });
 });
