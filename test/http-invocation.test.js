@@ -37,6 +37,40 @@ describe('HttpInvocation', function() {
         {a: 1}
       );
     });
+
+    describe('HttpContext.isAcceptable()', function() {
+      it('should accept an acceptable argument', function() {
+        var acceptable = HttpInvocation.isAcceptable(2, {
+          arg: 'foo',
+          type: 'number'
+        });
+        expect(acceptable).to.equal(true);
+      });
+
+      it('should always accept args when type is any', function() {
+        var acceptable = HttpInvocation.isAcceptable(2, {
+          arg: 'bar',
+          type: 'any'
+        });
+        expect(acceptable).to.equal(true);
+      });
+
+      it('should always accept args when type is complex', function() {
+        var acceptable = HttpInvocation.isAcceptable({}, {
+          arg: 'bar',
+          type: 'MyComplexType'
+        });
+        expect(acceptable).to.equal(true);
+      });
+
+      it('should accept null arg when type is complex', function() {
+        var acceptable = HttpInvocation.isAcceptable(null, {
+          arg: 'bar',
+          type: 'MyComplexType'
+        });
+        expect(acceptable).to.equal(true);
+      });
+    });
   });
 });
 
