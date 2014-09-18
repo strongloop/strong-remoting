@@ -347,6 +347,32 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 3 }, done);
     });
 
+    it('should allow arguments in the header without http source',
+      function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number' },
+            { arg: 'a', type: 'number' }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { verb: 'get', path: '/' }
+        }
+      );
+
+      request(app)['get'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('a', 1)
+        .set('b', 2)
+        .send()
+        .expect('Content-Type', /json/)
+        .expect({ n: 3 }, done);
+    });
+
     it('should allow arguments from http req and res', function(done) {
       var method = givenSharedStaticMethod(
         function bar(req, res, cb) {
