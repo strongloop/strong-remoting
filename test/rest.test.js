@@ -189,7 +189,6 @@ describe('strong-remoting-rest', function(){
     it('should allow string[] arg in the query', function(done) {
       var method = givenSharedStaticMethod(
         function bar(a, b, cb) {
-          console.log(a, b, typeof b);
           cb(null, b.join('') + a);
         },
         {
