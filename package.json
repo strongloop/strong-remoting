@@ -7,7 +7,7 @@
     "Remoting",
     "REST"
   ],
-  "version": "2.1.0",
+  "version": "2.2.0",
   "scripts": {
     "test": "mocha"
   },
@@ -22,7 +22,8 @@
     "traverse": "~0.6.6",
     "request": "~2.42.0",
     "browser-request": "~0.3.2",
-    "qs": "~2.2.3"
+    "qs": "~2.2.3",
+    "inflection": "~1.4.2"
   },
   "devDependencies": {
     "supertest": "~0.13.0",

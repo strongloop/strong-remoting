@@ -189,7 +189,6 @@ describe('strong-remoting-rest', function(){
     it('should allow string[] arg in the query', function(done) {
       var method = givenSharedStaticMethod(
         function bar(a, b, cb) {
-          console.log(a, b, typeof b);
           cb(null, b.join('') + a);
         },
         {
@@ -203,6 +202,27 @@ describe('strong-remoting-rest', function(){
       );
 
       json(method.classUrl +'/?a=z&b[0]=x&b[1]=y')
+        .expect({ n: 'xyz' }, done);
+    });
+
+    it('should allow string[] arg in the query with stringified value',
+      function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          console.log(a, b, typeof b);
+          cb(null, b.join('') + a);
+        },
+        {
+          accepts: [
+            { arg: 'a', type: 'string' },
+            { arg: 'b', type: ['string'], http: {source: 'query' } }
+          ],
+          returns: { arg: 'n', type: 'string' },
+          http: { path: '/' }
+        }
+      );
+
+      json(method.classUrl +'/?a=z&b=["x", "y"]')
         .expect({ n: 'xyz' }, done);
     });
 
@@ -322,6 +342,57 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 3 }, done);
     });
 
+    it('should allow arguments in the header', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number', http: {source: 'header' } },
+            { arg: 'a', type: 'number', http: {source: 'header' } }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { verb: 'get', path: '/' }
+        }
+      );
+
+      request(app)['get'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('a', 1)
+        .set('b', 2)
+        .send()
+        .expect('Content-Type', /json/)
+        .expect({ n: 3 }, done);
+    });
+
+    it('should allow arguments in the header without http source',
+      function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number' },
+            { arg: 'a', type: 'number' }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { verb: 'get', path: '/' }
+        }
+      );
+
+      request(app)['get'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('a', 1)
+        .set('b', 2)
+        .send()
+        .expect('Content-Type', /json/)
+        .expect({ n: 3 }, done);
+    });
+
     it('should allow arguments from http req and res', function(done) {
       var method = givenSharedStaticMethod(
         function bar(req, res, cb) {
@@ -377,6 +448,19 @@ describe('strong-remoting-rest', function(){
       );
 
       json(method.url)
+        .expect(204, done);
+    });
+
+    it('should accept custom content-type header if respond with 204', function(done) {
+      var method = givenSharedStaticMethod();
+      objects.before(method.name, function(ctx, next) {
+        ctx.res.set('Content-Type', 'application/json; charset=utf-8; profile=http://example.org/');
+        next();
+      });
+
+      request(app).get(method.url)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', 'application/json; charset=utf-8; profile=http://example.org/')
         .expect(204, done);
     });
 
