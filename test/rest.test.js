@@ -4,6 +4,7 @@ var RemoteObjects = require('../');
 var express = require('express');
 var request = require('supertest');
 var expect = require('chai').expect;
+var assert = require('assert');
 var factory = require('./helpers/shared-objects-factory.js');
 
 describe('strong-remoting-rest', function(){
@@ -74,30 +75,6 @@ describe('strong-remoting-rest', function(){
         .expect(413, done);
     });
 
-    it('should support cors', function(done) {
-      var method = givenSharedStaticMethod(
-        function greet(msg, cb) {
-          cb(null, msg);
-        },
-        {
-          accepts: { arg: 'person', type: 'string', http: {source: 'body'} },
-          returns: { arg: 'msg', type: 'string' }
-        }
-      );
-
-      // Build an object that is larger than 1kb
-      var name = {person: 'ABC'};
-
-      request(app)['post'](method.url)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/json')
-        .set('Origin', 'http://localhost:3000')
-        .send(name)
-        .expect('Access-Control-Allow-Origin', 'http://localhost:3000')
-        .expect('Access-Control-Allow-Credentials', 'true')
-        .expect(200, done);
-    });
-
     it('should disable stack trace', function(done) {
       objects.options.errorHandler.disableStackTrace = true;
       var method = givenSharedStaticMethod(
@@ -128,6 +105,87 @@ describe('strong-remoting-rest', function(){
         .expect('Content-Type', /json/)
         .expect(500)
         .end(expectErrorResponseContaining({message: 'test-error'}, ['stack'], done));
+    });
+
+  });
+
+  describe('cors', function() {
+    var method;
+    beforeEach(function() {
+      method = givenSharedStaticMethod(
+        function greet(person, cb) {
+          if (person === 'error') {
+            var err = new Error('error');
+            err.statusCode = 400;
+            cb(err);
+          } else {
+            cb(null, 'hello');
+          }
+        },
+        {
+          accepts: { arg: 'person', type: 'string' },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+    });
+
+    it('should support cors', function(done) {
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3001')
+        .send({person: 'ABC'})
+        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
+        .expect('Access-Control-Allow-Credentials', 'true')
+        .expect(200, done);
+    });
+
+    it('should skip cors if origin is the same as the request url', function(done) {
+      var server = request(app)['post'](method.url);
+      var url = server.url.replace('/testClass/testMethod', '');
+      server
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', url)
+        .send({person: 'ABC'})
+        .end(function(err, res) {
+          assert(res.headers['Access-Control-Allow-Origin'] === undefined);
+          assert(res.headers['Access-Control-Allow-Credentials'] === undefined);
+          done();
+        });
+    });
+
+    it('should support cors preflight', function(done) {
+      request(app)['options'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3001')
+        .send()
+        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
+        .expect('Access-Control-Allow-Credentials', 'true')
+        .expect(204, done);
+    });
+
+    it('should support cors when errors happen', function(done) {
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3001')
+        .send({person: 'error'})
+        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
+        .expect('Access-Control-Allow-Credentials', 'true')
+        .expect(400, done);
+    });
+
+    it('should support cors when parsing errors happen', function(done) {
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3001')
+        .send('ABC') // invalid json
+        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
+        .expect('Access-Control-Allow-Credentials', 'true')
+        .expect(400, done);
     });
 
   });
@@ -209,7 +267,6 @@ describe('strong-remoting-rest', function(){
       function(done) {
       var method = givenSharedStaticMethod(
         function bar(a, b, cb) {
-          console.log(a, b, typeof b);
           cb(null, b.join('') + a);
         },
         {
