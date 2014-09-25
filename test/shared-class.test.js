@@ -1,3 +1,4 @@
+var assert = require('assert');
 var extend = require('util')._extend;
 var expect = require('chai').expect;
 var SharedClass = require('../lib/shared-class');

@@ -1,3 +1,4 @@
+var assert = require('assert');
 var extend = require('util')._extend;
 var inherits = require('util').inherits;
 var RemoteObjects = require('../');
