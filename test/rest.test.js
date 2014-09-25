@@ -1,10 +1,10 @@
+var assert = require('assert');
 var extend = require('util')._extend;
 var inherits = require('util').inherits;
 var RemoteObjects = require('../');
 var express = require('express');
 var request = require('supertest');
 var expect = require('chai').expect;
-var assert = require('assert');
 var factory = require('./helpers/shared-objects-factory.js');
 
 describe('strong-remoting-rest', function(){

@@ -1,3 +1,4 @@
+var assert = require('assert');
 var HttpInvocation = require('../lib/http-invocation');
 var SharedMethod = require('../lib/shared-method');
 var extend = require('util')._extend;

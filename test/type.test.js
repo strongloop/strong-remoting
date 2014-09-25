@@ -1,3 +1,4 @@
+var assert = require('assert');
 var Dynamic = require('../lib/dynamic');
 var RemoteObjects = require('../');
 
