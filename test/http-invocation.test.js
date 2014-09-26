@@ -11,7 +11,7 @@ describe('HttpInvocation', function() {
       var method = givenSharedStaticMethod({
         accepts: accepts
       });
-      var inv = new HttpInvocation(method, inputArgs);
+      var inv = new HttpInvocation(method, null, inputArgs);
       expect(inv.namedArgs).to.deep.equal(expectedNamedArgs);
     }
     
@@ -85,5 +85,5 @@ function givenSharedStaticMethod(fn, config) {
   var testClass = { testMethod: fn };
   config = extend({ shared: true }, config);
   extend(testClass.testMethod, config);
-  return SharedMethod.fromFunction(fn, 'testStaticMethodName');
+  return SharedMethod.fromFunction(fn, 'testStaticMethodName', null, true);
 }
