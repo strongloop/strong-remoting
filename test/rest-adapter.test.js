@@ -1,3 +1,4 @@
+var assert = require('assert');
 var extend = require('util')._extend;
 var inherits = require('util').inherits;
 var RemoteObjects = require('../');
@@ -70,6 +71,22 @@ describe('RestAdapter', function() {
 
     function getRestClasses() {
       return new RestAdapter(remotes).getClasses();
+    }
+  });
+  
+  describe('path normalization', function() {
+    it('fills `routes`', function() {
+      remotes.exports.testClass = factory.createSharedClass();
+      remotes.exports.testClass.http = { path: '/testClass', verb: 'any' };
+
+      var classes = getRestClasses();
+
+      expect(classes[0]).to.have.property('routes')
+        .eql([{ path: '/test-class', verb: 'any' }]);
+    });
+
+    function getRestClasses() {
+      return new RestAdapter(remotes, { normalizeHttpPath: true }).getClasses();
     }
   });
 

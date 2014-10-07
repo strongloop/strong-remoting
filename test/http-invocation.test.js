@@ -1,3 +1,4 @@
+var assert = require('assert');
 var HttpInvocation = require('../lib/http-invocation');
 var SharedMethod = require('../lib/shared-method');
 var extend = require('util')._extend;
@@ -10,7 +11,7 @@ describe('HttpInvocation', function() {
       var method = givenSharedStaticMethod({
         accepts: accepts
       });
-      var inv = new HttpInvocation(method, inputArgs);
+      var inv = new HttpInvocation(method, null, inputArgs);
       expect(inv.namedArgs).to.deep.equal(expectedNamedArgs);
     }
     
@@ -37,6 +38,40 @@ describe('HttpInvocation', function() {
         {a: 1}
       );
     });
+
+    describe('HttpContext.isAcceptable()', function() {
+      it('should accept an acceptable argument', function() {
+        var acceptable = HttpInvocation.isAcceptable(2, {
+          arg: 'foo',
+          type: 'number'
+        });
+        expect(acceptable).to.equal(true);
+      });
+
+      it('should always accept args when type is any', function() {
+        var acceptable = HttpInvocation.isAcceptable(2, {
+          arg: 'bar',
+          type: 'any'
+        });
+        expect(acceptable).to.equal(true);
+      });
+
+      it('should always accept args when type is complex', function() {
+        var acceptable = HttpInvocation.isAcceptable({}, {
+          arg: 'bar',
+          type: 'MyComplexType'
+        });
+        expect(acceptable).to.equal(true);
+      });
+
+      it('should accept null arg when type is complex', function() {
+        var acceptable = HttpInvocation.isAcceptable(null, {
+          arg: 'bar',
+          type: 'MyComplexType'
+        });
+        expect(acceptable).to.equal(true);
+      });
+    });
   });
 });
 
@@ -50,5 +85,5 @@ function givenSharedStaticMethod(fn, config) {
   var testClass = { testMethod: fn };
   config = extend({ shared: true }, config);
   extend(testClass.testMethod, config);
-  return SharedMethod.fromFunction(fn, 'testStaticMethodName');
+  return SharedMethod.fromFunction(fn, 'testStaticMethodName', null, true);
 }

@@ -1,3 +1,4 @@
+var assert = require('assert');
 var extend = require('util')._extend;
 var inherits = require('util').inherits;
 var RemoteObjects = require('../');
@@ -120,6 +121,87 @@ describe('strong-remoting-rest', function(){
 
   });
 
+  describe('cors', function() {
+    var method;
+    beforeEach(function() {
+      method = givenSharedStaticMethod(
+        function greet(person, cb) {
+          if (person === 'error') {
+            var err = new Error('error');
+            err.statusCode = 400;
+            cb(err);
+          } else {
+            cb(null, 'hello');
+          }
+        },
+        {
+          accepts: { arg: 'person', type: 'string' },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+    });
+
+    it('should support cors', function(done) {
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3001')
+        .send({person: 'ABC'})
+        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
+        .expect('Access-Control-Allow-Credentials', 'true')
+        .expect(200, done);
+    });
+
+    it('should skip cors if origin is the same as the request url', function(done) {
+      var server = request(app)['post'](method.url);
+      var url = server.url.replace('/testClass/testMethod', '');
+      server
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', url)
+        .send({person: 'ABC'})
+        .end(function(err, res) {
+          assert(res.headers['Access-Control-Allow-Origin'] === undefined);
+          assert(res.headers['Access-Control-Allow-Credentials'] === undefined);
+          done();
+        });
+    });
+
+    it('should support cors preflight', function(done) {
+      request(app)['options'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3001')
+        .send()
+        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
+        .expect('Access-Control-Allow-Credentials', 'true')
+        .expect(204, done);
+    });
+
+    it('should support cors when errors happen', function(done) {
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3001')
+        .send({person: 'error'})
+        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
+        .expect('Access-Control-Allow-Credentials', 'true')
+        .expect(400, done);
+    });
+
+    it('should support cors when parsing errors happen', function(done) {
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3001')
+        .send('ABC') // invalid json
+        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
+        .expect('Access-Control-Allow-Credentials', 'true')
+        .expect(400, done);
+    });
+
+  });
+
   describe('call of constructor method', function(){
     it('should work', function(done) {
       var method = givenSharedStaticMethod(
@@ -217,6 +299,45 @@ describe('strong-remoting-rest', function(){
 
       json(method.classUrl +'/?a=1&b=2')
         .expect({ n: 3 }, done);
+    });
+
+    it('should allow string[] arg in the query', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, b.join('') + a);
+        },
+        {
+          accepts: [
+            { arg: 'a', type: 'string' },
+            { arg: 'b', type: ['string'], http: {source: 'query' } }
+          ],
+          returns: { arg: 'n', type: 'string' },
+          http: { path: '/' }
+        }
+      );
+
+      json(method.classUrl +'/?a=z&b[0]=x&b[1]=y')
+        .expect({ n: 'xyz' }, done);
+    });
+
+    it('should allow string[] arg in the query with stringified value',
+      function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, b.join('') + a);
+        },
+        {
+          accepts: [
+            { arg: 'a', type: 'string' },
+            { arg: 'b', type: ['string'], http: {source: 'query' } }
+          ],
+          returns: { arg: 'n', type: 'string' },
+          http: { path: '/' }
+        }
+      );
+
+      json(method.classUrl +'/?a=z&b=["x", "y"]')
+        .expect({ n: 'xyz' }, done);
     });
 
     it('should allow custom argument functions', function(done) {
@@ -335,6 +456,57 @@ describe('strong-remoting-rest', function(){
         .expect({ n: 3 }, done);
     });
 
+    it('should allow arguments in the header', function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number', http: {source: 'header' } },
+            { arg: 'a', type: 'number', http: {source: 'header' } }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { verb: 'get', path: '/' }
+        }
+      );
+
+      request(app)['get'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('a', 1)
+        .set('b', 2)
+        .send()
+        .expect('Content-Type', /json/)
+        .expect({ n: 3 }, done);
+    });
+
+    it('should allow arguments in the header without http source',
+      function(done) {
+      var method = givenSharedStaticMethod(
+        function bar(a, b, cb) {
+          cb(null, a + b);
+        },
+        {
+          accepts: [
+            { arg: 'b', type: 'number' },
+            { arg: 'a', type: 'number' }
+          ],
+          returns: { arg: 'n', type: 'number' },
+          http: { verb: 'get', path: '/' }
+        }
+      );
+
+      request(app)['get'](method.classUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('a', 1)
+        .set('b', 2)
+        .send()
+        .expect('Content-Type', /json/)
+        .expect({ n: 3 }, done);
+    });
+
     it('should allow arguments from http req and res', function(done) {
       var method = givenSharedStaticMethod(
         function bar(req, res, cb) {
@@ -390,6 +562,19 @@ describe('strong-remoting-rest', function(){
       );
 
       json(method.url)
+        .expect(204, done);
+    });
+
+    it('should accept custom content-type header if respond with 204', function(done) {
+      var method = givenSharedStaticMethod();
+      objects.before(method.name, function(ctx, next) {
+        ctx.res.set('Content-Type', 'application/json; charset=utf-8; profile=http://example.org/');
+        next();
+      });
+
+      request(app).get(method.url)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', 'application/json; charset=utf-8; profile=http://example.org/')
         .expect(204, done);
     });
 
@@ -1066,6 +1251,198 @@ describe('strong-remoting-rest', function(){
           );
           
           objects.invoke(method.name, function(err) {
+            assert(err instanceof Error);
+            assert.equal(err.message, errMsg);
+            done();
+          });
+        });
+      });
+    });
+
+    describe('call of prototype method', function(){
+      it('should work', function(done) {
+        var method = givenSharedPrototypeMethod(
+          function greet(msg, cb) {
+            cb(null, this.id + ':' + msg);
+          },
+          {
+            accepts: { arg: 'person', type: 'string' },
+            returns: { arg: 'msg', type: 'string' }
+          }
+        );
+
+        var msg = 'hello';
+        objects.invoke(method.name, ['anId'], [msg], function(err, resMsg) {
+          assert.equal(resMsg, 'anId:' + msg);
+          done();
+        });
+      });
+
+      it('should allow arguments in the path', function(done) {
+        var method = givenSharedPrototypeMethod(
+          function bar(a, b, cb) {
+            cb(null, Number(this.id) + a + b);
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number' },
+              { arg: 'a', type: 'number', http: {source: 'path' } }
+            ],
+            returns: { arg: 'n', type: 'number' },
+            http: { path: '/:a' }
+          }
+        );
+
+        objects.invoke(method.name, [39], [1, 2], function(err, n) {
+          assert.equal(n, 42);
+          done();
+        });
+      });
+
+      it('should allow arguments in the query', function(done) {
+        var method = givenSharedPrototypeMethod(
+          function bar(a, b, cb) {
+            cb(null, Number(this.id) + a + b);
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number' },
+              { arg: 'a', type: 'number', http: {source: 'query' } }
+            ],
+            returns: { arg: 'n', type: 'number' },
+            http: { path: '/' }
+          }
+        );
+
+        objects.invoke(method.name, [39], [1, 2], function(err, n) {
+          assert.equal(n, 42);
+          done();
+        });
+      });
+
+      it('should pass undefined if the argument is not supplied', function (done) {
+        var called = false;
+        var method = givenSharedPrototypeMethod(
+          function bar(a, cb) {
+            called = true;
+            assert(a === undefined, 'a should be undefined');
+            cb();
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number' }
+            ]
+          }
+        );
+
+        objects.invoke(method.name, [39], [], function(err) {
+          assert(called);
+          done();
+        });
+      });
+
+      it('should allow arguments in the body', function(done) {
+        var method = givenSharedPrototypeMethod(
+          function bar(a, cb) {
+            cb(null, a);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'object', http: {source: 'body' }  }
+            ],
+            returns: { arg: 'data', type: 'object', root: true },
+            http: { path: '/' }
+          }
+        );
+
+        var obj = {
+          foo: 'bar'
+        };
+
+        objects.invoke(method.name, [39], [obj], function(err, data) {
+          expect(obj).to.deep.equal(data);
+          done();
+        });
+      });
+
+      it('should allow arguments in the body with date', function(done) {
+        var method = givenSharedPrototypeMethod(
+          function bar(a, cb) {
+            cb(null, a);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'object', http: {source: 'body' }  }
+            ],
+            returns: { arg: 'data', type: 'object', root: true },
+            http: { path: '/' }
+          }
+        );
+
+        var data = {date: {$type: 'date', $data: new Date()}};
+        objects.invoke(method.name, [39], [data], function(err, resData) {
+          expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
+          done();
+        });
+      });
+
+      it('should allow arguments in the form', function(done) {
+        var method = givenSharedPrototypeMethod(
+          function bar(a, b, cb) {
+            cb(null, Number(this.id) + a + b);
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number', http: {source: 'form' }  },
+              { arg: 'a', type: 'number', http: {source: 'form' } }
+            ],
+            returns: { arg: 'n', type: 'number' },
+            http: { path: '/' }
+          }
+        );
+
+        objects.invoke(method.name, [39], [1, 2], function(err, n) {
+          assert.equal(n, 42);
+          done();
+        });
+      });
+
+      it('should respond with correct args if returns has multiple args', function(done) {
+        var method = givenSharedPrototypeMethod(
+          function(a, b, cb) {
+            cb(null, this.id, a, b);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'number' },
+              { arg: 'b', type: 'number' }
+            ],
+            returns: [
+              { arg: 'id', type: 'string' },
+              { arg: 'a', type: 'number' },
+              { arg: 'b', type: 'number' }
+            ]
+          }
+        );
+
+        objects.invoke(method.name, ['39'], [1, 2], function(err, id, a, b) {
+          assert.equal(id, '39');
+          assert.equal(a, 1);
+          assert.equal(b, 2);
+          done();
+        });
+      });
+
+      describe('uncaught errors', function () {
+        it('should return 500 if an error object is thrown', function (done) {
+          var errMsg = 'an error';
+          var method = givenSharedPrototypeMethod(
+            function(a, b, cb) {
+              throw new Error(errMsg);
+            }
+          );
+
+          objects.invoke(method.name, ['39'], function(err) {
             assert(err instanceof Error);
             assert.equal(err.message, errMsg);
             done();

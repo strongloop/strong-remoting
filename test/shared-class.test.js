@@ -1,3 +1,4 @@
+var assert = require('assert');
 var extend = require('util')._extend;
 var expect = require('chai').expect;
 var SharedClass = require('../lib/shared-class');
@@ -18,6 +19,11 @@ describe('SharedClass', function() {
     it('fills http.path using the name', function() {
       var sc = new SharedClass('some', SomeClass);
       expect(sc.http.path).to.equal('/some');
+    });
+    
+    it('fills http.path using a normalized path', function() {
+      var sc = new SharedClass('SomeClass', SomeClass, { normalizeHttpPath: true });
+      expect(sc.http.path).to.equal('/some-class');
     });
 
     it('does not require a sharedConstructor', function() {
@@ -172,4 +178,39 @@ describe('SharedClass', function() {
       expect(classes).to.contain(CLASS_NAME);
     });
   });
+
+  describe('sharedClass.disableMethod(methodName, isStatic)', function () {
+    var sc;
+    var sm;
+    var METHOD_NAME = 'testMethod';
+    var INST_METHOD_NAME = 'instTestMethod';
+    var DYN_METHOD_NAME = 'dynMethod';
+
+    beforeEach(function() {
+      sc = new SharedClass('SomeClass', SomeClass);
+      sm = sc.defineMethod(METHOD_NAME, {isStatic: true});
+      sm = sc.defineMethod(INST_METHOD_NAME, {isStatic: false});
+      sc.resolve(function(define) {
+        define(DYN_METHOD_NAME, {isStatic: true});
+      });
+    });
+
+    it('excludes disabled static methods from the method list', function () {
+      sc.disableMethod(METHOD_NAME, true);
+      var methods = sc.methods().map(function(m) {return m.name});
+      expect(methods).to.not.contain(METHOD_NAME);
+    });
+
+    it('excludes disabled prototype methods from the method list', function () {
+      sc.disableMethod(INST_METHOD_NAME, false);
+      var methods = sc.methods().map(function(m) {return m.name});
+      expect(methods).to.not.contain(INST_METHOD_NAME);
+    });
+
+    it('excludes disabled dynamic (resolved) methods from the method list', function () {
+      sc.disableMethod(DYN_METHOD_NAME, true);
+      var methods = sc.methods().map(function(m) {return m.name});
+      expect(methods).to.not.contain(DYN_METHOD_NAME);
+    })
+;  });
 });

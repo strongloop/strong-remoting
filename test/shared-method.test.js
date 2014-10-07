@@ -1,3 +1,4 @@
+var assert = require('assert');
 var extend = require('util')._extend;
 var expect = require('chai').expect;
 var SharedMethod = require('../lib/shared-method');
@@ -37,6 +38,17 @@ describe('SharedMethod', function() {
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
       assert.equal(sharedMethod.isDelegateFor('myAlias', true), true);
       assert.equal(sharedMethod.isDelegateFor('myAlias', false), false);
+    });
+
+    it('checks if the given name is a string', function () {
+      var mockSharedClass = {};
+      var err;
+      try {
+        var sharedMethod = new SharedMethod(myFunction, Number, mockSharedClass);
+      } catch(e) {
+        err = e;
+      }
+      assert(err);
     });
   });
 });

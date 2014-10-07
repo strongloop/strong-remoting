@@ -1,3 +1,4 @@
+var assert = require('assert');
 var extend = require('util')._extend;
 var inherits = require('util').inherits;
 var RemoteObjects = require('../');
@@ -87,6 +88,27 @@ describe('strong-remoting-rest', function(){
           }
         );
         
+        objects.invoke(method.name, [1, 2], function(err, n) {
+          assert.equal(n, 3);
+          done();
+        });
+      });
+
+      it('should allow arguments in the header', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(a, b, cb) {
+            cb(null, a + b);
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number' },
+              { arg: 'a', type: 'number', http: {source: 'header' } }
+            ],
+            returns: { arg: 'n', type: 'number' },
+            http: { path: '/' }
+          }
+        );
+
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
