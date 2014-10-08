@@ -244,7 +244,7 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      xml(method.url + '?person=hello')
+      xml(method.url + '?person=["hello"]')
         .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <msg>hello</msg>\n</response>', done);
     });
 
@@ -259,7 +259,7 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      xml(method.url + '?person=hello')
+      xml(method.url + '?person=["hello"]')
         .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <result>hello</result>\n</response>', done);
     });
 
