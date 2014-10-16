@@ -1,3 +1,4 @@
+var assert = require('assert');
 var RemoteObjects = require('../');
 var express = require('express');
 var request = require('supertest');

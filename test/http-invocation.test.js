@@ -1,3 +1,4 @@
+var assert = require('assert');
 var HttpInvocation = require('../lib/http-invocation');
 var SharedMethod = require('../lib/shared-method');
 var extend = require('util')._extend;
@@ -10,7 +11,7 @@ describe('HttpInvocation', function() {
       var method = givenSharedStaticMethod({
         accepts: accepts
       });
-      var inv = new HttpInvocation(method, inputArgs);
+      var inv = new HttpInvocation(method, null, inputArgs);
       expect(inv.namedArgs).to.deep.equal(expectedNamedArgs);
     }
     
@@ -84,5 +85,5 @@ function givenSharedStaticMethod(fn, config) {
   var testClass = { testMethod: fn };
   config = extend({ shared: true }, config);
   extend(testClass.testMethod, config);
-  return SharedMethod.fromFunction(fn, 'testStaticMethodName');
+  return SharedMethod.fromFunction(fn, 'testStaticMethodName', null, true);
 }
