@@ -1,8 +1,10 @@
 .DS_Store
+.idea/
 *.seed
 *.log
 *.csv
 *.dat
+*.iml
 *.out
 *.pid
 *.swp

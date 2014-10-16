@@ -23,7 +23,8 @@
     "request": "~2.42.0",
     "browser-request": "~0.3.2",
     "qs": "~2.2.3",
-    "inflection": "~1.4.2"
+    "inflection": "~1.4.2",
+    "js2xmlparser": "~0.1.4"
   },
   "devDependencies": {
     "supertest": "~0.13.0",
