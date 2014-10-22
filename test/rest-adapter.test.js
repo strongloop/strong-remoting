@@ -308,10 +308,6 @@ describe('RestAdapter', function() {
 
     });
   });
-
-  describe('errorHandler', function() {
-
-  });
 });
 
 function someFunc() {
