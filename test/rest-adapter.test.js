@@ -73,7 +73,7 @@ describe('RestAdapter', function() {
       return new RestAdapter(remotes).getClasses();
     }
   });
-  
+
   describe('path normalization', function() {
     it('fills `routes`', function() {
       remotes.exports.testClass = factory.createSharedClass();
@@ -317,8 +317,6 @@ describe('RestAdapter', function() {
       ]);
 
     });
-
-
   });
 });
 

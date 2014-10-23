@@ -75,6 +75,30 @@ describe('strong-remoting-rest', function(){
         .expect(413, done);
     });
 
+    it('should allow custom error handlers', function(done) {
+      var called = false;
+      var method = givenSharedStaticMethod(
+        function(cb) {
+          cb(new Error('foo'));
+        }
+      );
+
+      objects.options.errorHandler.handler = function(err, req, res, next) {
+        expect(err.message).to.contain('foo');
+        var err = new Error('foobar');
+        called = true;
+        next(err);
+      }
+
+      request(app).get(method.url)
+        .expect('Content-Type', /json/)
+        .expect(500)
+        .end(expectErrorResponseContaining({message: 'foobar'}, function(err) {
+          expect(called).to.eql(true);
+          done(err);
+        }));
+    });
+
     it('should disable stack trace', function(done) {
       objects.options.errorHandler.disableStackTrace = true;
       var method = givenSharedStaticMethod(
