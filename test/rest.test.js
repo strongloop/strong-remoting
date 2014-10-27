@@ -8,7 +8,7 @@ var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
 
 describe('strong-remoting-rest', function(){
-  var app;
+  var app, appSupportingJsonOnly;
   var server;
   var objects;
   var remotes;
@@ -22,6 +22,16 @@ describe('strong-remoting-rest', function(){
       objects.handler(adapterName).apply(objects, arguments);
     });
     server = app.listen(done);
+  });
+
+  before(function(done) {
+    appSupportingJsonOnly = express();
+    appSupportingJsonOnly.use(function (req, res, next) {
+      // create the handler for each request
+      var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
+      objects.handler(adapterName, {supportedTypes: supportedTypes}).apply(objects, arguments);
+    });
+    server = appSupportingJsonOnly.listen(done);
   });
 
   // setup
@@ -715,6 +725,21 @@ describe('strong-remoting-rest', function(){
       }
     });
 
+    it('should respect supported types', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) {
+          cb(null, {key: 'value'});
+        },
+        {
+          returns: { arg: 'result', type: 'object' }
+        }
+      );
+      request(appSupportingJsonOnly).get(method.url)
+        .set('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(200, done);
+    });
+
     describe('uncaught errors', function () {
       it('should return 500 if an error object is thrown', function (done) {
         remotes.shouldThrow = {
@@ -1009,6 +1034,21 @@ describe('strong-remoting-rest', function(){
 
       json(method.getUrlForId('an-id') + '?a=1&b=2')
         .expect({ id: 'an-id', a: 1, b: 2 }, done);
+    });
+
+    it('should respect supported types', function(done) {
+      var method = givenSharedPrototypeMethod(
+        function(cb) {
+          cb(null, {key: 'value'});
+        },
+        {
+          returns: { arg: 'result', type: 'object' }
+        }
+      );
+      request(appSupportingJsonOnly).get(method.url)
+        .set('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(200, done);
     });
 
     it('should return 500 when method returns an error', function(done) {
