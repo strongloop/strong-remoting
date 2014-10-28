@@ -803,6 +803,62 @@ describe('strong-remoting-rest', function(){
     });
   });
 
+  describe('call of static method with asynchronous hook', function() {
+    beforeEach(function() {
+      // This simulate the ACL hook
+      objects.before('**', function(ctx, next, method) {
+        process.nextTick(next);
+      });
+    });
+
+    describe('uncaught errors', function() {
+      it('should return 500 if an error object is thrown', function(done) {
+        remotes.shouldThrow = {
+          bar: function(fn) {
+            throw new Error('an error');
+          }
+        };
+
+        var fn = remotes.shouldThrow.bar;
+        fn.shared = true;
+
+        json('get', '/shouldThrow/bar?a=1&b=2')
+          .expect(500)
+          .end(expectErrorResponseContaining({message: 'an error'}, done));
+      });
+
+      it('should return 500 if an error string is thrown', function(done) {
+        remotes.shouldThrow = {
+          bar: function(fn) {
+            throw 'an error';
+          }
+        };
+
+        var fn = remotes.shouldThrow.bar;
+        fn.shared = true;
+
+        json('get', '/shouldThrow/bar?a=1&b=2')
+          .expect(500)
+          .end(expectErrorResponseContaining({message: 'an error'}, done));
+      });
+    });
+
+    it('should return 500 when method returns an error', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) {
+          cb(new Error('test-error'));
+        }
+      );
+
+      // Send a plain, non-json request to make sure the error handler
+      // always returns a json response.
+      request(app).get(method.url)
+        .expect('Content-Type', /json/)
+        .expect(500)
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
+    });
+  });
+
   describe('call of prototype method', function(){
     it('should work', function(done) {
       var method = givenSharedPrototypeMethod(
