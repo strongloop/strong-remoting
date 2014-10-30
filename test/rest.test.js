@@ -8,7 +8,7 @@ var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
 
 describe('strong-remoting-rest', function(){
-  var app;
+  var app, appSupportingJsonOnly;
   var server;
   var objects;
   var remotes;
@@ -22,6 +22,16 @@ describe('strong-remoting-rest', function(){
       objects.handler(adapterName).apply(objects, arguments);
     });
     server = app.listen(done);
+  });
+
+  before(function(done) {
+    appSupportingJsonOnly = express();
+    appSupportingJsonOnly.use(function (req, res, next) {
+      // create the handler for each request
+      var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
+      objects.handler(adapterName, {supportedTypes: supportedTypes}).apply(objects, arguments);
+    });
+    server = appSupportingJsonOnly.listen(done);
   });
 
   // setup
@@ -715,6 +725,227 @@ describe('strong-remoting-rest', function(){
       }
     });
 
+    it('should respect supported types', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) {
+          cb(null, {key: 'value'});
+        },
+        {
+          returns: { arg: 'result', type: 'object' }
+        }
+      );
+      request(appSupportingJsonOnly).get(method.url)
+        .set('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(200, done);
+    });
+
+    describe('xml support', function() {
+
+      it('should produce xml from json objects', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(a, cb) {
+            cb(null, a);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'object', http: {source: 'body' }  }
+            ],
+            returns: { arg: 'data', type: 'object', root: true },
+            http: { path: '/' }
+          }
+        );
+
+        request(app)['post'](method.classUrl)
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send('{"x": 1, "y": "Y"}')
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            expect(res.text).to.equal('<?xml version="1.0" encoding="UTF-8"?>\n' +
+              '<response>\n  <x>1</x>\n  <y>Y</y>\n</response>');
+            done(err, res);
+          });
+      });
+
+      it('should produce xml from json array', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(cb) {
+            cb(null, [1, 2, 3]);
+          },
+          {
+            returns: { arg: 'data', type: ['number'], root: true },
+            http: { path: '/', verb: 'get'}
+          }
+        );
+
+        request(app)['get'](method.classUrl)
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send('{"x": 1, "y": "Y"}')
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            expect(res.text).to.equal('<?xml version=\"1.0\" ' +
+              'encoding=\"UTF-8\"?>\n<response>\n  <result>1</result>\n  ' +
+              '<result>2</result>\n  <result>3</result>\n</response>');
+            done(err, res);
+          });
+      });
+
+      it('should produce xml from json objects with toJSON()', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(a, cb) {
+            var result = a;
+            a.toJSON = function() {
+              return {
+                foo: a.y,
+                bar: a.x
+              };
+            };
+            cb(null, a);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'object', http: {source: 'body' }  }
+            ],
+            returns: { arg: 'data', type: 'object', root: true },
+            http: { path: '/' }
+          }
+        );
+
+        request(app)['post'](method.classUrl)
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send('{"x": 1, "y": "Y"}')
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            expect(res.text).to.equal('<?xml version="1.0" encoding="UTF-8"?>\n' +
+              '<response>\n  <foo>Y</foo>\n  <bar>1</bar>\n</response>');
+            done(err, res);
+          });
+      });
+
+      it('should produce xml from json objects with toJSON() inside an array',
+        function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(a, cb) {
+            a.toJSON = function() {
+              return {
+                foo: a.y,
+                bar: a.x
+              };
+            };
+            cb(null, [a, {c: 1}]);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'object', http: {source: 'body' }  }
+            ],
+            returns: { arg: 'data', type: 'object', root: true },
+            http: { path: '/' }
+          }
+        );
+
+        request(app)['post'](method.classUrl)
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send('{"x": 1, "y": "Y"}')
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            expect(res.text).to.equal('<?xml version=\"1.0\" ' +
+              'encoding=\"UTF-8\"?>\n<response>\n  <result>\n    ' +
+              '<foo>Y</foo>\n    <bar>1</bar>\n  </result>\n  <result>\n    ' +
+              '<c>1</c>\n  </result>\n</response>');
+            done(err, res);
+          });
+      });
+
+      it('should produce xml from json objects with toXML()', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(a, cb) {
+            var result = a;
+            a.toXML = function() {
+              return '<?xml version="1.0" encoding="UTF-8"?>' +
+                '<root><x>10</x></root>';
+            };
+            cb(null, a);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'object', http: {source: 'body' }  }
+            ],
+            returns: { arg: 'data', type: 'object', root: true },
+            http: { path: '/' }
+          }
+        );
+
+        request(app)['post'](method.classUrl)
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send('{"x": 1, "y": "Y"}')
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            expect(res.text).to.equal('<?xml version="1.0" encoding="UTF-8"?>' +
+              '<root><x>10</x></root>');
+            done(err, res);
+          });
+      });
+    });
+
+    describe('_format support', function() {
+
+      it('should produce xml if _format is xml', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(a, cb) {
+            cb(null, a);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'object', http: {source: 'body' }  }
+            ],
+            returns: { arg: 'data', type: 'object', root: true },
+            http: { path: '/' }
+          }
+        );
+
+        request(app)['post'](method.classUrl+'?_format=xml')
+          .set('Accept', '*/*')
+          .set('Content-Type', 'application/json')
+          .send('{"x": 1, "y": "Y"}')
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            expect(res.text).to.equal('<?xml version="1.0" encoding="UTF-8"?>\n' +
+              '<response>\n  <x>1</x>\n  <y>Y</y>\n</response>');
+            done(err, res);
+          });
+      });
+
+      it('should produce json if _format is json', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(a, cb) {
+            cb(null, a);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'object', http: {source: 'body' }  }
+            ],
+            returns: { arg: 'data', type: 'object', root: true },
+            http: { path: '/' }
+          }
+        );
+
+        request(app)['post'](method.classUrl+'?_format=json')
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send('{"x": 1, "y": "Y"}')
+          .expect('Content-Type', /json/)
+          .expect(200, function(err, res) {
+            expect(res.body).to.deep.equal({x: 1, y: 'Y'});
+            done(err, res);
+          });
+      });
+    });
+
     describe('uncaught errors', function () {
       it('should return 500 if an error object is thrown', function (done) {
         remotes.shouldThrow = {
@@ -1009,6 +1240,21 @@ describe('strong-remoting-rest', function(){
 
       json(method.getUrlForId('an-id') + '?a=1&b=2')
         .expect({ id: 'an-id', a: 1, b: 2 }, done);
+    });
+
+    it('should respect supported types', function(done) {
+      var method = givenSharedPrototypeMethod(
+        function(cb) {
+          cb(null, {key: 'value'});
+        },
+        {
+          returns: { arg: 'result', type: 'object' }
+        }
+      );
+      request(appSupportingJsonOnly).get(method.url)
+        .set('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(200, done);
     });
 
     it('should return 500 when method returns an error', function(done) {
