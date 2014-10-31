@@ -141,6 +141,32 @@ describe('strong-remoting-rest', function(){
         .end(expectErrorResponseContaining({message: 'test-error'}, ['stack'], done));
     });
 
+    it('should configure custom REST content types', function(done) {
+      var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
+      objects.options.rest = { supportedTypes: supportedTypes };
+
+      var method = givenSharedStaticMethod(
+        function(cb) {
+          cb(null, {key: 'value'});
+        },
+        {
+          returns: { arg: 'result', type: 'object' }
+        }
+      );
+
+      var browserAcceptHeader = [
+        'text/html',
+        'application/xhtml+xml',
+        'application/xml;q=0.9',
+        'image/webp',
+        '*/*;q=0.8'
+      ].join(',');
+
+      request(app).get(method.url)
+        .set('Accept', browserAcceptHeader)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(200, done);
+    });
   });
 
   describe('cors', function() {
