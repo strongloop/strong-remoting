@@ -78,14 +78,18 @@ describe('strong-remoting-jsonrpc', function () {
       });
 
       it('should support calling object methods', function (done) {
-        jsonrpc('/mathematic/jsonrpc', 'sum', {'numB':9,'numA':2})
+         jsonrpc('/user/jsonrpc', 'greet', ['JS'])
+          .expect({"jsonrpc": "2.0", "id": 1, "result": "JS"}, function(err,data){
+            console.log(arguments);
+            done(err)
+          });
+      
+      });
+      it('Should successfully call a method with named parameters',function(done){
+         jsonrpc('/mathematic/jsonrpc', 'sum', {'numB':9,'numA':2})
           .expect({"jsonrpc": "2.0", "id": 1, "result": 11}, function(err,data){
             done(err)
           });
-      });
-      it('Should successfully call a method with named parameters',function(done){
-        jsonrpc('/user/jsonrpc', 'greet', ['JS'])
-          .expect({"jsonrpc": "2.0", "id": 1, "result": "JS"}, done);
       });
       it('should support a remote method using shared method', function (done) {
         jsonrpc('/product/jsonrpc', 'getPrice', [])
