@@ -225,6 +225,61 @@ describe('strong-remoting-rest', function(){
           done();
         });
       });
+
+      it('should allow and return falsy required arguments of correct type', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(num, str, bool, cb) {
+            cb(null, num, str, bool);
+          },
+          {
+            accepts: [
+              { arg: 'num', type: 'number', required: true },
+              { arg: 'str', type: 'string', required: true },
+              { arg: 'bool', type: 'boolean', required: true }
+            ],
+            returns: [
+              { arg: 'num', type: 'number' },
+              { arg: 'str', type: 'string' },
+              { arg: 'bool', type: 'boolean' }
+            ],
+            http: { path: '/' }
+          }
+        );
+        
+        objects.invoke(method.name, [0, '', false], function(err, a, b, c) {
+          expect(err).to.not.be.an.instanceof(Error);
+          assert.equal(a, 0);
+          assert.equal(b, '');
+          assert.equal(c, false);
+          done();
+        });
+      });
+
+      it('should reject falsy required arguments of incorrect type', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(num, str, bool, cb) {
+            cb(null, num, str, bool);
+          },
+          {
+            accepts: [
+              { arg: 'num', type: 'number', required: true },
+              { arg: 'str', type: 'string', required: true },
+              { arg: 'bool', type: 'boolean', required: true }
+            ],
+            returns: [
+              { arg: 'num', type: 'number' },
+              { arg: 'str', type: 'string' },
+              { arg: 'bool', type: 'boolean' }
+            ],            
+            http: { path: '/' }
+          }
+        );
+        
+        objects.invoke(method.name, ['', false, 0], function(err, a, b, c) {
+          expect(err).to.be.an.instanceof(Error);
+          done();
+        });
+      });
       
       describe('uncaught errors', function () {
         it('should return 500 if an error object is thrown', function (done) {
