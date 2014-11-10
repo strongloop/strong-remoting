@@ -80,7 +80,6 @@ describe('strong-remoting-jsonrpc', function () {
       it('should support calling object methods', function (done) {
          jsonrpc('/user/jsonrpc', 'greet', ['JS'])
           .expect({"jsonrpc": "2.0", "id": 1, "result": "JS"}, function(err,data){
-            console.log(arguments);
             done(err)
           });
       
