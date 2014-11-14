@@ -7,6 +7,8 @@ var request = require('supertest');
 var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
 
+var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
+
 describe('strong-remoting-rest', function(){
   var app, appSupportingJsonOnly;
   var server;
@@ -166,6 +168,62 @@ describe('strong-remoting-rest', function(){
         .set('Accept', browserAcceptHeader)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200, done);
+    });
+
+    it('should disable XML content types by default', function(done) {
+      delete objects.options.rest;
+
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, { key: 'value' }); },
+        { returns: { arg: 'result', type: 'object' } }
+      );
+
+      request(app).get(method.url)
+        .set('Accept', ACCEPT_XML_OR_ANY)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(done);
+    });
+
+    it('should enable XML types via `options.rest.xml`', function(done) {
+      objects.options.rest = { xml: true };
+
+      var method = givenSharedStaticMethod(
+        function(value, cb) { cb(null, { key: value }); },
+        {
+          accepts: { arg: 'value', type: 'string' },
+          returns: { arg: 'result', type: 'object' }
+        });
+
+      request(app).post(method.url)
+        .set('Accept', ACCEPT_XML_OR_ANY)
+        .set('Content-Type', 'application/json')
+        .send({ value: 'some-value' })
+        .expect(200)
+        .expect('Content-Type', /xml/)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.text.replace(/>\s+</mg, '><')).to.equal(
+            '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<response><result><key>some-value</key></result></response>'
+          );
+          done();
+        });
+    });
+
+    it('should enable XML via `options.rest.supportedTypes`', function(done) {
+      objects.options.rest = { supportedTypes: ['application/xml'] };
+
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, 'value'); },
+        { returns: { arg: 'result', type: 'object' } }
+      );
+
+      request(app).post(method.url)
+        .set('Accept', ACCEPT_XML_OR_ANY)
+        .expect(200)
+        .expect('Content-Type', /xml/)
+        .end(done);
     });
   });
 
@@ -767,6 +825,10 @@ describe('strong-remoting-rest', function(){
     });
 
     describe('xml support', function() {
+      beforeEach(function enableXmlSupport() {
+        objects.options.rest = objects.options.rest || {};
+        objects.options.rest.xml = true;
+      });
 
       it('should produce xml from json objects', function(done) {
         var method = givenSharedStaticMethod(
