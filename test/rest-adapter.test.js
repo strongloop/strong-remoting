@@ -137,6 +137,16 @@ describe('RestAdapter', function() {
       expect(method.notes).to.equal('some-notes');
     });
 
+    it('has `documented`', function() {
+      var method = givenRestStaticMethod({ documented: false });
+      expect(method.documented).to.equal(false);
+    });
+
+    it('has `documented:true` by default', function() {
+      var method = givenRestStaticMethod();
+      expect(method.documented).to.equal(true);
+    });
+
     describe('isReturningArray()', function() {
       it('returns true when there is single root Array arg', function() {
         var method = givenRestStaticMethod({
