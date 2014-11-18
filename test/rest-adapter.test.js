@@ -256,7 +256,6 @@ describe('RestAdapter', function() {
       return new RestAdapter.RestMethod(restClass, sharedMethod);
     }
   });
-
   describe('sortRoutes', function() {
     it('should sort routes based on verb & path', function() {
       var routes = [

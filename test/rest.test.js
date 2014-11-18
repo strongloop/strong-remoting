@@ -126,23 +126,33 @@ describe('strong-remoting-rest', function(){
         .expect(500)
         .end(expectErrorResponseContaining({message: 'test-error'}, ['stack'], done));
     });
-
-    it('should disable stack trace', function(done) {
-      process.env.NODE_ENV = 'production';
-      var method = givenSharedStaticMethod(
-        function(cb) {
-          cb(new Error('test-error'));
-        }
-      );
-
-      // Send a plain, non-json request to make sure the error handler
-      // always returns a json response.
-      request(app).get(method.url)
-        .expect('Content-Type', /json/)
-        .expect(500)
-        .end(expectErrorResponseContaining({message: 'test-error'}, ['stack'], done));
+    describe('Not Found handling',function(){
+      it('Should be able to turn off url not found',function(done){
+        objects.options.rest={handleUrlNotFound:false,handleMethodNotFound:false};
+        var url='/thisUrlDoesNotExists/someMethod';
+         var errorString='Cannot GET '+url;
+        request(app).get(url)
+        .expect(404)
+        .end(function(status,res){
+          expect(res.text.indexOf(errorString)).to.be.at.least(0);
+          
+          done()
+        });
+      });
+      it('Should be able to turn off method not found',function(done){
+        objects.options.rest={handleMethodNotFound:true};
+        var url='/thisUrlDoesNotExists/someMethod';
+         var errorString='Cannot GET '+url;
+        request(app).get(url)
+        .expect(404)
+        .end(function(status,res){
+          var errorData=JSON.parse(res.text);
+          //Checking the existance of a message and not the message
+          expect(errorData.error.message).to.exist;
+          done()
+        });
+      });
     });
-
     it('should configure custom REST content types', function(done) {
       var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
       objects.options.rest = { supportedTypes: supportedTypes };
@@ -169,6 +179,8 @@ describe('strong-remoting-rest', function(){
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200, done);
     });
+
+
 
     it('should disable XML content types by default', function(done) {
       delete objects.options.rest;
