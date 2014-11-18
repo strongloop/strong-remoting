@@ -203,8 +203,6 @@ describe('strong-remoting-rest', function(){
         .expect(200, done);
     });
 
-
-
     it('should disable XML content types by default', function(done) {
       delete objects.options.rest;
 
