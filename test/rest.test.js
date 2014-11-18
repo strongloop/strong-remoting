@@ -126,7 +126,7 @@ describe('strong-remoting-rest', function(){
         .expect(500)
         .end(expectErrorResponseContaining({message: 'test-error'}, ['stack'], done));
     });
-    
+
     it('should disable stack trace', function(done) {
       process.env.NODE_ENV = 'production';
       var method = givenSharedStaticMethod(
