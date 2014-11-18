@@ -141,8 +141,16 @@ describe('strong-remoting-rest', function(){
       });
       it('Should be able to turn off method not found',function(done){
         objects.options.rest={handleMethodNotFound:true};
-        var url='/thisUrlDoesNotExists/someMethod';
-         var errorString='Cannot GET '+url;
+
+        var method = givenSharedStaticMethod(
+          function(cb) {
+            cb(null, {key: 'value'});
+          },
+          {
+            returns: { arg: 'result', type: 'object' }
+          }
+        );
+        var url=  method.classUrl+'/thisMethodDoesNotExist';
         request(app).get(url)
         .expect(404)
         .end(function(status,res){
