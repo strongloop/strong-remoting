@@ -155,6 +155,32 @@ describe('strong-remoting-rest', function(){
         .end(expectErrorResponseContaining({message: 'test-error'}, ['stack'], done));
     });
 
+    it('should turn off url-not-found handler', function(done) {
+      objects.options.rest = { handleUnknownPaths: false };
+      app.use(function(req, res, next) {
+        res.send(404, 'custom-not-found');
+      });
+
+      request(app).get('/thisUrlDoesNotExists/someMethod')
+        .expect(404)
+        .expect('custom-not-found')
+        .end(done);
+    });
+
+    it('should turn off method-not-found handler',function(done){
+      var method = givenSharedStaticMethod();
+
+      objects.options.rest = { handleUnknownPaths: false };
+      app.use(function(req, res, next) {
+        res.send(404, 'custom-not-found');
+      });
+
+      request(app).get(method.classUrl+'/thisMethodDoesNotExist')
+        .expect(404)
+        .expect('custom-not-found')
+        .end(done);
+    });
+
     it('should configure custom REST content types', function(done) {
       var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
       objects.options.rest = { supportedTypes: supportedTypes };
