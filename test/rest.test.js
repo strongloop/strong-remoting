@@ -1899,7 +1899,7 @@ describe('strong-remoting-rest', function(){
     });
   });
 
-  function givenSharedStaticMethod(fn, config) {
+  function givenSharedStaticMethod(fn, config, version) {
     if (typeof fn === 'object' && config === undefined) {
       config = fn;
       fn = null;
@@ -1907,6 +1907,9 @@ describe('strong-remoting-rest', function(){
     fn = fn || function(cb) { cb(); };
 
     remotes.testClass = { testMethod: fn };
+    if (version) {
+      remotes.testClass.version = '1.0';
+    }
     config = extend({ shared: true }, config);
     extend(remotes.testClass.testMethod, config);
     return {
@@ -1991,6 +1994,26 @@ describe('strong-remoting-rest', function(){
       expect(methodNames.length).to.equal(1);
       done();
 
+  });
+
+  it('mount a model to the versioned path', function(done) {
+    var method = givenSharedStaticMethod(
+      function bar(a, b, cb) {
+        cb(null, a + b);
+      },
+      {
+        accepts: [
+          { arg: 'b', type: 'number' },
+          { arg: 'a', type: 'number', http: {source: 'query' } }
+        ],
+        returns: { arg: 'n', type: 'number' },
+        http: { path: '/' }
+      },
+      '1.0'
+    );
+
+    json(method.classUrl +'/v1.0?a=1&b=2')
+      .expect({ n: 3 }, done);
   });
 
 });
