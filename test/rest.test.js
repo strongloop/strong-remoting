@@ -61,6 +61,18 @@ describe('strong-remoting-rest', function(){
       .expect('Content-Type', /json/);
   }
 
+  function xml(method, url) {
+    if (url === undefined) {
+      url = method;
+      method = 'get';
+    }
+
+    return request(app)[method](url)
+      .set('Accept', 'application/xml')
+      .set('Content-Type', 'application/xml')
+      .expect('Content-Type', /xml/);
+  }
+
   describe('remoting options', function(){
     // The 1kb limit is set by RemoteObjects.create({json: {limit: '1kb'}});
     it('should reject json payload larger than 1kb', function(done) {
@@ -308,7 +320,14 @@ describe('strong-remoting-rest', function(){
 
   });
 
+  function enableXmlSupport() {
+    objects.options.rest = objects.options.rest || {};
+    objects.options.rest.xml = true;
+  }
+
   describe('call of constructor method', function(){
+    beforeEach(enableXmlSupport);
+
     it('should work', function(done) {
       var method = givenSharedStaticMethod(
         function greet(msg, cb) {
@@ -336,7 +355,8 @@ describe('strong-remoting-rest', function(){
       );
 
       xml(method.url + '?person=hello')
-        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <msg>hello</msg>\n</response>', done);
+        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  ' +
+          '<msg>hello</msg>\n</response>', done);
     });
 
     it('should handle returns of array', function(done) {
@@ -350,8 +370,9 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      xml(method.url + '?person=hello')
-        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <msg>hello</msg>\n</response>', done);
+      xml(method.url + '?person=["hello"]')
+        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  ' +
+          '<msg>hello</msg>\n</response>', done);
     });
 
     it('should handle returns of array to XML', function(done) {
@@ -365,8 +386,9 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      xml(method.url + '?person=hello')
-        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  <result>hello</result>\n</response>', done);
+      xml(method.url + '?person=["hello"]')
+        .expect(200, '<?xml version="1.0" encoding="UTF-8"?>\n<response>\n  ' +
+          '<result>hello</result>\n</response>', done);
     });
 
     it('should allow arguments in the path', function(done) {
@@ -870,10 +892,7 @@ describe('strong-remoting-rest', function(){
     });
 
     describe('xml support', function() {
-      beforeEach(function enableXmlSupport() {
-        objects.options.rest = objects.options.rest || {};
-        objects.options.rest.xml = true;
-      });
+      beforeEach(enableXmlSupport);
 
       it('should produce xml from json objects', function(done) {
         var method = givenSharedStaticMethod(
