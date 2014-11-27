@@ -8,7 +8,7 @@ describe('SharedMethod', function() {
   describe('sharedMethod.isDelegateFor(suspect, [isStatic])', function () {
 
     // stub function
-    function myFunction() {};
+    function myFunction() {}
 
     it('checks if the given function is going to be invoked', function () {
       var mockSharedClass = {};

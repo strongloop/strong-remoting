@@ -31,7 +31,8 @@ describe('strong-remoting-rest', function(){
     appSupportingJsonOnly.use(function (req, res, next) {
       // create the handler for each request
       var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
-      objects.handler(adapterName, {supportedTypes: supportedTypes}).apply(objects, arguments);
+      var opts = { supportedTypes: supportedTypes };
+      objects.handler(adapterName, opts).apply(objects, arguments);
     });
     server = appSupportingJsonOnly.listen(done);
   });
@@ -87,12 +88,12 @@ describe('strong-remoting-rest', function(){
       );
 
       // Build an object that is larger than 1kb
-      var name = "";
+      var name = '';
       for (var i = 0; i < 2048; i++) {
-        name += "11111111111";
+        name += '11111111111';
       }
 
-      request(app)['post'](method.url)
+      request(app).post(method.url)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .send(name)
@@ -109,10 +110,10 @@ describe('strong-remoting-rest', function(){
 
       objects.options.errorHandler.handler = function(err, req, res, next) {
         expect(err.message).to.contain('foo');
-        var err = new Error('foobar');
+        err = new Error('foobar');
         called = true;
         next(err);
-      }
+      };
 
       request(app).get(method.url)
         .expect('Content-Type', /json/)
@@ -286,7 +287,7 @@ describe('strong-remoting-rest', function(){
     });
 
     it('should support cors', function(done) {
-      request(app)['post'](method.url)
+      request(app).post(method.url)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Origin', 'http://localhost:3001')
@@ -297,7 +298,7 @@ describe('strong-remoting-rest', function(){
     });
 
     it('should skip cors if origin is the same as the request url', function(done) {
-      var server = request(app)['post'](method.url);
+      var server = request(app).post(method.url);
       var url = server.url.replace('/testClass/testMethod', '');
       server
         .set('Accept', 'application/json')
@@ -312,7 +313,7 @@ describe('strong-remoting-rest', function(){
     });
 
     it('should support cors preflight', function(done) {
-      request(app)['options'](method.url)
+      request(app).options(method.url)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Origin', 'http://localhost:3001')
@@ -323,7 +324,7 @@ describe('strong-remoting-rest', function(){
     });
 
     it('should support cors when errors happen', function(done) {
-      request(app)['post'](method.url)
+      request(app).post(method.url)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Origin', 'http://localhost:3001')
@@ -334,7 +335,7 @@ describe('strong-remoting-rest', function(){
     });
 
     it('should support cors when parsing errors happen', function(done) {
-      request(app)['post'](method.url)
+      request(app).post(method.url)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Origin', 'http://localhost:3001')
@@ -550,13 +551,13 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      request(app)['post'](method.classUrl)
+      request(app).post(method.classUrl)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .send('{"x": 1, "y": "Y"}')
         .expect('Content-Type', /json/)
         .expect(200, function(err, res){
-          expect(res.body).to.deep.equal({"x": 1, "y": "Y"});
+          expect(res.body).to.deep.equal({'x': 1, 'y': 'Y'});
           done(err, res);
         });
     });
@@ -576,7 +577,7 @@ describe('strong-remoting-rest', function(){
       );
 
       var data = {date: {$type: 'date', $data: new Date()}};
-      request(app)['post'](method.classUrl)
+      request(app).post(method.classUrl)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .send(data)
@@ -602,7 +603,7 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      request(app)['post'](method.classUrl)
+      request(app).post(method.classUrl)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send('a=1&b=2')
@@ -625,7 +626,7 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      request(app)['get'](method.classUrl)
+      request(app).get(method.classUrl)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('a', 1)
@@ -651,7 +652,7 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      request(app)['get'](method.classUrl)
+      request(app).get(method.classUrl)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('a', 1)
@@ -675,13 +676,13 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      request(app)['post'](method.classUrl)
+      request(app).post(method.classUrl)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .send('{"x": 1, "y": "Y"}')
         .expect('Content-Type', /json/)
         .expect(200, function(err, res){
-          expect(res.body).to.deep.equal({"x": 1, "y": "Y"});
+          expect(res.body).to.deep.equal({'x': 1, 'y': 'Y'});
           done(err, res);
         });
     });
@@ -699,13 +700,13 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      request(app)['post'](method.classUrl)
+      request(app).post(method.classUrl)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .send('{"x": 1, "y": "Y"}')
         .expect('Content-Type', /json/)
         .expect(200, function(err, res){
-          expect(res.body).to.deep.equal({"x": 1, "y": "Y"});
+          expect(res.body).to.deep.equal({'x': 1, 'y': 'Y'});
           done(err, res);
         });
     });
@@ -722,13 +723,15 @@ describe('strong-remoting-rest', function(){
     it('should accept custom content-type header if respond with 204', function(done) {
       var method = givenSharedStaticMethod();
       objects.before(method.name, function(ctx, next) {
-        ctx.res.set('Content-Type', 'application/json; charset=utf-8; profile=http://example.org/');
+        ctx.res.set('Content-Type',
+          'application/json; charset=utf-8; profile=http://example.org/');
         next();
       });
 
       request(app).get(method.url)
         .set('Accept', 'application/json')
-        .expect('Content-Type', 'application/json; charset=utf-8; profile=http://example.org/')
+        .expect('Content-Type',
+          'application/json; charset=utf-8; profile=http://example.org/')
         .expect(204, done);
     });
 
@@ -912,7 +915,8 @@ describe('strong-remoting-rest', function(){
         }
       );
       request(appSupportingJsonOnly).get(method.url)
-        .set('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        .set('Accept',
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200, done);
     });
@@ -934,7 +938,7 @@ describe('strong-remoting-rest', function(){
           }
         );
 
-        request(app)['post'](method.classUrl)
+        request(app).post(method.classUrl)
           .set('Accept', 'application/xml')
           .set('Content-Type', 'application/json')
           .send('{"x": 1, "y": "Y"}')
@@ -957,7 +961,7 @@ describe('strong-remoting-rest', function(){
           }
         );
 
-        request(app)['get'](method.classUrl)
+        request(app).get(method.classUrl)
           .set('Accept', 'application/xml')
           .set('Content-Type', 'application/json')
           .send('{"x": 1, "y": "Y"}')
@@ -991,7 +995,7 @@ describe('strong-remoting-rest', function(){
           }
         );
 
-        request(app)['post'](method.classUrl)
+        request(app).post(method.classUrl)
           .set('Accept', 'application/xml')
           .set('Content-Type', 'application/json')
           .send('{"x": 1, "y": "Y"}')
@@ -1024,7 +1028,7 @@ describe('strong-remoting-rest', function(){
           }
         );
 
-        request(app)['post'](method.classUrl)
+        request(app).post(method.classUrl)
           .set('Accept', 'application/xml')
           .set('Content-Type', 'application/json')
           .send('{"x": 1, "y": "Y"}')
@@ -1057,7 +1061,7 @@ describe('strong-remoting-rest', function(){
           }
         );
 
-        request(app)['post'](method.classUrl)
+        request(app).post(method.classUrl)
           .set('Accept', 'application/xml')
           .set('Content-Type', 'application/json')
           .send('{"x": 1, "y": "Y"}')
@@ -1086,7 +1090,7 @@ describe('strong-remoting-rest', function(){
           }
         );
 
-        request(app)['post'](method.classUrl+'?_format=xml')
+        request(app).post(method.classUrl+'?_format=xml')
           .set('Accept', '*/*')
           .set('Content-Type', 'application/json')
           .send('{"x": 1, "y": "Y"}')
@@ -1112,7 +1116,7 @@ describe('strong-remoting-rest', function(){
           }
         );
 
-        request(app)['post'](method.classUrl+'?_format=json')
+        request(app).post(method.classUrl+'?_format=json')
           .set('Accept', 'application/xml')
           .set('Content-Type', 'application/json')
           .send('{"x": 1, "y": "Y"}')
@@ -1129,7 +1133,6 @@ describe('strong-remoting-rest', function(){
         remotes.shouldThrow = {
           bar: function (fn) {
             throw new Error('an error');
-            fn(null);
           }
         };
 
@@ -1145,7 +1148,6 @@ describe('strong-remoting-rest', function(){
         remotes.shouldThrow = {
           bar: function (fn) {
             throw 'an error';
-            fn(null);
           }
         };
 
@@ -1334,7 +1336,7 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      request(app)['get'](method.classUrl + '/1?callback=boo')
+      request(app).get(method.classUrl + '/1?callback=boo')
         .set('Accept', 'application/javascript')
         .expect('Content-Type', /javascript/)
         .expect('/**/ typeof boo === \'function\' && boo(1);', done);
@@ -1354,7 +1356,7 @@ describe('strong-remoting-rest', function(){
         }
       );
 
-      request(app)['get'](method.classUrl + '/1?callback=boo')
+      request(app).get(method.classUrl + '/1?callback=boo')
         .set('Accept', 'application/javascript')
         .expect('Content-Type', /javascript/)
         .expect('/**/ typeof boo === \'function\' && boo(null);', done);
@@ -1430,7 +1432,8 @@ describe('strong-remoting-rest', function(){
         }
       );
       request(appSupportingJsonOnly).get(method.url)
-        .set('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
+        .set('Accept',
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(200, done);
     });

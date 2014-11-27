@@ -24,7 +24,7 @@ describe('types', function () {
           return 'boop';
         });
         var dyn = new Dynamic('beep');
-        assert.equal(dyn.to('beep'), 'boop');        
+        assert.equal(dyn.to('beep'), 'boop');
       });
     });
     describe('Dynamic.canConvert(typeName)', function () {

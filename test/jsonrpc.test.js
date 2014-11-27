@@ -19,10 +19,10 @@ describe('strong-remoting-jsonrpc', function () {
   });
 
   function jsonrpc(url, method, parameters) {
-    return request(app)['post'](url)
+    return request(app).post(url)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
-      .send({"jsonrpc": "2.0", "method": method, "params": parameters, "id": 1})
+      .send({'jsonrpc': '2.0', 'method': method, 'params': parameters, 'id': 1})
       .expect(200)
       .expect('Content-Type', /json/);
   }
@@ -46,8 +46,8 @@ describe('strong-remoting-jsonrpc', function () {
 
         // Create a shared method directly on the function object for named parameters tests
         function sum(numA,numB,cb){
-           cb(null,numA+numB);
-        };
+          cb(null,numA+numB);
+        }
         remotes.mathematic={
           sum:sum
         };
@@ -58,7 +58,7 @@ describe('strong-remoting-jsonrpc', function () {
         sum.returns={
           'arg':'sum',
           'type':'number'
-        }
+        };
         sum.shared=true;
 
 
@@ -78,27 +78,26 @@ describe('strong-remoting-jsonrpc', function () {
       });
 
       it('should support calling object methods', function (done) {
-         jsonrpc('/user/jsonrpc', 'greet', ['JS'])
-          .expect({"jsonrpc": "2.0", "id": 1, "result": "JS"}, done);
-      
+        jsonrpc('/user/jsonrpc', 'greet', ['JS'])
+          .expect({'jsonrpc': '2.0', 'id': 1, 'result': 'JS'}, done);
       });
       it('Should successfully call a method with named parameters',function(done){
-         jsonrpc('/mathematic/jsonrpc', 'sum', {'numB':9,'numA':2})
-          .expect({"jsonrpc": "2.0", "id": 1, "result": 11}, done);
+        jsonrpc('/mathematic/jsonrpc', 'sum', {'numB':9,'numA':2})
+          .expect({'jsonrpc': '2.0', 'id': 1, 'result': 11}, done);
       });
       it('should support a remote method using shared method', function (done) {
         jsonrpc('/product/jsonrpc', 'getPrice', [])
-          .expect({"jsonrpc": "2.0", "id": 1, "result": 100}, done);
+          .expect({'jsonrpc': '2.0', 'id': 1, 'result': 100}, done);
       });
 
       it('should report error for non-existent methods', function (done) {
         jsonrpc('/user/jsonrpc', 'greet1', ['JS'])
           .expect({
-            "jsonrpc": "2.0",
-            "id": 1,
-            "error": {
-              "code": -32601,
-              "message": "Method not found"
+            'jsonrpc': '2.0',
+            'id': 1,
+            'error': {
+              'code': -32601,
+              'message': 'Method not found'
             }
           }, done);
       });
@@ -106,9 +105,9 @@ describe('strong-remoting-jsonrpc', function () {
       // The 1kb limit is set by RemoteObjects.create({json: {limit: '1kb'}});
       it('should reject json payload larger than 1kb', function (done) {
         // Build an object that is larger than 1kb
-        var name = "";
+        var name = '';
         for (var i = 0; i < 2048; i++) {
-          name += "11111111111";
+          name += '11111111111';
         }
 
         jsonrpc('/user/jsonrpc', 'greet', [name])

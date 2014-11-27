@@ -25,7 +25,7 @@ describe('HttpInvocation', function() {
     
     it('should correctly name multiple args', function() {
       expectNamedArgs(
-        [{arg: 'a', type: 'number'}, {arg: 'str', type: 'string'}], 
+        [{arg: 'a', type: 'number'}, {arg: 'str', type: 'string'}],
         [1, 'foo'],
         {a: 1, str: 'foo'}
       );
@@ -33,7 +33,7 @@ describe('HttpInvocation', function() {
     
     it('should correctly name multiple args when a partial set is provided', function() {
       expectNamedArgs(
-        [{arg: 'a', type: 'number'}, {arg: 'str', type: 'string'}], 
+        [{arg: 'a', type: 'number'}, {arg: 'str', type: 'string'}],
         [1],
         {a: 1}
       );

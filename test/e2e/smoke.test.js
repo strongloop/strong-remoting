@@ -12,7 +12,7 @@ describe('smoke test', function () {
         'User.login',
         [{username: 'joe', password: 'secret'}],
         function(err, session) {
-          expect(err).to.not.exist;
+          expect(err).to.not.exist();
           expect(session.userId).to.equal(123);
           done();
         }

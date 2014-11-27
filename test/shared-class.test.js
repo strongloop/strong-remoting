@@ -33,7 +33,7 @@ describe('SharedClass', function() {
       myClass.foo.shared = true;
 
       var sc = new SharedClass(undefined, myClass);
-      var fns = sc.methods().map(function(m) {return m.name});
+      var fns = sc.methods().map(getName);
       expect(fns).to.contain('foo');
       expect(sc.http).to.eql({ path: '/bar' });
     });
@@ -46,12 +46,12 @@ describe('SharedClass', function() {
       SomeClass.staticMethod.shared = true;
       SomeClass.prototype.instanceMethod = function() {};
       SomeClass.prototype.instanceMethod.shared = true;
-      var fns = sc.methods().map(function(m) {return m.fn});
+      var fns = sc.methods().map(getFn);
       expect(fns).to.contain(SomeClass.staticMethod);
       expect(fns).to.contain(SomeClass.prototype.instanceMethod);
     });
     it('only discovers a function once with aliases', function() {
-      function MyClass() {};
+      function MyClass() {}
       var sc = new SharedClass('some', MyClass);
       var fn = function() {};
       fn.shared = true;
@@ -60,18 +60,18 @@ describe('SharedClass', function() {
       MyClass.prototype.a = fn;
       MyClass.prototype.b = fn;
       var methods = sc.methods();
-      var fns = methods.map(function(m) {return m.fn});
+      var fns = methods.map(getFn);
       expect(fns.length).to.equal(1);
       expect(methods[0].aliases.sort()).to.eql(['a', 'b']);
     });
     it('discovers multiple functions correctly', function() {
-      function MyClass() {};
+      function MyClass() {}
       var sc = new SharedClass('some', MyClass);
       MyClass.a = createSharedFn();
       MyClass.b = createSharedFn();
       MyClass.prototype.a = createSharedFn();
       MyClass.prototype.b = createSharedFn();
-      var fns = sc.methods().map(function(m) {return m.fn});
+      var fns = sc.methods().map(getFn);
       expect(fns.length).to.equal(4);
       expect(fns).to.contain(MyClass.a);
       expect(fns).to.contain(MyClass.b);
@@ -85,16 +85,16 @@ describe('SharedClass', function() {
     });
     it('should skip properties that are model classes', function() {
       var sc = new SharedClass('some', SomeClass);
-      function MockModel1() {};
+      function MockModel1() {}
       MockModel1.modelName = 'M1';
       MockModel1.shared = true;
       SomeClass.staticMethod = MockModel1;
 
-      function MockModel2() {};
+      function MockModel2() {}
       MockModel2.modelName = 'M2';
       MockModel2.shared = true;
       SomeClass.prototype.instanceMethod = MockModel2;
-      var fns = sc.methods().map(function(m) {return m.fn});
+      var fns = sc.methods().map(getFn);
       expect(fns).to.not.contain(SomeClass.staticMethod);
       expect(fns).to.not.contain(SomeClass.prototype.instanceMethod);
     });
@@ -108,7 +108,7 @@ describe('SharedClass', function() {
       sc.defineMethod(METHOD_NAME, {
         prototype: true
       });
-      var methods = sc.methods().map(function(m) {return m.name});
+      var methods = sc.methods().map(getName);
       expect(methods).to.contain(METHOD_NAME);
     });
     it('should allow a shared class to resolve dynamically defined functions',
@@ -118,14 +118,14 @@ describe('SharedClass', function() {
         process.nextTick(function() {
           MyClass[METHOD_NAME] = function(str, cb) {
             cb(null,  str);
-          }
+          };
           done();
         });
 
         var sharedClass = new SharedClass('MyClass', MyClass);
 
         sharedClass.defineMethod(METHOD_NAME, {});
-        var methods = sharedClass.methods().map(function(m) {return m.name});
+        var methods = sharedClass.methods().map(getName);
         expect(methods).to.contain(METHOD_NAME);
       }
     );
@@ -133,7 +133,7 @@ describe('SharedClass', function() {
 
   describe('sharedClass.resolve(resolver)', function () {
     it('should allow sharedMethods to be resolved dynamically', function () {
-      function MyClass() {};
+      function MyClass() {}
       MyClass.obj = {
         dyn: function(cb) {
           cb();
@@ -143,7 +143,7 @@ describe('SharedClass', function() {
       sharedClass.resolve(function(define) {
         define('dyn', {}, MyClass.obj.dyn);
       });
-      var methods = sharedClass.methods().map(function(m) {return m.name});
+      var methods = sharedClass.methods().map(getName);
       expect(methods).to.contain('dyn');
     });
   });
@@ -174,7 +174,7 @@ describe('SharedClass', function() {
       var remotes = RemoteObjects.create();
       var sharedClass = new SharedClass(CLASS_NAME, SomeClass);
       remotes.addClass(sharedClass);
-      var classes = remotes.classes().map(function(c) {return c.name});
+      var classes = remotes.classes().map(getName);
       expect(classes).to.contain(CLASS_NAME);
     });
   });
@@ -197,20 +197,28 @@ describe('SharedClass', function() {
 
     it('excludes disabled static methods from the method list', function () {
       sc.disableMethod(METHOD_NAME, true);
-      var methods = sc.methods().map(function(m) {return m.name});
+      var methods = sc.methods().map(getName);
       expect(methods).to.not.contain(METHOD_NAME);
     });
 
     it('excludes disabled prototype methods from the method list', function () {
       sc.disableMethod(INST_METHOD_NAME, false);
-      var methods = sc.methods().map(function(m) {return m.name});
+      var methods = sc.methods().map(getName);
       expect(methods).to.not.contain(INST_METHOD_NAME);
     });
 
     it('excludes disabled dynamic (resolved) methods from the method list', function () {
       sc.disableMethod(DYN_METHOD_NAME, true);
-      var methods = sc.methods().map(function(m) {return m.name});
+      var methods = sc.methods().map(getName);
       expect(methods).to.not.contain(DYN_METHOD_NAME);
     })
 ;  });
 });
+
+function getName(obj) {
+  return obj.name;
+}
+
+function getFn(obj) {
+  return obj.fn;
+}
