@@ -36,11 +36,10 @@ exports.createSharedClass =  function createSharedClass(config) {
 
   extend(SharedClass.sharedCtor, {
     shared: true,
-    accepts: [ { arg: 'id', type: 'any', http: { source: 'path' }}],
+    accepts: [{ arg: 'id', type: 'any', http: { source: 'path' }}],
     http: { path: '/:id' },
     returns: { root: true }
   });
 
   return SharedClass;
 };
-

@@ -2,13 +2,13 @@ var assert = require('assert');
 var Dynamic = require('../lib/dynamic');
 var RemoteObjects = require('../');
 
-describe('types', function () {
+describe('types', function() {
   var remotes;
   beforeEach(function() {
     remotes = RemoteObjects.create();
   });
-  describe('remotes.defineType(name, fn)', function () {
-    it('should define a new type converter', function () {
+  describe('remotes.defineType(name, fn)', function() {
+    it('should define a new type converter', function() {
       var name = 'MyType';
       remotes.defineType(name, function(val, ctx) {
         return val;
@@ -17,24 +17,24 @@ describe('types', function () {
     });
   });
 
-  describe('Dynamic(val, [ctx])', function () {
-    describe('Dynamic.to(typeName)', function () {
-      it('should convert the dynamic to the given type', function () {
+  describe('Dynamic(val, [ctx])', function() {
+    describe('Dynamic.to(typeName)', function() {
+      it('should convert the dynamic to the given type', function() {
         Dynamic.define('beep', function(str) {
           return 'boop';
         });
         var dyn = new Dynamic('beep');
-        assert.equal(dyn.to('beep'), 'boop');        
+        assert.equal(dyn.to('beep'), 'boop');
       });
     });
-    describe('Dynamic.canConvert(typeName)', function () {
-      it('should only return true when a converter exists', function () {
+    describe('Dynamic.canConvert(typeName)', function() {
+      it('should only return true when a converter exists', function() {
         Dynamic.define('MyType', function() {});
         assert(Dynamic.canConvert('MyType'));
         assert(!Dynamic.canConvert('FauxType'));
       });
     });
-    describe('Built in converters', function(){
+    describe('Built in converters', function() {
       it('should convert Boolean values', function() {
         shouldConvert(true, true);
         shouldConvert(false, false);
@@ -51,7 +51,7 @@ describe('types', function () {
         shouldConvert('null', false);
         shouldConvert('undefined', false);
         shouldConvert('', false);
-        
+
         function shouldConvert(val, expected) {
           var dyn = new Dynamic(val);
           assert.equal(dyn.to('boolean'), expected);
@@ -67,14 +67,14 @@ describe('types', function () {
         shouldConvert(false, 0);
         shouldConvert({}, 'NaN');
         shouldConvert([], 0);
-        
+
         function shouldConvert(val, expected) {
           var dyn = new Dynamic(val);
-          
-          if(expected === 'NaN') {
+
+          if (expected === 'NaN') {
             return assert(Number.isNaN(dyn.to('number')));
           }
-          
+
           assert.equal(dyn.to('number'), expected);
         }
       });

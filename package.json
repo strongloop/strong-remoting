@@ -9,6 +9,7 @@
   ],
   "version": "2.9.0",
   "scripts": {
+    "pretest": "grunt jscs jshint",
     "test": "mocha"
   },
   "dependencies": {
@@ -28,29 +29,30 @@
     "xml2js": "^0.4.4"
   },
   "devDependencies": {
-    "supertest": "~0.13.0",
-    "mocha": "~1.21.4",
-    "socket.io": "~1.1.0",
-    "chai": "~1.9.1",
-    "grunt": "~0.4.5",
-    "grunt-contrib-uglify": "~0.5.1",
-    "grunt-contrib-jshint": "~0.10.0",
     "browserify": "~5.11.1",
+    "chai": "^1.10.0",
+    "grunt": "~0.4.5",
     "grunt-browserify": "~3.0.1",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "~0.5.1",
     "grunt-contrib-watch": "~0.6.1",
-    "karma-script-launcher": "~0.1.0",
+    "grunt-jscs": "^0.8.1",
+    "grunt-karma": "~0.9.0",
+    "karma": "~0.12.23",
+    "karma-browserify": "0.2.1",
     "karma-chrome-launcher": "~0.1.4",
+    "karma-coffee-preprocessor": "~0.2.1",
     "karma-firefox-launcher": "~0.1.3",
     "karma-html2js-preprocessor": "~0.1.0",
     "karma-jasmine": "~0.1.5",
-    "karma-coffee-preprocessor": "~0.2.1",
-    "requirejs": "~2.1.14",
-    "karma-requirejs": "~0.2.2",
+    "karma-mocha": "~0.1.9",
     "karma-phantomjs-launcher": "~0.1.4",
-    "karma": "~0.12.23",
-    "grunt-karma": "~0.9.0",
-    "karma-browserify": "0.2.1",
-    "karma-mocha": "~0.1.9"
+    "karma-requirejs": "~0.2.2",
+    "karma-script-launcher": "~0.1.0",
+    "mocha": "~1.21.4",
+    "requirejs": "~2.1.14",
+    "socket.io": "~1.1.0",
+    "supertest": "~0.13.0"
   },
   "repository": {
     "type": "git",

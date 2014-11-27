@@ -247,7 +247,7 @@ describe('RestAdapter', function() {
       methodConfig = extend({ shared: true }, methodConfig);
       classConfig = extend({ shared: true}, classConfig);
       remotes.testClass = extend({}, classConfig);
-      var fn = remotes.testClass[name] = extend(function(){}, methodConfig);
+      var fn = remotes.testClass[name] = extend(function() {}, methodConfig);
 
       var sharedClass = new SharedClass('testClass', remotes.testClass, true);
       var restClass = new RestAdapter.RestClass(sharedClass);
