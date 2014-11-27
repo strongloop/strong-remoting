@@ -20,7 +20,7 @@ describe('SharedClass', function() {
       var sc = new SharedClass('some', SomeClass);
       expect(sc.http.path).to.equal('/some');
     });
-    
+
     it('fills http.path using a normalized path', function() {
       var sc = new SharedClass('SomeClass', SomeClass, { normalizeHttpPath: true });
       expect(sc.http.path).to.equal('/some-class');
@@ -101,7 +101,7 @@ describe('SharedClass', function() {
   });
 
   describe('sharedClass.defineMethod(name, options)', function() {
-    it('defines a remote method', function () {
+    it('defines a remote method', function() {
       var sc = new SharedClass('SomeClass', SomeClass);
       SomeClass.prototype.myMethod = function() {};
       var METHOD_NAME = 'myMethod';
@@ -112,7 +112,7 @@ describe('SharedClass', function() {
       expect(methods).to.contain(METHOD_NAME);
     });
     it('should allow a shared class to resolve dynamically defined functions',
-      function (done) {
+      function(done) {
         var MyClass = function() {};
         var METHOD_NAME = 'dynFn';
         process.nextTick(function() {
@@ -131,8 +131,8 @@ describe('SharedClass', function() {
     );
   });
 
-  describe('sharedClass.resolve(resolver)', function () {
-    it('should allow sharedMethods to be resolved dynamically', function () {
+  describe('sharedClass.resolve(resolver)', function() {
+    it('should allow sharedMethods to be resolved dynamically', function() {
       function MyClass() {}
       MyClass.obj = {
         dyn: function(cb) {
@@ -148,7 +148,7 @@ describe('SharedClass', function() {
     });
   });
 
-  describe('sharedClass.find()', function () {
+  describe('sharedClass.find()', function() {
     var sc;
     var sm;
     beforeEach(function() {
@@ -159,17 +159,16 @@ describe('SharedClass', function() {
         prototype: true
       });
     });
-    it('finds sharedMethod for the given function', function () {
+    it('finds sharedMethod for the given function', function() {
       assert(sc.find(SomeClass.prototype.myMethod) === sm);
     });
-    it('find sharedMethod by name', function () {
+    it('find sharedMethod by name', function() {
       assert(sc.find('myMethod') === sm);
     });
   });
 
-
   describe('remotes.addClass(sharedClass)', function() {
-    it('should make the class available', function () {
+    it('should make the class available', function() {
       var CLASS_NAME = 'SomeClass';
       var remotes = RemoteObjects.create();
       var sharedClass = new SharedClass(CLASS_NAME, SomeClass);
@@ -179,7 +178,7 @@ describe('SharedClass', function() {
     });
   });
 
-  describe('sharedClass.disableMethod(methodName, isStatic)', function () {
+  describe('sharedClass.disableMethod(methodName, isStatic)', function() {
     var sc;
     var sm;
     var METHOD_NAME = 'testMethod';
@@ -195,24 +194,24 @@ describe('SharedClass', function() {
       });
     });
 
-    it('excludes disabled static methods from the method list', function () {
+    it('excludes disabled static methods from the method list', function() {
       sc.disableMethod(METHOD_NAME, true);
       var methods = sc.methods().map(getName);
       expect(methods).to.not.contain(METHOD_NAME);
     });
 
-    it('excludes disabled prototype methods from the method list', function () {
+    it('excludes disabled prototype methods from the method list', function() {
       sc.disableMethod(INST_METHOD_NAME, false);
       var methods = sc.methods().map(getName);
       expect(methods).to.not.contain(INST_METHOD_NAME);
     });
 
-    it('excludes disabled dynamic (resolved) methods from the method list', function () {
+    it('excludes disabled dynamic (resolved) methods from the method list', function() {
       sc.disableMethod(DYN_METHOD_NAME, true);
       var methods = sc.methods().map(getName);
       expect(methods).to.not.contain(DYN_METHOD_NAME);
-    })
-;  });
+    });
+  });
 });
 
 function getName(obj) {

@@ -7,16 +7,16 @@ var request = require('supertest');
 var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
 
-describe('strong-remoting-rest', function(){
+describe('strong-remoting-rest', function() {
   var app;
   var server;
   var objects;
   var remotes;
   var adapterName = 'rest';
-  
+
   before(function(done) {
     app = express();
-    app.use(function (req, res, next) {
+    app.use(function(req, res, next) {
       // create the handler for each request
       objects.handler(adapterName).apply(objects, arguments);
     });
@@ -24,16 +24,16 @@ describe('strong-remoting-rest', function(){
   });
 
   // setup
-  beforeEach(function(){
+  beforeEach(function() {
     objects = RemoteObjects.create();
     remotes = objects.exports;
-    
+
     // connect to the app
     objects.connect('http://localhost:' + server.address().port, adapterName);
   });
 
   describe('client', function() {
-    describe('call of constructor method', function(){
+    describe('call of constructor method', function() {
       it('should work', function(done) {
         var method = givenSharedStaticMethod(
           function greet(msg, cb) {
@@ -44,7 +44,7 @@ describe('strong-remoting-rest', function(){
             returns: { arg: 'msg', type: 'string' }
           }
         );
-        
+
         var msg = 'hello';
         objects.invoke(method.name, [msg], function(err, resMsg) {
           assert.equal(resMsg, msg);
@@ -87,7 +87,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
@@ -115,7 +115,7 @@ describe('strong-remoting-rest', function(){
         });
       });
 
-      it('should pass undefined if the argument is not supplied', function (done) {
+      it('should pass undefined if the argument is not supplied', function(done) {
         var called = false;
         var method = givenSharedStaticMethod(
           function bar(a, cb) {
@@ -129,7 +129,7 @@ describe('strong-remoting-rest', function(){
             ]
           }
         );
-        
+
         objects.invoke(method.name, [], function(err) {
           assert(called);
           done();
@@ -149,7 +149,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         var obj = {
           foo: 'bar'
         };
@@ -195,7 +195,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
@@ -283,15 +283,15 @@ describe('strong-remoting-rest', function(){
         });
       });
 
-      describe('uncaught errors', function () {
-        it('should return 500 if an error object is thrown', function (done) {
+      describe('uncaught errors', function() {
+        it('should return 500 if an error object is thrown', function(done) {
           var errMsg = 'an error';
           var method = givenSharedStaticMethod(
             function(a, b, cb) {
               throw new Error(errMsg);
             }
           );
-          
+
           objects.invoke(method.name, function(err) {
             assert(err instanceof Error);
             assert.equal(err.message, errMsg);

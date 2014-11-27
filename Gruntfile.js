@@ -36,18 +36,23 @@ module.exports = function(grunt) {
         src: ['test/**/*.js']
       }
     },
+    jscs: {
+      gruntfile: 'Gruntfile.js',
+      lib: '<%= jshint.lib.src %>',
+      test: '<%= jshint.lib.src %>'
+    },
     watch: {
       gruntfile: {
         files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
+        tasks: ['jshint:gruntfile', 'jscs:gruntfile']
       },
       lib: {
         files: '<%= jshint.lib.src %>',
-        tasks: ['jshint:lib']
+        tasks: ['jshint:lib', 'jscs:lib']
       },
       test: {
         files: '<%= jshint.test.src %>',
-        tasks: ['jshint:test']
+        tasks: ['jshint:test', 'jscs:test']
       }
     },
     browserify: {
@@ -150,11 +155,11 @@ module.exports = function(grunt) {
     require('test/e2e/e2e-server.js');
   });
 
-
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-jscs');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-karma');
 

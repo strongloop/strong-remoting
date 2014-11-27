@@ -21,7 +21,7 @@ User.sharedCtor.http = [
 var login = User.login = function(credentials, callback) {
   debug('login with credentials: %j', credentials);
   setTimeout(function() {
-    if(!credentials.password) {
+    if (!credentials.password) {
       return callback(new Error('password required'));
     }
     callback(null, {userId: 123});

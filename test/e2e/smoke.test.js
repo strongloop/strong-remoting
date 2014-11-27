@@ -5,9 +5,9 @@ var remotes = require('./fixtures/remotes');
 
 remotes.connect(REMOTE_URL, 'rest');
 
-describe('smoke test', function () {
-  describe('remote.invoke()', function () {
-    it('invokes a remote static method', function (done) {
+describe('smoke test', function() {
+  describe('remote.invoke()', function() {
+    it('invokes a remote static method', function(done) {
       remotes.invoke(
         'User.login',
         [{username: 'joe', password: 'secret'}],

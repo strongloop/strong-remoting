@@ -6,7 +6,7 @@ var expect = require('chai').expect;
 
 describe('HttpInvocation', function() {
   describe('namedArgs', function() {
-    
+
     function expectNamedArgs(accepts, inputArgs, expectedNamedArgs) {
       var method = givenSharedStaticMethod({
         accepts: accepts
@@ -14,7 +14,7 @@ describe('HttpInvocation', function() {
       var inv = new HttpInvocation(method, null, inputArgs);
       expect(inv.namedArgs).to.deep.equal(expectedNamedArgs);
     }
-    
+
     it('should correctly name a single arg', function() {
       expectNamedArgs(
         [{arg: 'a', type: 'number'}],
@@ -22,7 +22,7 @@ describe('HttpInvocation', function() {
         {a: 1}
       );
     });
-    
+
     it('should correctly name multiple args', function() {
       expectNamedArgs(
         [{arg: 'a', type: 'number'}, {arg: 'str', type: 'string'}],
@@ -30,7 +30,7 @@ describe('HttpInvocation', function() {
         {a: 1, str: 'foo'}
       );
     });
-    
+
     it('should correctly name multiple args when a partial set is provided', function() {
       expectNamedArgs(
         [{arg: 'a', type: 'number'}, {arg: 'str', type: 'string'}],
