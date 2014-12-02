@@ -51,4 +51,30 @@ describe('SharedMethod', function() {
       assert(err);
     });
   });
+
+  describe('sharedMethod.invoke', function() {
+    it('returns 400 when number argument is `NaN`', function(done) {
+      var method = givenSharedMethod({
+        accepts: [{ arg: 'num', type: 'number' }]
+      });
+
+      method.invoke('ctx', { num: NaN }, function(err) {
+        setImmediate(function() {
+          expect(err).to.exist();
+          expect(err.message).to.contain('num must be a number');
+          expect(err.statusCode).to.equal(400);
+          done();
+        });
+      });
+    });
+
+    function givenSharedMethod(options) {
+      var aFn = function() {
+        arguments[arguments.length - 1]();
+      };
+
+      var mockSharedClass = { fn: aFn };
+      return new SharedMethod(aFn, 'fn', mockSharedClass, options);
+    }
+  });
 });
