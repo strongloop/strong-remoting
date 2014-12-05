@@ -1,3 +1,21 @@
+2014-12-05, Version 2.10.0
+==========================
+
+ * Implement rest option `arrayItemDelimiters` (Miroslav Bajtoš)
+
+ * shared-method: reject `NaN` numbers (Miroslav Bajtoš)
+
+ * Add jscs to enforce consistent coding style (Miroslav Bajtoš)
+
+ * Run grunt from `npm test`, fix warnings (Miroslav Bajtoš)
+
+ * package: upgrade chai to ^1.10.0 (Miroslav Bajtoš)
+
+ * Add option to disable url-not-found handling (Fabio)
+
+ * Fix test cases that break the build (Raymond Feng)
+
+
 2014-11-18, Version 2.9.0
 =========================
 
@@ -379,6 +397,10 @@
 
  * Remove duplicate dep (Raymond Feng)
 
+
+2014-05-30, Version 2.0.0-beta2
+===============================
+
  * Bump version (Raymond Feng)
 
  * Add more tests and use eql for readability (Raymond Feng)
@@ -394,36 +416,6 @@
 =========================
 
  * Add alias for defineType / convert for backwards compat. (Ritchie Martori)
-
- * Add test for scope fix (Ritchie Martori)
-
- * Rename .convert() to defineType (Ritchie Martori)
-
- * Fix convert() example (Ritchie Martori)
-
- * Add test for removing sharedCtor requirement (Ritchie Martori)
-
- * Make intent more clear for ctor.http copy (Ritchie Martori)
-
- * Remove un-tested options (Ritchie Martori)
-
- * Use nextTick over setTimeout (Ritchie Martori)
-
- * Add backwards compatibility to SharedMethod ctor (Ritchie Martori)
-
-
-2014-05-30, Version 2.0.0-beta2
-===============================
-
- * Bump version (Raymond Feng)
-
- * Add more tests and use eql for readability (Raymond Feng)
-
- * Add more comments (Raymond Feng)
-
- * Sort the routes so that methods can be resolved in order (Raymond Feng)
-
- * Upgrade to express 4.x (Raymond Feng)
 
 
 2014-05-29, Version 1.4.2
@@ -599,6 +591,17 @@
 
  * Use req.protocol instead of hard-coded http (Raymond Feng)
 
+ * Handles the null return value (Raymond Feng)
+
+ * Fix the handling of accept header for jsonp (Raymond Feng)
+
+ * Enhance the test case to make the output simpler (Raymond Feng)
+
+
+2014-01-30, Version 1.2.2
+=========================
+
+
 
 2014-01-30, Version 1.2.3
 =========================
@@ -610,10 +613,6 @@
  * Fix the handling of accept header for jsonp (Raymond Feng)
 
  * Enhance the test case to make the output simpler (Raymond Feng)
-
-
-2014-01-30, Version 1.2.2
-=========================
 
  * Bump version and update test deps (Raymond Feng)
 
@@ -645,18 +644,15 @@
 
  * Use traverse to handle $type/$data (Raymond Feng)
 
- * Add undefined arg test and fix hanging handler (Ritchie Martori)
-
-
-2014-01-06, Version 1.1.6
-=========================
-
-
 
 2014-01-06, Version 1.1.7
 =========================
 
  * Add undefined arg test and fix hanging handler (Ritchie Martori)
+
+
+2014-01-06, Version 1.1.6
+=========================
 
  * Missing arg should return a 400 not 500 (Ritchie Martori)
 

@@ -5,16 +5,15 @@
 "indent": 2,
 "undef": true,
 "quotmark": "single",
-"maxlen": 80,
-"trailing": true,
 "newcap": true,
 "nonew": true,
 "undef": true,
 "laxcomma" : true,
 "globals" : {
-   "it": true,
-   "describe": true,
-   "beforeEach": true,
-   "afterEach": true
+   "it": false,
+   "describe": false,
+   "before": false,
+   "beforeEach": false,
+   "afterEach": false
 }
 }

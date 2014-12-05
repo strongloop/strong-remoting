@@ -8,7 +8,8 @@ module.exports = function(grunt) {
     banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
       '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
       '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+      '* Copyright (c) <%= grunt.template.today("yyyy") %>' +
+      ' <%= pkg.author.name %>;' +
       ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
     // Task configuration.
     uglify: {
@@ -28,18 +29,30 @@ module.exports = function(grunt) {
       gruntfile: {
         src: 'Gruntfile.js'
       },
-      lib_test: {
-        src: ['lib/**/*.js', 'test/**/*.js']
+      lib: {
+        src: ['lib/**/*.js']
+      },
+      test: {
+        src: ['test/**/*.js']
       }
+    },
+    jscs: {
+      gruntfile: 'Gruntfile.js',
+      lib: '<%= jshint.lib.src %>',
+      test: '<%= jshint.lib.src %>'
     },
     watch: {
       gruntfile: {
         files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
+        tasks: ['jshint:gruntfile', 'jscs:gruntfile']
       },
-      lib_test: {
-        files: '<%= jshint.lib_test.src %>',
-        tasks: ['jshint:lib_test']
+      lib: {
+        files: '<%= jshint.lib.src %>',
+        tasks: ['jshint:lib', 'jscs:lib']
+      },
+      test: {
+        files: '<%= jshint.test.src %>',
+        tasks: ['jshint:test', 'jscs:test']
       }
     },
     browserify: {
@@ -70,7 +83,7 @@ module.exports = function(grunt) {
 
           // list of files to exclude
           exclude: [
-            
+
           ],
 
           // test results reporter to use
@@ -87,10 +100,12 @@ module.exports = function(grunt) {
           colors: true,
 
           // level of logging
-          // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+          // possible values: config.LOG_DISABLE || config.LOG_ERROR ||
+          //    config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
           logLevel: 'warn',
 
-          // enable / disable watching file and executing tests whenever any file changes
+          // enable / disable watching file and executing tests
+          // whenever any file changes
           autoWatch: true,
 
           // Start these browsers, currently available:
@@ -135,16 +150,16 @@ module.exports = function(grunt) {
     }
 
   });
-  
+
   grunt.registerTask('e2e-server', 'Run the e2e server', function() {
     require('test/e2e/e2e-server.js');
   });
-
 
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-jscs');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-karma');
 

@@ -4,20 +4,22 @@ var express = require('express');
 var request = require('supertest');
 var fs = require('fs');
 
-describe('strong-remoting', function () {
-  var app, remotes, objects;
+describe('strong-remoting', function() {
+  var app;
+  var remotes;
+  var objects;
 
-  beforeEach(function(){
+  beforeEach(function() {
     objects = RemoteObjects.create();
     remotes = objects.exports;
     app = express();
     app.disable('x-powered-by');
 
-    app.use(function (req, res, next) {
+    app.use(function(req, res, next) {
       objects.handler('rest').apply(objects, arguments);
     });
   });
-  
+
   function json(method, url) {
     return request(app)[method](url)
       .set('Accept', 'application/json')
@@ -26,14 +28,14 @@ describe('strong-remoting', function () {
       .expect('Content-Type', /json/);
   }
 
-  it('should stream the file output', function (done) {
+  it('should stream the file output', function(done) {
     remotes.fs = fs;
     fs.createReadStream.shared = true;
     fs.createReadStream.accepts = [{arg: 'path', type: 'string'}];
     fs.createReadStream.returns = {arg: 'res', type: 'stream'};
     fs.createReadStream.http = {
       verb: 'get',
-      // path: '/fs/createReadStream', 
+      // path: '/fs/createReadStream',
       pipe: {
         dest: 'res'
       }
