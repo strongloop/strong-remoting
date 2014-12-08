@@ -1,3 +1,9 @@
+2014-12-08, Version 2.10.1
+==========================
+
+ * Don't crash on unparseable inputs. (Samuel Reed)
+
+
 2014-12-05, Version 2.10.0
 ==========================
 
