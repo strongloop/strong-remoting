@@ -68,6 +68,21 @@ describe('SharedMethod', function() {
       });
     });
 
+    it('returns 400 and doesn\'t crash with unparsable object', function(done) {
+      var method = givenSharedMethod({
+        accepts: [{ arg: 'obj', type: 'object' }]
+      });
+
+      method.invoke('ctx', { obj: 'test' }, function(err) {
+        setImmediate(function() {
+          expect(err).to.exist();
+          expect(err.message).to.contain('invalid value for argument');
+          expect(err.statusCode).to.equal(400);
+          done();
+        });
+      });
+    });
+
     function givenSharedMethod(options) {
       var aFn = function() {
         arguments[arguments.length - 1]();

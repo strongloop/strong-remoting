@@ -786,7 +786,7 @@ describe('strong-remoting-rest', function() {
       fn.returns = {root: true};
 
       json('get', '/foo/bar?a=foo')
-        .expect(500, done);
+        .expect(400, done);
     });
 
     it('should coerce boolean strings - true', function(done) {
