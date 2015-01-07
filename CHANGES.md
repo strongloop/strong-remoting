@@ -1,3 +1,11 @@
+2015-01-07, Version 2.11.0
+==========================
+
+ * Fix bad CLA URL in CONTRIBUTING.md (Ryan Graham)
+
+ * Allow accessType to be configured per shared method (Raymond Feng)
+
+
 2014-12-08, Version 2.10.1
 ==========================
 
@@ -186,17 +194,18 @@
  * rest: use `app.delete` instead of `app.del` (Miroslav Bajtoš)
 
 
-2014-09-25, Version 2.2.0
-=========================
-
-
-
 2014-09-25, Version 2.2.1
 =========================
 
  * Bump version (Raymond Feng)
 
  * Set up CORS hander for error responses (Raymond Feng)
+
+
+2014-09-25, Version 2.2.0
+=========================
+
+ * Bump version (Raymond Feng)
 
  * Add a test for request header param (Raymond Feng)
 
@@ -511,6 +520,10 @@
 
  * Remove X-Powered-By header (Alex)
 
+
+2014-03-27, Version 1.3.1
+=========================
+
  * Add browser e2e tests (Ritchie Martori)
 
  * Initial browser testing (Ritchie Martori)
@@ -533,30 +546,7 @@
 2014-03-27, Version 1.3.0
 =========================
 
-
-
-2014-03-27, Version 1.3.1
-=========================
-
  * Add a test case for custom argument parsing (Raymond Feng)
-
- * Add browser e2e tests (Ritchie Martori)
-
- * Initial browser testing (Ritchie Martori)
-
- * fixup! Remove hardcoded port in tests (Ritchie Martori)
-
- * fixup! Copy error properties (Ritchie Martori)
-
- * fixup! Incorrect strict logic (Ritchie Martori)
-
- * fixup! Set correct verb (Ritchie Martori)
-
- * Initial browser / node client (Ritchie Martori)
-
- * HttpInvokation tests (Ritchie Martori)
-
- * Add initial tests and implementation (Ritchie Martori)
 
 
 2014-02-21, Version 1.2.7
