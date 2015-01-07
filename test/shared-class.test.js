@@ -111,6 +111,20 @@ describe('SharedClass', function() {
       var methods = sc.methods().map(getName);
       expect(methods).to.contain(METHOD_NAME);
     });
+
+    it('defines a remote method with accessType', function() {
+      var sc = new SharedClass('SomeClass', SomeClass);
+      SomeClass.prototype.myMethod = function() {};
+      var METHOD_NAME = 'myMethod';
+      sc.defineMethod(METHOD_NAME, {
+        prototype: true,
+        accessType: 'READ'
+      });
+      var methods = sc.methods().map(getName);
+      expect(methods).to.contain(METHOD_NAME);
+      expect(sc.find(METHOD_NAME).accessType).to.eql('READ');
+    });
+
     it('should allow a shared class to resolve dynamically defined functions',
       function(done) {
         var MyClass = function() {};
