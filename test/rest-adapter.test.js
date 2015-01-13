@@ -1,4 +1,5 @@
 var assert = require('assert');
+var HttpInvocation = require('../lib/http-invocation');
 var extend = require('util')._extend;
 var inherits = require('util').inherits;
 var RemoteObjects = require('../');
@@ -327,6 +328,115 @@ describe('RestAdapter', function() {
       ]);
 
     });
+  });
+
+  describe('invoke()', function() {
+    var oldInvoke = HttpInvocation.prototype.invoke;
+    var remotes, req, res;
+
+    beforeEach(function() {
+      remotes = RemoteObjects.create();
+      req = false;
+      res = false;
+    });
+
+    afterEach(function() {
+      HttpInvocation.prototype.invoke = oldInvoke;
+    });
+
+    it('should call remote hooks', function(done) {
+      var beforeCalled = false;
+      var afterCalled = false;
+      var name = 'testClass.testMethod';
+
+      remotes.before(name, function(ctx, next) {
+        beforeCalled = true;
+        next();
+      });
+
+      remotes.after(name, function(ctx, next) {
+        afterCalled = true;
+        next();
+      });
+
+      var restAdapter = givenRestStaticMethod({ isStatic: true });
+      restAdapter.connect('foo');
+      restAdapter.invoke(name, [], [], function() {
+        assert(beforeCalled);
+        assert(afterCalled);
+        done();
+      });
+    });
+
+    it('should call beforeRemote hook with request object', function(done) {
+      var name = 'testClass.testMethod';
+      var _req;
+
+      HttpInvocation.prototype.invoke = function(callback) {
+        if (!this.req) {
+          this.createRequest();
+        }
+        req = this.req;
+        res = { foo: 'bar' };
+        this.transformResponse(res, null, callback);
+      };
+
+      remotes.before(name, function(ctx, next) {
+        _req = ctx.req;
+        next();
+      });
+
+      var restAdapter = givenRestStaticMethod({ isStatic: true });
+      restAdapter.connect('foo');
+      restAdapter.invoke(name, [], [], function() {
+        expect(_req).to.equal(req);
+        done();
+      });
+    });
+
+    it('should call afterRemote hook with response object', function(done) {
+      var name = 'testClass.testMethod';
+      var _res;
+
+      HttpInvocation.prototype.invoke = function(callback) {
+        if (!this.req) {
+          this.createRequest();
+        }
+        req = this.req;
+        res = this.res = { foo: 'bar' };
+        this.transformResponse(res, null, callback);
+      };
+
+      remotes.after(name, function(ctx, next) {
+        _res = ctx.res;
+        next();
+      });
+
+
+      var restAdapter = givenRestStaticMethod({ isStatic: true });
+      restAdapter.connect('foo');
+      restAdapter.invoke(name, [], [], function() {
+        expect(_res).to.equal(res);
+        done();
+      });
+
+    });
+
+    function givenRestStaticMethod(methodConfig, classConfig) {
+      var name = 'testMethod';
+      methodConfig = extend({ shared: true }, methodConfig);
+      classConfig = extend({ shared: true }, classConfig);
+      var testClass = extend({}, classConfig);
+      var fn = testClass[name] = extend(function() {}, methodConfig);
+
+      var sharedClass = new SharedClass('testClass', testClass, true);
+      var restClass = new RestAdapter.RestClass(sharedClass);
+      remotes.addClass(sharedClass);
+
+      var sharedMethod = new SharedMethod(fn, name, sharedClass, methodConfig);
+      var restMethod = new RestAdapter.RestMethod(restClass, sharedMethod);
+      return new RestAdapter(remotes);
+    }
   });
 });
 
