@@ -887,6 +887,19 @@ describe('strong-remoting-rest', function() {
         .expect({ data: [1, 2, 3] }, done);
     });
 
+    it('should still support JSON arrays with arrayItemDelimiters', function(done) {
+      objects.options.rest = { arrayItemDelimiters:  [',', '|'] };
+      var method = givenSharedStaticMethod(
+        function(a, cb) { cb(null, a); },
+        {
+          accepts: { arg: 'a', type: ['number'] },
+          returns: { arg: 'data', type: 'object' }
+        });
+
+      json('post', method.url + '?a=["1","2","3"]')
+        .expect({ data: [1, 2, 3] }, done);
+    });
+
     it('should call rest hooks', function(done) {
       var hooksCalled = [];
 
