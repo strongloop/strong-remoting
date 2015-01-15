@@ -160,7 +160,7 @@ describe('strong-remoting-rest', function() {
     it('should turn off url-not-found handler', function(done) {
       objects.options.rest = { handleUnknownPaths: false };
       app.use(function(req, res, next) {
-        res.send(404, 'custom-not-found');
+        res.status(404).send('custom-not-found');
       });
 
       request(app).get('/thisUrlDoesNotExists/someMethod')
