@@ -1,3 +1,15 @@
+2015-01-15, Version 2.11.1
+==========================
+
+ * Optimize the code to remove closure and bind (Raymond Feng)
+
+ * Fix parsing JSON arrays with arrayItemDelimiters on. (Samuel Reed)
+
+ * Add remote hooks to RestAdapter.invoke method Hooks on invoke are needed to use methods like User.login remotely from loopback-connector-remote. see https://github.com/strongloop/strong-remoting/issues/150 and https://github.com/strongloop/strong-remoting/issues/105 and https://github.com/strongloop/loopback/pull/943 (Berkeley Martinez)
+
+ * Ensure Remote-Connector Converts Types in Array Fix bug strongloop/loopback#886 (Berkeley Martinez)
+
+
 2015-01-07, Version 2.11.0
 ==========================
 
