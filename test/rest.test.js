@@ -347,6 +347,32 @@ describe('strong-remoting-rest', function() {
         .expect(400, done);
     });
 
+    it('OPTIONS requests should skip cors if config is false', function(done) {
+      objects.options.cors = false;
+      request(app).options(method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3001')
+        .send()
+        // http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.2
+        .expect(200, function(err, res) {
+          expect(res.get('Access-Control-Allow-Origin')).to.not.exist();
+          done(err, res);
+        });
+    });
+
+    it('should skip cors headers if config is false', function(done) {
+      objects.options.cors = false;
+      request(app).post(method.url)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('Origin', 'http://localhost:3001')
+        .send({person: 'ABC'})
+        .expect(200, function(err, res) {
+          expect(res.get('Access-Control-Allow-Origin')).to.not.exist();
+          done(err, res);
+        });
+    });
   });
 
   function enableXmlSupport() {
