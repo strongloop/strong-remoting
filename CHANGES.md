@@ -1,3 +1,13 @@
+2015-01-21, Version 2.12.0
+==========================
+
+ * auth: add support for authenticated endpoints (Ryan Graham)
+
+ * test: add tests for http auth support (Ryan Graham)
+
+ * deps: add missing dev dependency grunt-cli (Ryan Graham)
+
+
 2015-01-15, Version 2.11.1
 ==========================
 
@@ -206,18 +216,17 @@
  * rest: use `app.delete` instead of `app.del` (Miroslav Bajtoš)
 
 
+2014-09-25, Version 2.2.0
+=========================
+
+
+
 2014-09-25, Version 2.2.1
 =========================
 
  * Bump version (Raymond Feng)
 
  * Set up CORS hander for error responses (Raymond Feng)
-
-
-2014-09-25, Version 2.2.0
-=========================
-
- * Bump version (Raymond Feng)
 
  * Add a test for request header param (Raymond Feng)
 
@@ -424,10 +433,6 @@
 
  * Remove duplicate dep (Raymond Feng)
 
-
-2014-05-30, Version 2.0.0-beta2
-===============================
-
  * Bump version (Raymond Feng)
 
  * Add more tests and use eql for readability (Raymond Feng)
@@ -443,6 +448,40 @@
 =========================
 
  * Add alias for defineType / convert for backwards compat. (Ritchie Martori)
+
+ * Add test for scope fix (Ritchie Martori)
+
+ * Rename .convert() to defineType (Ritchie Martori)
+
+ * Fix convert() example (Ritchie Martori)
+
+ * Add test for removing sharedCtor requirement (Ritchie Martori)
+
+ * Make intent more clear for ctor.http copy (Ritchie Martori)
+
+ * Remove un-tested options (Ritchie Martori)
+
+ * Use nextTick over setTimeout (Ritchie Martori)
+
+ * Add backwards compatibility to SharedMethod ctor (Ritchie Martori)
+
+
+2014-05-30, Version 2.0.0-beta2
+===============================
+
+ * Bump version (Raymond Feng)
+
+ * Add more tests and use eql for readability (Raymond Feng)
+
+ * Add more comments (Raymond Feng)
+
+ * Sort the routes so that methods can be resolved in order (Raymond Feng)
+
+
+2014-05-29, Version 2.0.0-beta1
+===============================
+
+ * Upgrade to express 4.x (Raymond Feng)
 
 
 2014-05-29, Version 1.4.2
@@ -463,12 +502,6 @@
  * Use nextTick over setTimeout (Ritchie Martori)
 
  * Add backwards compatibility to SharedMethod ctor (Ritchie Martori)
-
-
-2014-05-29, Version 2.0.0-beta1
-===============================
-
- * Upgrade to express 4.x (Raymond Feng)
 
 
 2014-05-21, Version 1.4.1
@@ -599,17 +632,6 @@
 
  * Use req.protocol instead of hard-coded http (Raymond Feng)
 
- * Handles the null return value (Raymond Feng)
-
- * Fix the handling of accept header for jsonp (Raymond Feng)
-
- * Enhance the test case to make the output simpler (Raymond Feng)
-
-
-2014-01-30, Version 1.2.2
-=========================
-
-
 
 2014-01-30, Version 1.2.3
 =========================
@@ -621,6 +643,10 @@
  * Fix the handling of accept header for jsonp (Raymond Feng)
 
  * Enhance the test case to make the output simpler (Raymond Feng)
+
+
+2014-01-30, Version 1.2.2
+=========================
 
  * Bump version and update test deps (Raymond Feng)
 

@@ -7,7 +7,7 @@
     "Remoting",
     "REST"
   ],
-  "version": "2.11.1",
+  "version": "2.12.0",
   "scripts": {
     "pretest": "grunt jscs jshint",
     "test": "mocha"
@@ -33,11 +33,13 @@
     "chai": "^1.10.0",
     "grunt": "~0.4.5",
     "grunt-browserify": "~3.0.1",
+    "grunt-cli": "^0.1.13",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "~0.5.1",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-jscs": "^0.8.1",
     "grunt-karma": "~0.9.0",
+    "http-auth": "^2.2.5",
     "karma": "~0.12.23",
     "karma-browserify": "0.2.1",
     "karma-chrome-launcher": "~0.1.4",
