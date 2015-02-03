@@ -403,7 +403,6 @@ describe('RestAdapter', function() {
         next();
       });
 
-
       var restAdapter = givenRestStaticMethod({ isStatic: true });
       restAdapter.connect('foo');
       restAdapter.invoke(name, [], [], function() {
