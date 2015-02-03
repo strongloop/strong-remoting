@@ -8,6 +8,7 @@
      "catch"
   ],
   "disallowSpacesInsideObjectBrackets": null,
+  "disallowMultipleVarDecl": "exceptUndefined",
   "maximumLineLength": {
      "value": 92,
      "allowComments": false,

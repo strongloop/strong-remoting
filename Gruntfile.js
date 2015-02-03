@@ -39,7 +39,7 @@ module.exports = function(grunt) {
     jscs: {
       gruntfile: 'Gruntfile.js',
       lib: '<%= jshint.lib.src %>',
-      test: '<%= jshint.lib.src %>'
+      test: '<%= jshint.test.src %>'
     },
     watch: {
       gruntfile: {
