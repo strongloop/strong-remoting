@@ -1184,6 +1184,23 @@ describe('strong-remoting-rest', function() {
           .expect(500)
           .end(expectErrorResponseContaining({message: 'an error'}, done));
       });
+
+      it('should return 500 for unhandled errors thrown from before hooks', function(done) {
+        var method = givenSharedStaticMethod();
+
+        objects.before(method.name, function(ctx, next) {
+          process.nextTick(next);
+        });
+
+        objects.before(method.name, function(ctx, next) {
+          throw new Error('test error');
+        });
+
+        request(app).get(method.url)
+          .set('Accept', 'application/json')
+          .expect(500)
+          .end(expectErrorResponseContaining({ message: 'test error' }, done));
+      });
     });
 
     it('should return 500 when method returns an error', function(done) {

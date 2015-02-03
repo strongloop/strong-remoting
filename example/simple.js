@@ -1,20 +1,39 @@
 // create a set of shared classes
-var remotes = require('../').create();
+var remoting = require('../');
+var SharedClass = remoting.SharedClass
+var remotes = remoting.create();
+var express = require('express');
+var app = express();
 
-// expose a simple object
-var user = remotes.exports.user = {
+// define a class-like object (or constructor)
+var user = {
   greet: function (fn) {
     fn(null, 'hello, world!');
   }
 };
 
-// share the greet method
-user.greet.shared = true;
-user.greet.returns = {arg: 'msg'};
+// create a shared class to allow strong-remoting to map
+// http requests to method invocations on your class 
+var userSharedClass = new SharedClass('user', user);
 
-// expose it over http
+// tell strong-remoting about your greet method
+userSharedClass.defineMethod('greet', {
+  isStatic: true, // not an instance method
+  returns: [{
+    arg: 'msg',
+    type: 'string' // define the type of the callback arguments
+  }]
+});
+
+// tell strong-remoting about the class
+remotes.addClass(userSharedClass);
+
+// mount the middleware on an express app
+app.use(remotes.handler('rest'));
+
+// create the http server
 require('http')
-  .createServer(remotes.handler('rest'))
+  .createServer(app)
   .listen(3000);
   
 /*

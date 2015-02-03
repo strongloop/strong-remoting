@@ -338,6 +338,15 @@ describe('RestAdapter', function() {
       remotes = RemoteObjects.create();
       req = false;
       res = false;
+
+      HttpInvocation.prototype.invoke = function(callback) {
+        if (!this.req) {
+          this.createRequest();
+        }
+        req = this.req;
+        res = this.res = { foo: 'bar' };
+        this.transformResponse(res, null, callback);
+      };
     });
 
     afterEach(function() {
@@ -372,15 +381,6 @@ describe('RestAdapter', function() {
       var name = 'testClass.testMethod';
       var _req;
 
-      HttpInvocation.prototype.invoke = function(callback) {
-        if (!this.req) {
-          this.createRequest();
-        }
-        req = this.req;
-        res = { foo: 'bar' };
-        this.transformResponse(res, null, callback);
-      };
-
       remotes.before(name, function(ctx, next) {
         _req = ctx.req;
         next();
@@ -398,20 +398,10 @@ describe('RestAdapter', function() {
       var name = 'testClass.testMethod';
       var _res;
 
-      HttpInvocation.prototype.invoke = function(callback) {
-        if (!this.req) {
-          this.createRequest();
-        }
-        req = this.req;
-        res = this.res = { foo: 'bar' };
-        this.transformResponse(res, null, callback);
-      };
-
       remotes.after(name, function(ctx, next) {
         _res = ctx.res;
         next();
       });
-
 
       var restAdapter = givenRestStaticMethod({ isStatic: true });
       restAdapter.connect('foo');

@@ -1,3 +1,17 @@
+2015-02-03, Version 2.12.1
+==========================
+
+ * Catch unhandled error on current method invocation (Pradnya Baviskar)
+
+ * Fix jscs settings (Miroslav Bajtoš)
+
+ * Remove use of deprecated `req.param()` in express (Seth Etter)
+
+ * Update simple example (Ritchie Martori)
+
+ * Handle Http Invoke Errors Fixes https://github.com/strongloop/strong-remoting/issues/160 (Berkeley Martinez)
+
+
 2015-01-21, Version 2.12.0
 ==========================
 
@@ -119,10 +133,6 @@
 
  * Changed errorHandler() to honor options.remoting.errorHandler.handler in order to replace restErrorHandler (Shelby Sanders)
 
-
-2014-10-16, Version 2.5.0
-=========================
-
  * Added missing docs for errors and notes (Shelby Sanders)
 
  * Added support for notes (Shelby Sanders)
@@ -142,8 +152,6 @@
  * Remove stupid assert global (Ritchie Martori)
 
  * Fix missing assert (Ritchie Martori)
-
- * Bump version (Raymond Feng)
 
  * Set up CORS hander for error responses (Raymond Feng)
 
@@ -214,6 +222,34 @@
  * Upgrade qs dep (Raymond Feng)
 
  * rest: use `app.delete` instead of `app.del` (Miroslav Bajtoš)
+
+
+2014-10-16, Version 2.5.0
+=========================
+
+ * Added missing docs for errors and notes (Shelby Sanders)
+
+ * Added support for notes (Shelby Sanders)
+
+ * Added support for errors property to specify possible errors that can be returned (Shelby Sanders)
+
+ * Update contribution guidelines (Ryan Graham)
+
+ * Add sharedClass.disableMethod() (Ritchie Martori)
+
+ * Add prototype shared method tests (Krishna Raman)
+
+ * Fix http-invocation test (Krishna Raman)
+
+ * Support prototype methods via HttpInvocation (Krishna Raman)
+
+ * Remove stupid assert global (Ritchie Martori)
+
+ * Fix missing assert (Ritchie Martori)
+
+ * Bump version (Raymond Feng)
+
+ * Set up CORS hander for error responses (Raymond Feng)
 
 
 2014-09-25, Version 2.2.0
