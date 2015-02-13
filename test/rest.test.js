@@ -6,6 +6,7 @@ var express = require('express');
 var request = require('supertest');
 var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
+var Promise = global.Promise || require('bluebird');
 
 var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
 
@@ -1513,6 +1514,34 @@ describe('strong-remoting-rest', function() {
       json(method.url)
         .expect(500)
         .end(expectErrorResponseContaining({message: 'test-error'}, done));
+    });
+
+    it('should resolve promise returned by a hook', function(done) {
+      var method = givenSharedPrototypeMethod();
+      objects.before('**', function(ctx) {
+        return new Promise(function(resolve, reject) {
+          resolve('value-to-ignore');
+        });
+      });
+
+      json(method.url).expect(204).end(done);
+    });
+
+    it('should handle rejected promise returned by a hook', function(done) {
+      var testError = new Error('expected test error');
+      var method = givenSharedPrototypeMethod();
+      objects.after('**', function(ctx) {
+        return new Promise(function(resolve, reject) {
+          reject(testError);
+        });
+      });
+
+      json(method.url).expect(500).end(function(err, res) {
+        if (err) return done(err);
+        expect(res.body)
+          .to.have.deep.property('error.message', testError.message);
+        done();
+      });
     });
   });
 

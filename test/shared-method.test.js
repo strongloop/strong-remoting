@@ -3,6 +3,7 @@ var extend = require('util')._extend;
 var expect = require('chai').expect;
 var SharedMethod = require('../lib/shared-method');
 var factory = require('./helpers/shared-objects-factory.js');
+var Promise = global.Promise || require('bluebird');
 
 describe('SharedMethod', function() {
   describe('sharedMethod.isDelegateFor(suspect, [isStatic])', function() {
@@ -83,13 +84,54 @@ describe('SharedMethod', function() {
       });
     });
 
-    function givenSharedMethod(options) {
-      var aFn = function() {
-        arguments[arguments.length - 1]();
-      };
+    it('resolves promise returned from the method', function(done) {
+      var method = givenSharedMethod(
+        function() {
+          return new Promise(function(resolve, reject) {
+            resolve(['one', 'two']);
+          });
+        },
+        {
+          returns: [
+            { arg: 'first', type: 'string' },
+            { arg: 'second', type: 'string' }
+          ]
+        });
 
-      var mockSharedClass = { fn: aFn };
-      return new SharedMethod(aFn, 'fn', mockSharedClass, options);
+      method.invoke('ctx', {}, function(err, result) {
+        setImmediate(function() {
+          expect(result).to.eql({ first: 'one', second: 'two' });
+          done();
+        });
+      });
+    });
+
+    it('handles rejected promise returned from the method', function(done) {
+      var testError = new Error('expected test error');
+      var method = givenSharedMethod(function() {
+        return new Promise(function(resolve, reject) {
+          reject(testError);
+        });
+      });
+
+      method.invoke('ctx', {}, function(err, result) {
+        setImmediate(function() {
+          expect(err).to.equal(testError);
+          done();
+        });
+      });
+    });
+
+    function givenSharedMethod(fn, options) {
+      if (options === undefined && typeof fn === 'object') {
+        options = fn;
+        fn = function() {
+          arguments[arguments.length - 1]();
+        };
+      }
+
+      var mockSharedClass = { fn: fn };
+      return new SharedMethod(fn, 'fn', mockSharedClass, options);
     }
   });
 });

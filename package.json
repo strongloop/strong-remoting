@@ -29,6 +29,7 @@
     "xml2js": "^0.4.4"
   },
   "devDependencies": {
+    "bluebird": "^2.9.6",
     "browserify": "~5.11.1",
     "chai": "^1.10.0",
     "grunt": "~0.4.5",

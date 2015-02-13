@@ -10,6 +10,7 @@
 "undef": true,
 "laxcomma" : true,
 "globals" : {
+   "Promise": true,
    "it": false,
    "describe": false,
    "before": false,
