@@ -106,6 +106,48 @@ describe('SharedMethod', function() {
       });
     });
 
+    it('handles promise resolved with a single arg', function(done) {
+      var method = givenSharedMethod(
+        function() {
+          return new Promise(function(resolve, reject) {
+            resolve('data');
+          });
+        },
+        {
+          returns: [
+            { arg: 'value', type: 'string' },
+          ]
+        });
+
+      method.invoke('ctx', {}, function(err, result) {
+        setImmediate(function() {
+          expect(result).to.eql({ value: 'data' });
+          done();
+        });
+      });
+    });
+
+    it('handles promise resolved with a single array arg', function(done) {
+      var method = givenSharedMethod(
+        function() {
+          return new Promise(function(resolve, reject) {
+            resolve(['a', 'b']);
+          });
+        },
+        {
+          returns: [
+            { arg: 'value', type: ['string']},
+          ]
+        });
+
+      method.invoke('ctx', {}, function(err, result) {
+        setImmediate(function() {
+          expect(result).to.eql({ value: ['a', 'b'] });
+          done();
+        });
+      });
+    });
+
     it('handles rejected promise returned from the method', function(done) {
       var testError = new Error('expected test error');
       var method = givenSharedMethod(function() {
