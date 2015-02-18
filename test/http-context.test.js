@@ -72,7 +72,8 @@ function givenMethodExpectArg(options) {
     var method = new SharedMethod(noop, 'testMethod', noop, {
       accepts: [{arg: 'testArg', type: options.type}]
     });
-    var app = require('express')();
+    var express = require('express');
+    var app = express();
 
     app.get('/', function(req, res) {
       var ctx = new HttpContext(req, res, method);
