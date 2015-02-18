@@ -55,6 +55,15 @@ describe('support for HTTP Authentication', function() {
        fails('/digestAuth'));
   });
 
+  describe('remotes.auth', function () {
+    it('should be populated from the url', function () {
+      var url = 'http://login:pass@myhost.com'
+      remotes.connect(url, 'rest');
+      expect(remotes.auth.username).to.eql('login');
+      expect(remotes.auth.password).to.eql('pass');
+    });
+  });
+
   function succeeds(path, credentials) {
     return function(done) {
       invokeRemote(server.address().port, path, credentials,
@@ -77,14 +86,20 @@ describe('support for HTTP Authentication', function() {
   }
 
   function invokeRemote(port, path, credentials, callback) {
-    credentials = credentials || '';
-    if (credentials.length > 0) {
-      credentials += '@';
+    var auth;
+    var split = credentials && credentials.split(':');
+    if(split && split.length === 2) {
+      auth = {
+        username: split[0],
+        password: split[1]
+      }
     }
-    var url = fmt('http://%s127.0.0.1:%d%s', credentials, port, path);
+
+    var url = fmt('http://127.0.0.1:%d%s', port, path);
     var method = 'User.login';
     var args = [{username: 'joe', password: 'secret'}];
     remotes.connect(url, 'rest');
+    remotes.auth = auth;
     remotes.invoke(method, args, callback);
   }
 });
