@@ -1,3 +1,25 @@
+2015-02-19, Version 2.13.0
+==========================
+
+ * Improve coercion for untyped args (Ritchie Martori)
+
+ * Do not depend on req.body (Ritchie Martori)
+
+ * Add remotes.auth / authorization support (Ritchie Martori)
+
+ * Another small fix (Rand McKinney)
+
+ * Small fix (Rand McKinney)
+
+ * Move content from docs.strongloop.com back here. (Rand McKinney)
+
+ * Allow promises to resolve with a single arg (Miroslav Bajtoš)
+
+ * Fix link to docs (Ritchie Martori)
+
+ * Support Promise-returning method and hooks (Miroslav Bajtoš)
+
+
 2015-02-03, Version 2.12.1
 ==========================
 
@@ -121,6 +143,10 @@
 
  * Catch method invocation error to avoid crashing (Raymond Feng)
 
+
+2014-10-22, Version 2.7.0
+=========================
+
  * Ensure errorHandler.handler is a function (Ritchie Martori)
 
  * Add custom handler test (Ritchie Martori)
@@ -129,99 +155,13 @@
 
  * Ensure next() calls the default error handler in custom handlers (Ritchie Martori)
 
- * Added converting to XML, if requested via Accept (Shelby Sanders)
-
  * Changed errorHandler() to honor options.remoting.errorHandler.handler in order to replace restErrorHandler (Shelby Sanders)
 
- * Added missing docs for errors and notes (Shelby Sanders)
 
- * Added support for notes (Shelby Sanders)
-
- * Added support for errors property to specify possible errors that can be returned (Shelby Sanders)
-
- * Update contribution guidelines (Ryan Graham)
-
- * Add sharedClass.disableMethod() (Ritchie Martori)
-
- * Add prototype shared method tests (Krishna Raman)
-
- * Fix http-invocation test (Krishna Raman)
-
- * Support prototype methods via HttpInvocation (Krishna Raman)
-
- * Remove stupid assert global (Ritchie Martori)
-
- * Fix missing assert (Ritchie Martori)
-
- * Set up CORS hander for error responses (Raymond Feng)
-
- * Add a test for request header param (Raymond Feng)
-
- * Allows implicit header param (Raymond Feng)
-
- * Check the name type (Raymond Feng)
-
- * Add support for header param (Raymond Feng)
-
- * Allow args of complex type without validation (Ritchie Martori)
-
- * Implement normalizeHttpPath (Fabien Franzen)
-
- * Do not override previous Content-Type for empty response (Wilson Júnior)
-
- * Make sure array params are correctly deserialized (Raymond Feng)
-
- * Update deps and bump version (Raymond Feng)
-
- * Allow arg type to be ['string'] (Raymond Feng)
-
- * Fix the default CORS options (Raymond Feng)
-
- * Update deps (especially for qs) (Raymond Feng)
-
- * Fix the broken sample (Raymond Feng)
-
- * Minor doc updates and fixes (Ritchie Martori)
-
- * Improve shared class and method docs (Ritchie Martori)
-
- * Provide an option to configure if stack trace should be disabled (Raymond Feng)
-
- * Remove stack traces from production errors. (Samuel Reed)
-
- * Update test case to remove usage of deprecated express apis (Raymond Feng)
-
- * rest: fix RestMethod.isReturningArray (Miroslav Bajtoš)
-
- * Remove ext/swagger (Miroslav Bajtoš)
-
- * 2.0.0-beta4 (Miroslav Bajtoš)
-
- * 2.0.0-beta3 (Miroslav Bajtoš)
-
- * Exclude body-parser from the browser bundle (Miroslav Bajtoš)
-
- * Remove duplicate dep (Raymond Feng)
-
- * Add more tests and use eql for readability (Raymond Feng)
-
- * Add more comments (Raymond Feng)
-
- * Sort the routes so that methods can be resolved in order (Raymond Feng)
-
- * Upgrade to express 4.x (Raymond Feng)
-
-
-2014-10-16, Version 1.6.0
+2014-10-22, Version 2.6.0
 =========================
 
- * Add `errors` and `notes` to method metadata (Shelby Sanders)
-
- * Fix failing test (Raymond Feng)
-
- * Upgrade qs dep (Raymond Feng)
-
- * rest: use `app.delete` instead of `app.del` (Miroslav Bajtoš)
+ * Added converting to XML, if requested via Accept (Shelby Sanders)
 
 
 2014-10-16, Version 2.5.0
@@ -247,6 +187,10 @@
 
  * Fix missing assert (Ritchie Martori)
 
+
+2014-09-25, Version 2.2.1
+=========================
+
  * Bump version (Raymond Feng)
 
  * Set up CORS hander for error responses (Raymond Feng)
@@ -255,14 +199,7 @@
 2014-09-25, Version 2.2.0
 =========================
 
-
-
-2014-09-25, Version 2.2.1
-=========================
-
  * Bump version (Raymond Feng)
-
- * Set up CORS hander for error responses (Raymond Feng)
 
  * Add a test for request header param (Raymond Feng)
 
@@ -299,57 +236,20 @@
  * Fix the default CORS options (Raymond Feng)
 
 
-2014-08-07, Version 2.0.3
-=========================
-
-
-
 2014-08-07, Version 2.0.4
 =========================
 
  * Bump version (Raymond Feng)
+
+
+2014-08-07, Version 2.0.3
+=========================
 
  * Update deps (especially for qs) (Raymond Feng)
 
  * Fix the broken sample (Raymond Feng)
 
  * Improve shared class and method docs (Ritchie Martori)
-
- * Provide an option to configure if stack trace should be disabled (Raymond Feng)
-
- * Remove stack traces from production errors. (Samuel Reed)
-
- * Update test case to remove usage of deprecated express apis (Raymond Feng)
-
- * rest: fix RestMethod.isReturningArray (Miroslav Bajtoš)
-
- * Remove ext/swagger (Miroslav Bajtoš)
-
- * 2.0.0-beta4 (Miroslav Bajtoš)
-
- * 2.0.0-beta3 (Miroslav Bajtoš)
-
- * Exclude body-parser from the browser bundle (Miroslav Bajtoš)
-
- * Remove duplicate dep (Raymond Feng)
-
- * Add more tests and use eql for readability (Raymond Feng)
-
- * Add more comments (Raymond Feng)
-
- * Sort the routes so that methods can be resolved in order (Raymond Feng)
-
- * Upgrade to express 4.x (Raymond Feng)
-
-
-2014-08-07, Version 1.5.3
-=========================
-
- * Fix failing test (Raymond Feng)
-
- * Upgrade qs dep (Raymond Feng)
-
- * rest: use `app.delete` instead of `app.del` (Miroslav Bajtoš)
 
 
 2014-07-28, Version 2.0.2
@@ -398,12 +298,6 @@
  * Upgrade to express 4.x (Raymond Feng)
 
 
-2014-07-16, Version 1.5.2
-=========================
-
- * rest: use `app.delete` instead of `app.del` (Miroslav Bajtoš)
-
-
 2014-07-11, Version 1.5.1
 =========================
 
@@ -437,11 +331,35 @@
 
  * Rename willInvoke => isDelegateFor (Ritchie Martori)
 
+ * 2.0.0-beta3 (Miroslav Bajtoš)
+
+ * Exclude body-parser from the browser bundle (Miroslav Bajtoš)
+
+ * Remove duplicate dep (Raymond Feng)
+
  * Add sharedMethod aliases (Ritchie Martori)
 
  * Add sharedMethod.willInvoke(suspect) (Ritchie Martori)
 
+ * Bump version (Raymond Feng)
+
+ * Add more tests and use eql for readability (Raymond Feng)
+
+ * Add more comments (Raymond Feng)
+
+ * Sort the routes so that methods can be resolved in order (Raymond Feng)
+
+ * Upgrade to express 4.x (Raymond Feng)
+
+
+2014-05-30, Version 1.4.3
+=========================
+
  * Add alias for defineType / convert for backwards compat. (Ritchie Martori)
+
+
+2014-05-29, Version 1.4.2
+=========================
 
  * Add test for scope fix (Ritchie Martori)
 
@@ -469,38 +387,6 @@
 
  * Remove duplicate dep (Raymond Feng)
 
- * Bump version (Raymond Feng)
-
- * Add more tests and use eql for readability (Raymond Feng)
-
- * Add more comments (Raymond Feng)
-
- * Sort the routes so that methods can be resolved in order (Raymond Feng)
-
- * Upgrade to express 4.x (Raymond Feng)
-
-
-2014-05-30, Version 1.4.3
-=========================
-
- * Add alias for defineType / convert for backwards compat. (Ritchie Martori)
-
- * Add test for scope fix (Ritchie Martori)
-
- * Rename .convert() to defineType (Ritchie Martori)
-
- * Fix convert() example (Ritchie Martori)
-
- * Add test for removing sharedCtor requirement (Ritchie Martori)
-
- * Make intent more clear for ctor.http copy (Ritchie Martori)
-
- * Remove un-tested options (Ritchie Martori)
-
- * Use nextTick over setTimeout (Ritchie Martori)
-
- * Add backwards compatibility to SharedMethod ctor (Ritchie Martori)
-
 
 2014-05-30, Version 2.0.0-beta2
 ===============================
@@ -518,26 +404,6 @@
 ===============================
 
  * Upgrade to express 4.x (Raymond Feng)
-
-
-2014-05-29, Version 1.4.2
-=========================
-
- * Add test for scope fix (Ritchie Martori)
-
- * Rename .convert() to defineType (Ritchie Martori)
-
- * Fix convert() example (Ritchie Martori)
-
- * Add test for removing sharedCtor requirement (Ritchie Martori)
-
- * Make intent more clear for ctor.http copy (Ritchie Martori)
-
- * Remove un-tested options (Ritchie Martori)
-
- * Use nextTick over setTimeout (Ritchie Martori)
-
- * Add backwards compatibility to SharedMethod ctor (Ritchie Martori)
 
 
 2014-05-21, Version 1.4.1
@@ -637,18 +503,15 @@
 
  * Capture JSON.parse errors (Raymond Feng)
 
- * Handle undefined argument type (Miroslav Bajtoš)
-
-
-2014-02-21, Version 1.2.5
-=========================
-
-
 
 2014-02-21, Version 1.2.6
 =========================
 
  * Handle undefined argument type (Miroslav Bajtoš)
+
+
+2014-02-21, Version 1.2.5
+=========================
 
  * Bump version (Raymond Feng)
 
@@ -812,33 +675,14 @@
 
  * Finalize package.json for sls-1.0.0 (Raymond Feng)
 
-
-2013-09-11, Version strongloopsuite-1.0.0-3
-===========================================
-
-
-
-2013-09-11, Version strongloopsuite-1.0.0-4
-===========================================
-
-
-
-2013-09-11, Version strongloopsuite-1.0.0-5
-===========================================
-
  * Add debug-guarded errorHandler. (Michael Schoonmaker)
 
  * Namespace debug. (Michael Schoonmaker)
 
- * Add keywords to package.json (Raymond Feng)
 
+2013-09-04, Version 1.2.0
+=========================
 
-2013-09-10, Version strongloopsuite-1.0.0-2
-===========================================
-
- * Add repo (Raymond Feng)
-
- * Finalize package.json for sls-1.0.0 (Raymond Feng)
 
 
 2013-09-04, Version strongloopsuite-1.0.0-1
@@ -848,10 +692,5 @@
 
 2013-09-04, Version strongloopsuite-1.0.0-0
 ===========================================
-
-
-
-2013-09-04, Version 1.2.0
-=========================
 
  * First release!
