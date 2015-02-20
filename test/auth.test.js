@@ -23,6 +23,7 @@ describe('support for HTTP Authentication', function() {
     app.use('/noAuth', remotes.handler('rest'));
     app.use('/basicAuth', auth.connect(basic), remotes.handler('rest'));
     app.use('/digestAuth', auth.connect(digest), remotes.handler('rest'));
+    app.use('/bearerAuth', bearerMiddleware('bearertoken'), remotes.handler('rest'));
     server = app.listen(0, '127.0.0.1', done);
   });
 
@@ -53,6 +54,15 @@ describe('support for HTTP Authentication', function() {
        fails('/digestAuth', 'baduser:badpass'));
     it('fails with no credentials',
        fails('/digestAuth'));
+  });
+
+  describe('when Bearer auth is required', function() {
+    it('succeeds with correct credentials',
+       succeeds('/bearerAuth', {bearer: 'bearertoken'}));
+    it('fails with bad credentials',
+       fails('/bearerAuth', {bearer: 'badtoken'}));
+    it('fails with no credentials',
+       fails('/bearerAuth'));
   });
 
   describe('remotes.auth', function () {
@@ -87,12 +97,18 @@ describe('support for HTTP Authentication', function() {
 
   function invokeRemote(port, path, credentials, callback) {
     var auth;
-    var split = credentials && credentials.split(':');
-    if(split && split.length === 2) {
-      auth = {
-        username: split[0],
-        password: split[1]
+    var split;
+
+    if(typeof credentials === 'string') {
+      split = credentials && credentials.split(':');
+      if(split && split.length === 2) {
+        auth = {
+          username: split[0],
+          password: split[1]
+        }
       }
+    } else if(credentials && typeof credentials === 'object') {
+      auth = credentials;
     }
 
     var url = fmt('http://127.0.0.1:%d%s', port, path);
@@ -109,3 +125,25 @@ function md5(str) {
   hash.update(str);
   return hash.digest('hex');
 }
+
+
+function bearerMiddleware(token) {
+  return function (req, res, next) {
+    var authorization = req.headers.authorization;
+    var AUTH_METHOD = 'Bearer';
+    var providedAuthMethodIsBearer = authorization && authorization.indexOf(AUTH_METHOD) === 0;
+    var providedToken = authorization && authorization.substr((AUTH_METHOD + ' ').length);
+
+    if(!authorization || !providedAuthMethodIsBearer) {
+      res.status(401).set('WWW-Authenticate', AUTH_METHOD).end();
+      return;
+    }
+
+    if(providedToken === token) {
+      return next();
+    }
+
+    res.status(401).end();
+  }
+}
+
