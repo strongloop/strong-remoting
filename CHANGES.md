@@ -1,4 +1,10 @@
-2015-02-19, Version 2.13.0
+2015-02-23, Version 2.13.1
+==========================
+
+ * Add proper bearer token support and tests (Ritchie Martori)
+
+
+2015-02-18, Version 2.13.0
 ==========================
 
  * Improve coercion for untyped args (Ritchie Martori)
@@ -143,10 +149,6 @@
 
  * Catch method invocation error to avoid crashing (Raymond Feng)
 
-
-2014-10-22, Version 2.7.0
-=========================
-
  * Ensure errorHandler.handler is a function (Ritchie Martori)
 
  * Add custom handler test (Ritchie Martori)
@@ -155,13 +157,9 @@
 
  * Ensure next() calls the default error handler in custom handlers (Ritchie Martori)
 
- * Changed errorHandler() to honor options.remoting.errorHandler.handler in order to replace restErrorHandler (Shelby Sanders)
-
-
-2014-10-22, Version 2.6.0
-=========================
-
  * Added converting to XML, if requested via Accept (Shelby Sanders)
+
+ * Changed errorHandler() to honor options.remoting.errorHandler.handler in order to replace restErrorHandler (Shelby Sanders)
 
 
 2014-10-16, Version 2.5.0
@@ -175,7 +173,15 @@
 
  * Update contribution guidelines (Ryan Graham)
 
+
+2014-09-30, Version 2.4.0
+=========================
+
  * Add sharedClass.disableMethod() (Ritchie Martori)
+
+
+2014-09-26, Version 2.3.0
+=========================
 
  * Add prototype shared method tests (Krishna Raman)
 
@@ -241,13 +247,13 @@
 
  * Bump version (Raymond Feng)
 
-
-2014-08-07, Version 2.0.3
-=========================
-
  * Update deps (especially for qs) (Raymond Feng)
 
  * Fix the broken sample (Raymond Feng)
+
+
+2014-07-29, Version 2.0.3
+=========================
 
  * Improve shared class and method docs (Ritchie Martori)
 
@@ -323,23 +329,11 @@
 
  * Add more classes to JSDocs; some doc cleanup. (crandmck)
 
- * !fixup use strongloop/node.js literal convention (Ritchie Martori)
-
- * !fixup isDelegate tests (Ritchie Martori)
-
- * Add test for `sharedClass.find(name)` (Ritchie Martori)
-
- * Rename willInvoke => isDelegateFor (Ritchie Martori)
-
  * 2.0.0-beta3 (Miroslav Bajtoš)
 
  * Exclude body-parser from the browser bundle (Miroslav Bajtoš)
 
  * Remove duplicate dep (Raymond Feng)
-
- * Add sharedMethod aliases (Ritchie Martori)
-
- * Add sharedMethod.willInvoke(suspect) (Ritchie Martori)
 
  * Bump version (Raymond Feng)
 
@@ -350,6 +344,22 @@
  * Sort the routes so that methods can be resolved in order (Raymond Feng)
 
  * Upgrade to express 4.x (Raymond Feng)
+
+
+2014-06-03, Version 1.5.0
+=========================
+
+ * !fixup use strongloop/node.js literal convention (Ritchie Martori)
+
+ * !fixup isDelegate tests (Ritchie Martori)
+
+ * Add test for `sharedClass.find(name)` (Ritchie Martori)
+
+ * Rename willInvoke => isDelegateFor (Ritchie Martori)
+
+ * Add sharedMethod aliases (Ritchie Martori)
+
+ * Add sharedMethod.willInvoke(suspect) (Ritchie Martori)
 
 
 2014-05-30, Version 1.4.3
