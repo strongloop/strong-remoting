@@ -6,7 +6,8 @@ Objects (and, therefore, data) in Node applications commonly need to be accessib
  * Supports multiple client SDKs, including mobile clients.
 
 <div class="confluence-hide">
-Also see the [official StrongLoop documentation](http://docs.strongloop.com/display/LB/Strong+Remoting).</div>
+Also see the [official StrongLoop documentation](http://docs.strongloop.com/display/LB/Strong+Remoting).
+</div>
 
 ### Client SDK support
 
