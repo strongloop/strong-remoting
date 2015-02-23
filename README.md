@@ -5,7 +5,8 @@ Objects (and, therefore, data) in Node applications commonly need to be accessib
  * Manages serialization to JSON and deserialization from JSON.
  * Supports multiple client SDKs, including mobile clients.
 
-Also see the [official StrongLoop documentation](http://docs.strongloop.com/display/LB/Strong+Remoting).
+<div class="confluence-hide">
+Also see the [official StrongLoop documentation](http://docs.strongloop.com/display/LB/Strong+Remoting).</div>
 
 ### Client SDK support
 
