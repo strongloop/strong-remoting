@@ -722,6 +722,25 @@ describe('strong-remoting-rest', function() {
         .expect(204, done);
     });
 
+    it('should preserve non-200 status when responding with no content', function(done) {
+       var method = givenSharedStaticMethod(
+         function(ctx, cb) {
+           ctx.res.status(302);
+           cb();
+         },
+        {
+          accepts: [
+            { arg: 'ctx', type: 'object', http: {source: 'context' } }
+          ],
+        }
+       );
+
+      request(app).get(method.url)
+        .set('Accept', 'application/json')
+        .expect(302, done);
+
+    });
+
     it('should accept custom content-type header if respond with 204', function(done) {
       var method = givenSharedStaticMethod();
       objects.before(method.name, function(ctx, next) {
@@ -1256,6 +1275,7 @@ describe('strong-remoting-rest', function() {
       json(method.url)
         .expect(400, done);
     });
+
   });
 
   describe('call of static method with asynchronous hook', function() {
