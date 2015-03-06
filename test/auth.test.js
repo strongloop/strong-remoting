@@ -33,41 +33,41 @@ describe('support for HTTP Authentication', function() {
 
   describe('when no authentication is required', function() {
     it('succeeds without credentials',
-       succeeds('/noAuth'));
+      succeeds('/noAuth'));
     it('succeeds with credentials',
-       succeeds('/noAuth', 'extrauser:extrapass'));
+      succeeds('/noAuth', 'extrauser:extrapass'));
   });
 
   describe('when Basic auth is required', function() {
     it('succeeds with correct credentials',
-       succeeds('/basicAuth', 'basicuser:basicpass'));
+      succeeds('/basicAuth', 'basicuser:basicpass'));
     it('fails when bad credentials are given',
-       fails('/basicAuth', 'baduser:badpass'));
+      fails('/basicAuth', 'baduser:badpass'));
     it('fails when no credentials are given',
-       fails('/basicAuth'));
+      fails('/basicAuth'));
   });
 
   describe('when Digest auth is required', function() {
     it('succeeds with correct credentials',
-       succeeds('/digestAuth', 'digestuser:digestpass'));
+      succeeds('/digestAuth', 'digestuser:digestpass'));
     it('fails with bad credentials',
-       fails('/digestAuth', 'baduser:badpass'));
+      fails('/digestAuth', 'baduser:badpass'));
     it('fails with no credentials',
-       fails('/digestAuth'));
+      fails('/digestAuth'));
   });
 
   describe('when Bearer auth is required', function() {
     it('succeeds with correct credentials',
-       succeeds('/bearerAuth', {bearer: 'bearertoken'}));
+      succeeds('/bearerAuth', {bearer: 'bearertoken'}));
     it('fails with bad credentials',
-       fails('/bearerAuth', {bearer: 'badtoken'}));
+      fails('/bearerAuth', {bearer: 'badtoken'}));
     it('fails with no credentials',
-       fails('/bearerAuth'));
+      fails('/bearerAuth'));
   });
 
-  describe('remotes.auth', function () {
-    it('should be populated from the url', function () {
-      var url = 'http://login:pass@myhost.com'
+  describe('remotes.auth', function() {
+    it('should be populated from the url', function() {
+      var url = 'http://login:pass@myhost.com';
       remotes.connect(url, 'rest');
       expect(remotes.auth.username).to.eql('login');
       expect(remotes.auth.password).to.eql('pass');
@@ -77,21 +77,21 @@ describe('support for HTTP Authentication', function() {
   function succeeds(path, credentials) {
     return function(done) {
       invokeRemote(server.address().port, path, credentials,
-                   function(err, session) {
-                     expect(err).to.not.exist();
-                     expect(session.userId).to.equal(123);
-                     done();
-                   });
+          function(err, session) {
+            expect(err).to.not.exist();
+            expect(session.userId).to.equal(123);
+            done();
+          });
     };
   }
 
   function fails(path, credentials) {
     return function(done) {
       invokeRemote(server.address().port, path, credentials,
-                   function(err, session) {
-                     expect(err).to.match(/401/);
-                     done();
-                   });
+          function(err, session) {
+            expect(err).to.match(/401/);
+            done();
+          });
     };
   }
 
@@ -99,15 +99,15 @@ describe('support for HTTP Authentication', function() {
     var auth;
     var split;
 
-    if(typeof credentials === 'string') {
+    if (typeof credentials === 'string') {
       split = credentials && credentials.split(':');
-      if(split && split.length === 2) {
+      if (split && split.length === 2) {
         auth = {
           username: split[0],
           password: split[1]
-        }
+        };
       }
-    } else if(credentials && typeof credentials === 'object') {
+    } else if (credentials && typeof credentials === 'object') {
       auth = credentials;
     }
 
@@ -126,24 +126,23 @@ function md5(str) {
   return hash.digest('hex');
 }
 
-
 function bearerMiddleware(token) {
-  return function (req, res, next) {
+  return function(req, res, next) {
     var authorization = req.headers.authorization;
     var AUTH_METHOD = 'Bearer';
-    var providedAuthMethodIsBearer = authorization && authorization.indexOf(AUTH_METHOD) === 0;
+    var providedAuthMethodIsBearer = authorization &&
+        authorization.indexOf(AUTH_METHOD) === 0;
     var providedToken = authorization && authorization.substr((AUTH_METHOD + ' ').length);
 
-    if(!authorization || !providedAuthMethodIsBearer) {
+    if (!authorization || !providedAuthMethodIsBearer) {
       res.status(401).set('WWW-Authenticate', AUTH_METHOD).end();
       return;
     }
 
-    if(providedToken === token) {
+    if (providedToken === token) {
       return next();
     }
 
     res.status(401).end();
-  }
+  };
 }
-

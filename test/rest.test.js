@@ -723,22 +723,25 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should preserve non-200 status when responding with no content', function(done) {
-       var method = givenSharedStaticMethod(
-         function(ctx, cb) {
-           ctx.res.status(302);
-           cb();
-         },
-        {
+      var method = givenSharedStaticMethod(
+        function(ctx, cb) {
+          ctx.res.status(302);
+          cb();
+        }, {
           accepts: [
-            { arg: 'ctx', type: 'object', http: {source: 'context' } }
+            {
+              arg: 'ctx',
+              type: 'object',
+              http: {
+                source: 'context'
+              }
+            }
           ],
-        }
-       );
+        });
 
       request(app).get(method.url)
         .set('Accept', 'application/json')
         .expect(302, done);
-
     });
 
     it('should accept custom content-type header if respond with 204', function(done) {
