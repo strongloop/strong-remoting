@@ -907,6 +907,19 @@ describe('strong-remoting-rest', function() {
         .expect({ data: [1, 2, 3] }, done);
     });
 
+    it('should not create empty string array with empty string arg', function(done) {
+      objects.options.rest = { arrayItemDelimiters:  [',', '|'] };
+      var method = givenSharedStaticMethod(
+        function(a, cb) { cb(null, a); },
+        {
+          accepts: { arg: 'a', type: ['number'] },
+          returns: { arg: 'data', type: 'object' }
+        });
+
+      json('post', method.url + '?a=')
+        .expect({ data: [] }, done);
+    });
+
     it('should still support JSON arrays with arrayItemDelimiters', function(done) {
       objects.options.rest = { arrayItemDelimiters:  [',', '|'] };
       var method = givenSharedStaticMethod(
