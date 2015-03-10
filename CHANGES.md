@@ -1,3 +1,13 @@
+2015-03-10, Version 2.14.0
+==========================
+
+ * Disable CORS when the config value is false (claylo)
+
+ * Fix JSCS errors (Simon Ho)
+
+ * Coerce empty string into empty array with arrayItemDelimiters (Samuel Reed)
+
+
 2015-02-25, Version 2.13.2
 ==========================
 
