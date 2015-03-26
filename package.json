@@ -64,6 +64,8 @@
   "browser": {
     "express": false,
     "body-parser": false,
+    "cors": false,
+    "js2xmlparser": false,
     "request": "browser-request"
   },
   "license": {
