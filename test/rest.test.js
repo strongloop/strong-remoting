@@ -9,6 +9,8 @@ var factory = require('./helpers/shared-objects-factory.js');
 var Promise = global.Promise || require('bluebird');
 
 var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
+var TEST_ERROR = new Error('expected test error');
+
 
 describe('strong-remoting-rest', function() {
   var app;
@@ -2128,4 +2130,77 @@ describe('strong-remoting-rest', function() {
       expect(methodNames.length).to.equal(1);
       done();
     });
+
+  describe('afterError hook', function() {
+    it('should be called when the method fails', function(done) {
+      var method = givenSharedStaticMethod(function(cb) {
+        cb(TEST_ERROR);
+      });
+
+      verifyErrorHookIsCalled(method, TEST_ERROR, done);
+    });
+
+    it('should be called when a "before" hook fails', function(done) {
+      var method = givenSharedStaticMethod();
+
+      objects.before(method.name, function(ctx, next) {
+        next(TEST_ERROR);
+      });
+
+      verifyErrorHookIsCalled(method, TEST_ERROR, done);
+    });
+
+    it('should be called when an "after" hook fails', function(done) {
+      var method = givenSharedStaticMethod();
+
+      objects.after(method.name, function(ctx, next) {
+        next(TEST_ERROR);
+      });
+
+      verifyErrorHookIsCalled(method, TEST_ERROR, done);
+    });
+
+    it('can replace the error object', function(done) {
+      var method = givenSharedStaticMethod(function(cb) {
+        cb(new Error(
+          'error from the method, should have been shadowed by the hook'));
+      });
+      objects.afterError(method.name, function(ctx, next) {
+        next(new Error('error from the hook'));
+      });
+
+      json(method.url)
+        .expect(500)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body.error.message).to.equal('error from the hook');
+          done();
+        });
+    });
+
+    function verifyErrorHookIsCalled(method, expectedError, done) {
+      var hookContext = 'hook not called';
+
+      objects.afterError(method.name, function(ctx, next) {
+        if (Array.isArray(hookContext)) {
+          hookContext.push(context);
+        } else if (typeof hookContext === 'object') {
+          hookContext = [hookContext, ctx];
+        } else {
+          hookContext = ctx;
+        }
+        ctx.error.hookData = true;
+        next();
+      });
+
+      json(method.url)
+        .expect(500)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body.error).to.have.property('hookData', true);
+          expect(hookContext).to.have.property('error', expectedError);
+          done();
+        });
+    }
+  });
 });
