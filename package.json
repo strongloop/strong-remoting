@@ -52,6 +52,7 @@
     "karma-requirejs": "~0.2.2",
     "karma-script-launcher": "~0.1.0",
     "mocha": "~1.21.4",
+    "pre-commit": "^1.0.6",
     "requirejs": "~2.1.14",
     "socket.io": "~1.1.0",
     "supertest": "~0.13.0"
