@@ -131,6 +131,55 @@ describe('HttpInvocation', function() {
         this.foo = data.foo;
       }
     });
+
+    it('should forward all error properties', function(done) {
+      var method = givenSharedStaticMethod({});
+      var inv = new HttpInvocation(method);
+      var res = {
+        statusCode: 555,
+        body: {
+          error: {
+            name: 'CustomError',
+            message: 'Custom error message',
+            statusCode: 555,
+            details: {
+              key: 'value'
+            },
+            extra: 'extra value'
+          }
+        }
+      };
+
+      inv.transformResponse(res, res.body, function(err) {
+        if (!err)
+          return done(new Error('transformResponse should have failed.'));
+
+        expect(err).to.have.property('name', 'CustomError');
+        expect(err).to.have.property('message', 'Custom error message');
+        expect(err).to.have.property('statusCode', 555);
+        expect(err).to.have.property('details').eql({ key: 'value' });
+        expect(err).to.have.property('extra', 'extra value');
+        done();
+      });
+    });
+
+    it('should forward statusCode and non-object error response', function(done) {
+      var method = givenSharedStaticMethod({});
+      var inv = new HttpInvocation(method);
+      var res = {
+        statusCode: 555,
+        body: 'error body'
+      };
+
+      inv.transformResponse(res, res.body, function(err) {
+        if (!err)
+          return done(new Error('transformResponse should have failed.'));
+
+        expect(err).to.have.property('statusCode', 555);
+        expect(err).to.have.property('details', 'error body');
+        done();
+      });
+    });
   });
 });
 
