@@ -11,7 +11,6 @@ var Promise = global.Promise || require('bluebird');
 var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
 var TEST_ERROR = new Error('expected test error');
 
-
 describe('strong-remoting-rest', function() {
   var app;
   var appSupportingJsonOnly;
@@ -897,6 +896,97 @@ describe('strong-remoting-rest', function() {
       json('get', '/foo/bar?a=42&b=0.42')
         .expect(200, function(err, res) {
           assert.equal(res.body, 42.42);
+          done();
+        });
+    });
+
+    it('should coerce strings with type set to "any"', function(done) {
+      remotes.foo = {
+        bar: function(a, b, c, fn) {
+          fn(null, c === true ? a + b : 0);
+        }
+      };
+
+      var fn = remotes.foo.bar;
+
+      fn.shared = true;
+      fn.accepts = [
+        {arg: 'a', type: 'any'},
+        {arg: 'b', type: 'any'},
+        {arg: 'c', type: 'any'}
+      ];
+      fn.returns = {root: true};
+
+      json('get', '/foo/bar?a=42&b=0.42&c=true')
+        .expect(200, function(err, res) {
+          assert.equal(res.body, 42.42);
+          done();
+        });
+    });
+
+    it('should coerce contents of array with simple array types', function(done) {
+      remotes.foo = {
+        bar: function(a, fn) {
+          fn(null, a.reduce(function(memo, val) { return memo + val; }, 0));
+        }
+      };
+
+      var fn = remotes.foo.bar;
+
+      fn.shared = true;
+      fn.accepts = [
+        {arg: 'a', type: ['number']}
+      ];
+      fn.returns = {root: true};
+
+      json('get', '/foo/bar?a=["1","2","3","4","5"]')
+        .expect(200, function(err, res) {
+          assert.equal(res.body, 15);
+          done();
+        });
+    });
+
+    it('should pass an array argument even when non-array passed', function(done) {
+      remotes.foo = {
+        bar: function(a, fn) {
+          fn(null, Array.isArray(a));
+        }
+      };
+
+      var fn = remotes.foo.bar;
+
+      fn.shared = true;
+      fn.accepts = [
+        {arg: 'a', type: ['number']}
+      ];
+      fn.returns = {root: true};
+
+      json('get',
+        '/foo/bar?a=1234')
+        .expect(200, function(err, res) {
+          assert.equal(res.body, true);
+          done();
+        });
+    });
+
+    it('should coerce contents of array with simple array types', function(done) {
+      remotes.foo = {
+        bar: function(a, fn) {
+          fn(null, a.reduce(function(memo, val) { return memo + val; }, 0));
+        }
+      };
+
+      var fn = remotes.foo.bar;
+
+      fn.shared = true;
+      fn.accepts = [
+        {arg: 'a', type: ['number']}
+      ];
+      fn.returns = {root: true};
+
+      json('get', '/foo/bar?a=["1","2","3","4","5"]')
+        .expect(200, function(err, res) {
+          assert.equal(res.body, 15);
           done();
         });
     });
@@ -2183,7 +2273,7 @@ describe('strong-remoting-rest', function() {
 
       objects.afterError(method.name, function(ctx, next) {
         if (Array.isArray(hookContext)) {
-          hookContext.push(context);
+          hookContext.push(ctx);
         } else if (typeof hookContext === 'object') {
           hookContext = [hookContext, ctx];
         } else {
