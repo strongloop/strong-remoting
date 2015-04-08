@@ -18,6 +18,7 @@ describe('strong-remoting-rest', function() {
   var objects;
   var remotes;
   var adapterName = 'rest';
+  var lastRequest, lastResponse;
 
   before(function(done) {
     app = express();
@@ -25,6 +26,8 @@ describe('strong-remoting-rest', function() {
     app.use(function(req, res, next) {
       // create the handler for each request
       objects.handler(adapterName).apply(objects, arguments);
+      lastRequest = req;
+      lastResponse = res;
     });
     server = app.listen(done);
   });
@@ -1603,6 +1606,16 @@ describe('strong-remoting-rest', function() {
         if (err) return done(err);
         expect(res.body)
           .to.have.deep.property('error.message', testError.message);
+        done();
+      });
+    });
+
+    it('should set "req.remotingContext"', function(done) {
+      var method = givenSharedPrototypeMethod();
+      json(method.url).end(function(err) {
+        if (err) return done(err);
+        expect(lastRequest)
+          .to.have.deep.property('remotingContext.method.name');
         done();
       });
     });
