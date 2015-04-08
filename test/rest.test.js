@@ -11,7 +11,6 @@ var Promise = global.Promise || require('bluebird');
 var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
 var TEST_ERROR = new Error('expected test error');
 
-
 describe('strong-remoting-rest', function() {
   var app;
   var appSupportingJsonOnly;
@@ -19,6 +18,7 @@ describe('strong-remoting-rest', function() {
   var objects;
   var remotes;
   var adapterName = 'rest';
+  var lastRequest, lastResponse;
 
   before(function(done) {
     app = express();
@@ -26,6 +26,8 @@ describe('strong-remoting-rest', function() {
     app.use(function(req, res, next) {
       // create the handler for each request
       objects.handler(adapterName).apply(objects, arguments);
+      lastRequest = req;
+      lastResponse = res;
     });
     server = app.listen(done);
   });
@@ -1607,6 +1609,16 @@ describe('strong-remoting-rest', function() {
         done();
       });
     });
+
+    it('should set "req.remotingContext"', function(done) {
+      var method = givenSharedPrototypeMethod();
+      json(method.url).end(function(err) {
+        if (err) return done(err);
+        expect(lastRequest)
+          .to.have.deep.property('remotingContext.method.name');
+        done();
+      });
+    });
   });
 
   it('returns 404 for unknown method of a shared class', function(done) {
@@ -2183,7 +2195,7 @@ describe('strong-remoting-rest', function() {
 
       objects.afterError(method.name, function(ctx, next) {
         if (Array.isArray(hookContext)) {
-          hookContext.push(context);
+          hookContext.push(hookContext);
         } else if (typeof hookContext === 'object') {
           hookContext = [hookContext, ctx];
         } else {
