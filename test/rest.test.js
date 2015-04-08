@@ -22,6 +22,14 @@ describe('strong-remoting-rest', function() {
   before(function(done) {
     app = express();
     app.disable('x-powered-by');
+
+    app.use(function emitRequestResponse(req, res, next) {
+      res.on('finish', function() {
+        app.emit('responded', req, res);
+      });
+      next();
+    });
+
     app.use(function(req, res, next) {
       // create the handler for each request
       objects.handler(adapterName).apply(objects, arguments);
@@ -2037,6 +2045,70 @@ describe('strong-remoting-rest', function() {
     });
   });
 
+  // Integration with strong-express-metrics
+  describe('metrics', function() {
+    var response;
+
+    beforeEach(function saveResponse() {
+      response = {};
+      app.removeAllListeners();
+      app.on('responded', function(req, res) {
+        response = res;
+      });
+    });
+
+    it('provides model and method name for static method', function(done) {
+      var method = givenSharedStaticMethod();
+
+      request(app).post(method.url).end(function(err) {
+        if (err) return done(err);
+        expect(response.req)
+          .to.have.property('remoteMethod', method.methodName);
+        expect(response.req)
+          .to.have.property('remoteClass', method.className);
+        done();
+      });
+    });
+
+    it('provides model, method and instance for prototype method',
+      function(done) {
+      var method = givenSharedPrototypeMethod();
+
+      request(app).post(method.getUrlForId('test-id')).end(function(err) {
+        if (err) return done(err);
+        expect(response.req)
+          .to.have.property('remoteMethod', method.methodName);
+        expect(response.req)
+          .to.have.property('remoteClass', method.className);
+        expect(response.req)
+          .to.have.property('remoteInstance').eql({ id: 'test-id' });
+        done();
+      });
+    });
+
+    it('provides instance for static method when available', function(done) {
+      // This scenario matches LoopBack's method PersistedModel.findById()
+      remotes.testClass = factory.createSharedClass();
+      remotes.testClass.findById = function(cb) { cb(); };
+      extend(remotes.testClass.findById, {
+        shared: true,
+        accepts: { arg: 'id', type: 'any', http: { source: 'path' } },
+        http: { path: '/:id', verb: 'GET' }
+      });
+
+      request(app).get('/testClass/an-id').end(function(err) {
+        if (err) return done(err);
+        expect(response.req)
+          .to.have.property('remoteMethod', 'findById');
+        expect(response.req)
+          .to.have.property('remoteClass', 'testClass');
+        expect(response.req)
+          .to.have.property('remoteInstance').eql({ id: 'an-id' });
+        done();
+      });
+    });
+  });
+
   function givenSharedStaticMethod(fn, config) {
     if (typeof fn === 'object' && config === undefined) {
       config = fn;
@@ -2049,6 +2121,8 @@ describe('strong-remoting-rest', function() {
     extend(remotes.testClass.testMethod, config);
     return {
       name: 'testClass.testMethod',
+      methodName: 'testMethod',
+      className: 'testClass',
       url: '/testClass/testMethod',
       classUrl: '/testClass'
     };
@@ -2067,6 +2141,8 @@ describe('strong-remoting-rest', function() {
     extend(remotes.testClass.prototype.testMethod, config);
     return {
       name: 'testClass.prototype.testMethod',
+      methodName: 'prototype.testMethod',
+      className: 'testClass',
       getClassUrlForId: function(id) {
         return '/testClass/' + id;
       },
