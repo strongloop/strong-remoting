@@ -11,7 +11,6 @@ var Promise = global.Promise || require('bluebird');
 var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
 var TEST_ERROR = new Error('expected test error');
 
-
 describe('strong-remoting-rest', function() {
   var app;
   var appSupportingJsonOnly;
@@ -2183,7 +2182,7 @@ describe('strong-remoting-rest', function() {
 
       objects.afterError(method.name, function(ctx, next) {
         if (Array.isArray(hookContext)) {
-          hookContext.push(context);
+          hookContext.push(hookContext);
         } else if (typeof hookContext === 'object') {
           hookContext = [hookContext, ctx];
         } else {
