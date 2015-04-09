@@ -1619,6 +1619,17 @@ describe('strong-remoting-rest', function() {
         done();
       });
     });
+
+    it('should set "remotingContext.ctorArgs"', function(done) {
+      var method = givenSharedPrototypeMethod();
+      json(method.getUrlForId(1234)).end(function(err) {
+        if (err) return done(err);
+        expect(lastRequest)
+          .to.have.deep.property('remotingContext.ctorArgs.id', 1234);
+        // Notice that the id was correctly coerced to a Number ^^^^
+        done();
+      });
+    });
   });
 
   it('returns 404 for unknown method of a shared class', function(done) {
