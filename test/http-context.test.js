@@ -35,6 +35,16 @@ describe('HttpContext', function() {
         input: 'null',
         expectedValue: 'null'
       }));
+      it('should coerce array types properly with non-array input', givenMethodExpectArg({
+        type: ['string'],
+        input: 123,
+        expectedValue: ['123']
+      }));
+      it('should not coerce a single string into a number', givenMethodExpectArg({
+        type: ['string'],
+        input: '123',
+        expectedValue: ['123']
+      }));
     });
 
     describe('arguments without a defined type (or any)', function() {
@@ -78,7 +88,7 @@ function givenMethodExpectArg(options) {
     app.get('/', function(req, res) {
       var ctx = new HttpContext(req, res, method);
       try {
-        expect(ctx.args.testArg).to.equal(options.expectedValue);
+        expect(ctx.args.testArg).to.eql(options.expectedValue);
       } catch (e) {
         return done(e);
       }
