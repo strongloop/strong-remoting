@@ -1,3 +1,13 @@
+2015-04-14, Version 2.16.0
+==========================
+
+ * http-context: save "ctorArgs" on the context (Miroslav Bajtoš)
+
+ * Expose HttpContext as `req.remotingContext` (Miroslav Bajtoš)
+
+ * Fix lint errors (Miroslav Bajtoš)
+
+
 2015-04-02, Version 2.15.0
 ==========================
 
@@ -185,10 +195,6 @@
 
  * Catch method invocation error to avoid crashing (Raymond Feng)
 
-
-2014-10-22, Version 2.7.0
-=========================
-
  * Ensure errorHandler.handler is a function (Ritchie Martori)
 
  * Add custom handler test (Ritchie Martori)
@@ -197,13 +203,9 @@
 
  * Ensure next() calls the default error handler in custom handlers (Ritchie Martori)
 
- * Changed errorHandler() to honor options.remoting.errorHandler.handler in order to replace restErrorHandler (Shelby Sanders)
-
-
-2014-10-22, Version 2.6.0
-=========================
-
  * Added converting to XML, if requested via Accept (Shelby Sanders)
+
+ * Changed errorHandler() to honor options.remoting.errorHandler.handler in order to replace restErrorHandler (Shelby Sanders)
 
 
 2014-10-16, Version 2.5.0
