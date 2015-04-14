@@ -2206,7 +2206,7 @@ describe('strong-remoting-rest', function() {
 
       objects.afterError(method.name, function(ctx, next) {
         if (Array.isArray(hookContext)) {
-          hookContext.push(hookContext);
+          hookContext.push(ctx);
         } else if (typeof hookContext === 'object') {
           hookContext = [hookContext, ctx];
         } else {
