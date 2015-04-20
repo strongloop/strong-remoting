@@ -994,6 +994,37 @@ describe('strong-remoting-rest', function() {
         });
     });
 
+    it('should not flatten arrays for non-standard target type', function(done) {
+      var method = givenSharedStaticMethod(
+        function(arg, cb) { cb(null, { value: arg }); },
+        {
+          // Note: the string "array" is not a valid type
+          accepts: { arg: 'arg', type: 'array' },
+          returns: { arg: 'data', type: 'any', root: true },
+          http: { method: 'POST' }
+        });
+
+      request(app).post(method.url)
+        .send({ arg: ['single'] })
+        .expect(200, { value: ['single'] })
+        .end(done);
+    });
+
+    it('should not flatten arrays for target type "object"', function(done) {
+      var method = givenSharedStaticMethod(
+        function(arg, cb) { cb(null, { value: arg }); },
+        {
+          accepts: { arg: 'arg', type: 'object' },
+          returns: { arg: 'data', type: 'any', root: true },
+          http: { method: 'POST' }
+        });
+
+      request(app).post(method.url)
+        .send({ arg: ['single'] })
+        .expect(200, { value: ['single'] })
+        .end(done);
+    });
+
     it('should allow empty body for json request', function(done) {
       remotes.foo = {
         bar: function(a, b, fn) {
