@@ -994,12 +994,11 @@ describe('strong-remoting-rest', function() {
         });
     });
 
-    it('should not flatten arrays for non-standard target type', function(done) {
+    it('should not flatten arrays for target type "any"', function(done) {
       var method = givenSharedStaticMethod(
         function(arg, cb) { cb(null, { value: arg }); },
         {
-          // Note: the string "array" is not a valid type
-          accepts: { arg: 'arg', type: 'array' },
+          accepts: { arg: 'arg', type: 'any' },
           returns: { arg: 'data', type: 'any', root: true },
           http: { method: 'POST' }
         });
