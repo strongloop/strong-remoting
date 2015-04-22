@@ -1798,6 +1798,33 @@ describe('strong-remoting-rest', function() {
       });
   });
 
+  it('coerces array values passed to a string argument', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(null, arg); },
+      {
+        accepts: { arg: 'arg', type: 'string' },
+        returns: { arg: 'arg', type: 'string' }
+      });
+
+    request(app).get(method.url + '?arg=1&arg=2')
+      .expect(200)
+      .end(function(err, res) {
+        if (err) return done(err);
+        expect(res.body.arg).to.eql('1,2');
+        done();
+      });
+  });
+
+  it('rejects multi-item array passed to a number argument', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(); },
+      { accepts: { arg: 'arg', type: 'number' }});
+
+    request(app).get(method.url + '?arg=1&arg=2')
+      .expect(400)
+      .end(done);
+  });
+
   describe('client', function() {
 
     describe('call of constructor method', function() {
