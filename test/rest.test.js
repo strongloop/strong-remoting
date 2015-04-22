@@ -1814,6 +1814,7 @@ describe('strong-remoting-rest', function() {
 
         var msg = 'hello';
         objects.invoke(method.name, [msg], function(err, resMsg) {
+          if (err) return done(err);
           assert.equal(resMsg, msg);
           done();
         });
@@ -1835,6 +1836,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 3);
           done();
         });
@@ -1856,6 +1858,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 3);
           done();
         });
@@ -1877,6 +1880,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [], function(err) {
+          if (err) return done(err);
           assert(called);
           done();
         });
@@ -1901,6 +1905,7 @@ describe('strong-remoting-rest', function() {
         };
 
         objects.invoke(method.name, [obj], function(err, data) {
+          if (err) return done(err);
           expect(obj).to.deep.equal(data);
           done();
         });
@@ -1922,6 +1927,7 @@ describe('strong-remoting-rest', function() {
 
         var data = {date: {$type: 'date', $data: new Date()}};
         objects.invoke(method.name, [data], function(err, resData) {
+          if (err) return done(err);
           expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
           done();
         });
@@ -1943,6 +1949,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 3);
           done();
         });
@@ -1966,6 +1973,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [1, 2], function(err, a, b) {
+          if (err) return done(err);
           assert.equal(a, 1);
           assert.equal(b, 2);
           done();
@@ -2004,6 +2012,7 @@ describe('strong-remoting-rest', function() {
 
         var msg = 'hello';
         objects.invoke(method.name, ['anId'], [msg], function(err, resMsg) {
+          if (err) return done(err);
           assert.equal(resMsg, 'anId:' + msg);
           done();
         });
@@ -2025,6 +2034,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [39], [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 42);
           done();
         });
@@ -2046,6 +2056,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [39], [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 42);
           done();
         });
@@ -2067,6 +2078,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [39], [], function(err) {
+          if (err) return done(err);
           assert(called);
           done();
         });
@@ -2091,6 +2103,7 @@ describe('strong-remoting-rest', function() {
         };
 
         objects.invoke(method.name, [39], [obj], function(err, data) {
+          if (err) return done(err);
           expect(obj).to.deep.equal(data);
           done();
         });
@@ -2112,6 +2125,7 @@ describe('strong-remoting-rest', function() {
 
         var data = {date: {$type: 'date', $data: new Date()}};
         objects.invoke(method.name, [39], [data], function(err, resData) {
+          if (err) return done(err);
           expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
           done();
         });
@@ -2133,6 +2147,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [39], [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 42);
           done();
         });
@@ -2157,6 +2172,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, ['39'], [1, 2], function(err, id, a, b) {
+          if (err) return done(err);
           assert.equal(id, '39');
           assert.equal(a, 1);
           assert.equal(b, 2);
