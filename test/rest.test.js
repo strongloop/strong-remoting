@@ -1825,6 +1825,28 @@ describe('strong-remoting-rest', function() {
       .end(done);
   });
 
+  it('supports "Object" type string', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(); },
+      { accepts: { arg: 'arg', type: 'Object' }});
+
+    request(app)
+      .get(method.url + '?arg={"x":1}')
+      .expect(204)
+      .end(done);
+  });
+
+  it('supports custom type string', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(); },
+      { accepts: { arg: 'arg', type: 'Model' } });
+
+    request(app)
+      .get(method.url + '?arg={"x":1}')
+      .expect(204)
+      .end(done);
+  });
+
   describe('client', function() {
 
     describe('call of constructor method', function() {
