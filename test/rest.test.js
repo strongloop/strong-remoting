@@ -1798,6 +1798,55 @@ describe('strong-remoting-rest', function() {
       });
   });
 
+  it('coerces array values passed to a string argument', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(null, arg); },
+      {
+        accepts: { arg: 'arg', type: 'string' },
+        returns: { arg: 'arg', type: 'string' }
+      });
+
+    request(app).get(method.url + '?arg=1&arg=2')
+      .expect(200)
+      .end(function(err, res) {
+        if (err) return done(err);
+        expect(res.body.arg).to.eql('1,2');
+        done();
+      });
+  });
+
+  it('rejects multi-item array passed to a number argument', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(); },
+      { accepts: { arg: 'arg', type: 'number' }});
+
+    request(app).get(method.url + '?arg=1&arg=2')
+      .expect(400)
+      .end(done);
+  });
+
+  it('supports "Object" type string', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(); },
+      { accepts: { arg: 'arg', type: 'Object' }});
+
+    request(app)
+      .get(method.url + '?arg={"x":1}')
+      .expect(204)
+      .end(done);
+  });
+
+  it('supports custom type string', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(); },
+      { accepts: { arg: 'arg', type: 'Model' } });
+
+    request(app)
+      .get(method.url + '?arg={"x":1}')
+      .expect(204)
+      .end(done);
+  });
+
   describe('client', function() {
 
     describe('call of constructor method', function() {
@@ -1814,6 +1863,7 @@ describe('strong-remoting-rest', function() {
 
         var msg = 'hello';
         objects.invoke(method.name, [msg], function(err, resMsg) {
+          if (err) return done(err);
           assert.equal(resMsg, msg);
           done();
         });
@@ -1835,6 +1885,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 3);
           done();
         });
@@ -1856,6 +1907,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 3);
           done();
         });
@@ -1877,6 +1929,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [], function(err) {
+          if (err) return done(err);
           assert(called);
           done();
         });
@@ -1901,6 +1954,7 @@ describe('strong-remoting-rest', function() {
         };
 
         objects.invoke(method.name, [obj], function(err, data) {
+          if (err) return done(err);
           expect(obj).to.deep.equal(data);
           done();
         });
@@ -1922,6 +1976,7 @@ describe('strong-remoting-rest', function() {
 
         var data = {date: {$type: 'date', $data: new Date()}};
         objects.invoke(method.name, [data], function(err, resData) {
+          if (err) return done(err);
           expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
           done();
         });
@@ -1943,6 +1998,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 3);
           done();
         });
@@ -1966,6 +2022,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [1, 2], function(err, a, b) {
+          if (err) return done(err);
           assert.equal(a, 1);
           assert.equal(b, 2);
           done();
@@ -2004,6 +2061,7 @@ describe('strong-remoting-rest', function() {
 
         var msg = 'hello';
         objects.invoke(method.name, ['anId'], [msg], function(err, resMsg) {
+          if (err) return done(err);
           assert.equal(resMsg, 'anId:' + msg);
           done();
         });
@@ -2025,6 +2083,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [39], [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 42);
           done();
         });
@@ -2046,6 +2105,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [39], [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 42);
           done();
         });
@@ -2067,6 +2127,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [39], [], function(err) {
+          if (err) return done(err);
           assert(called);
           done();
         });
@@ -2091,6 +2152,7 @@ describe('strong-remoting-rest', function() {
         };
 
         objects.invoke(method.name, [39], [obj], function(err, data) {
+          if (err) return done(err);
           expect(obj).to.deep.equal(data);
           done();
         });
@@ -2112,6 +2174,7 @@ describe('strong-remoting-rest', function() {
 
         var data = {date: {$type: 'date', $data: new Date()}};
         objects.invoke(method.name, [39], [data], function(err, resData) {
+          if (err) return done(err);
           expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
           done();
         });
@@ -2133,6 +2196,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, [39], [1, 2], function(err, n) {
+          if (err) return done(err);
           assert.equal(n, 42);
           done();
         });
@@ -2157,6 +2221,7 @@ describe('strong-remoting-rest', function() {
         );
 
         objects.invoke(method.name, ['39'], [1, 2], function(err, id, a, b) {
+          if (err) return done(err);
           assert.equal(id, '39');
           assert.equal(a, 1);
           assert.equal(b, 2);
