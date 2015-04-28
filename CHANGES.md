@@ -1,3 +1,15 @@
+2015-04-28, Version 2.16.3
+==========================
+
+ * Cleanup in coercion code (Miroslav Bajtoš)
+
+ * shared-method: relax handling of type strings (Miroslav Bajtoš)
+
+ * shared-method: tighten coercion and type checks (Miroslav Bajtoš)
+
+ * test: report invocation errors (Miroslav Bajtoš)
+
+
 2015-04-20, Version 2.16.2
 ==========================
 
