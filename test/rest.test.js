@@ -1024,6 +1024,66 @@ describe('strong-remoting-rest', function() {
         .end(done);
     });
 
+    it('should support taget type [any]', function(done) {
+      var method = givenSharedStaticMethod(
+        function(arg, cb) { cb(null, { value: arg }); },
+        {
+          accepts: { arg: 'arg', type: ['any'] },
+          returns: { arg: 'data', type: ['any'], root: true },
+          http: { method: 'POST' }
+        });
+
+      request(app).post(method.url)
+        .send({ arg: ['single'] })
+        .expect(200, { value: ['single'] })
+        .end(done);
+    });
+
+    it('should support taget type `array` - of string', function(done) {
+      var method = givenSharedStaticMethod(
+        function(arg, cb) { cb(null, { value: arg }); },
+        {
+          accepts: { arg: 'arg', type: 'array' },
+          returns: { arg: 'data', type: 'array', root: true },
+          http: { method: 'POST' }
+        });
+
+      request(app).post(method.url)
+        .send({ arg: ['single'] })
+        .expect(200, { value: ['single'] })
+        .end(done);
+    });
+
+    it('should support taget type `array` - of number', function(done) {
+      var method = givenSharedStaticMethod(
+        function(arg, cb) { cb(null, { value: arg }); },
+        {
+          accepts: { arg: 'arg', type: 'array' },
+          returns: { arg: 'data', type: 'array', root: true },
+          http: { method: 'POST' }
+        });
+
+      request(app).post(method.url)
+        .send({ arg: [1] })
+        .expect(200, { value: [1] })
+        .end(done);
+    });
+
+    it('should support taget type `array` - of object', function(done) {
+      var method = givenSharedStaticMethod(
+        function(arg, cb) { cb(null, { value: arg }); },
+        {
+          accepts: { arg: 'arg', type: 'array' },
+          returns: { arg: 'data', type: 'array', root: true },
+          http: { method: 'POST' }
+        });
+
+      request(app).post(method.url)
+        .send({ arg: [{foo: 'bar'}] })
+        .expect(200, { value: [{foo: 'bar'}] })
+        .end(done);
+    });
+
     it('should allow empty body for json request', function(done) {
       remotes.foo = {
         bar: function(a, b, fn) {
