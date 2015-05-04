@@ -6,6 +6,31 @@ var factory = require('./helpers/shared-objects-factory.js');
 var Promise = global.Promise || require('bluebird');
 
 describe('SharedMethod', function() {
+  var STUB_CLASS = {};
+  var STUB_METHOD = function(cb) { cb(); };
+
+  describe('constructor', function() {
+    it('normalizes "array" type in "accepts" arguments', function() {
+      var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
+        accepts: { arg: 'data', type: 'array' }
+      });
+
+      expect(sharedMethod.accepts).to.eql([
+        { arg: 'data', type: ['any'] }
+      ]);
+    });
+
+    it('normalizes "array" type in "returns" arguments', function() {
+      var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
+        returns: { arg: 'data', type: 'array' }
+      });
+
+      expect(sharedMethod.returns).to.eql([
+        { arg: 'data', type: ['any'] }
+      ]);
+    });
+  });
+
   describe('sharedMethod.isDelegateFor(suspect, [isStatic])', function() {
 
     // stub function
