@@ -28,20 +28,20 @@ The following example illustrates how to set up a basic strong-remoting server w
 var remoting = require('../');
 var SharedClass = remoting.SharedClass
 var remotes = remoting.create();
- 
+
 // define a class-like object (or constructor)
 function User() {
-   
+
 }
- 
+
 User.greet = function (fn) {
   fn(null, 'hello, world!');
 }
- 
+
 // create a shared class to allow strong-remoting to map
 // http requests to method invocations on your class
 var userSharedClass = new SharedClass('user', User);
- 
+
 // Tell strong-remoting about your greet method
 userSharedClass.defineMethod('greet', {
   isStatic: true, // not an instance method
@@ -87,6 +87,19 @@ Adapters provide the transport-specific mechanisms to make remote objects (and c
 Hooks enable you to run code before remote objects are constructed or methods on those objects are invoked. For example, you can prevent actions based on context (HTTP request, user credentials, and so on).
 
 ```js
+// Do something before any hook is executed
+remotes.authorization = function(ctx, next) {
+  if(checkContext(ctx)) {
+    // allow
+    next();
+  } else {
+    // deny
+    var err = new Error('denied!');
+    err.statusCode = 401;
+    next(err);
+  }
+}
+
 // Do something before our `user.greet` example, earlier.
 remotes.before('user.greet', function (ctx, next) {
   if((ctx.req.param('password') || '').toString() !== '1234') {
@@ -95,33 +108,33 @@ remotes.before('user.greet', function (ctx, next) {
     next();
   }
 });
- 
+
 // Do something before any `user` method.
 remotes.before('user.*', function (ctx, next) {
   console.log('Calling a user method.');
   next();
 });
- 
+
 // Do something before a `dog` instance method.
 remotes.before('dog.prototype.*', function (ctx, next) {
   var dog = this;
   console.log('Calling a method on "%s".', dog.name);
   next();
 });
- 
+
 // Do something after the `speak` instance method.
 // NOTE: you cannot cancel a method after it has been called.
 remotes.after('dog.prototype.speak', function (ctx, next) {
   console.log('After speak!');
   next();
 });
- 
+
 // Do something before all methods.
 remotes.before('**', function (ctx, next, method) {
   console.log('Calling:', method.name);
   next();
 });
- 
+
 // Modify all returned values named `result`.
 remotes.after('**', function (ctx, next) {
   ctx.result += '!!!';
@@ -140,16 +153,16 @@ For example, the following code exposes a method of the `fs` Remote Object, `fs.
 ```js
 // Create a Collection.
 var remotes = require('strong-remoting').create();
- 
+
 // Share some fs module code.
 var fs = remotes.exports.fs = require('fs');
- 
+
 // Specifically export the `createReadStream` function.
 fs.createReadStream.shared = true;
- 
+
 // Describe the arguments.
 fs.createReadStream.accepts = {arg: 'path', type: 'string'};
- 
+
 // Describe the stream destination.
 fs.createReadStream.http = {
   // Pipe the returned `Readable` stream to the response's `Writable` stream.
@@ -157,7 +170,7 @@ fs.createReadStream.http = {
     dest: 'res'
   }
 };
- 
+
 // Expose the Collection over the REST Adapter.
 require('http')
   .createServer(remotes.handler('rest'))
