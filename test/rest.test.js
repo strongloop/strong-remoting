@@ -360,7 +360,7 @@ describe('strong-remoting-rest', function() {
         .send()
         // http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.2
         .expect(200, function(err, res) {
-          expect(res.get('Access-Control-Allow-Origin')).to.not.exist();
+          expect(res.get('Access-Control-Allow-Origin')).to.not.exist;
           done(err, res);
         });
     });
@@ -373,7 +373,7 @@ describe('strong-remoting-rest', function() {
         .set('Origin', 'http://localhost:3001')
         .send({person: 'ABC'})
         .expect(200, function(err, res) {
-          expect(res.get('Access-Control-Allow-Origin')).to.not.exist();
+          expect(res.get('Access-Control-Allow-Origin')).to.not.exist;
           done(err, res);
         });
     });

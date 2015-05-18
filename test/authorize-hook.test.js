@@ -36,7 +36,7 @@ describe('authorization hook', function() {
 
       invokeRemote(server.address().port,
         function(err, session) {
-          expect(err).to.not.exist();
+          expect(err).to.not.exist;
           expect(session.userId).to.equal(123);
           //                        vvvvvvvv - local before hook
           expect(callStack).to.eql(['before', 'authorization', 'before']);
