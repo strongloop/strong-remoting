@@ -78,7 +78,7 @@ describe('support for HTTP Authentication', function() {
     return function(done) {
       invokeRemote(server.address().port, path, credentials,
           function(err, session) {
-            expect(err).to.not.exist();
+            expect(err).to.not.exist;
             expect(session.userId).to.equal(123);
             done();
           });

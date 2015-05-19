@@ -94,7 +94,7 @@ describe('HttpInvocation', function() {
       }, {
         body: { foo: 'bar' }
       }, function(err, inst) {
-        expect(err).to.be.null();
+        expect(err).to.be.null;
         expect(inst).to.be.instanceOf(TestClass);
         expect(inst.foo).to.equal('bar');
         done();
@@ -118,7 +118,7 @@ describe('HttpInvocation', function() {
           { foo: 'grok' }
         ]
       }, function(err, insts) {
-        expect(err).to.be.null();
+        expect(err).to.be.null;
         expect(insts).to.be.an('array');
         expect(insts[0]).to.be.instanceOf(TestClass);
         expect(insts[1]).to.be.instanceOf(TestClass);
