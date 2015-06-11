@@ -1,3 +1,4 @@
+
 {
   "name": "strong-remoting",
   "description": "StrongLoop Remoting Module",
@@ -13,24 +14,28 @@
     "test": "mocha"
   },
   "dependencies": {
-    "express": "4.x",
-    "body-parser": "^1.12.4",
-    "debug": "^2.2.0",
-    "eventemitter2": "^0.4.14",
-    "cors": "^2.6.0",
-    "jayson": "^1.2.0",
-    "js2xmlparser": "^0.1.9",
     "async": "^0.9.0",
+    "body-parser": "^1.7.0",
+    "cors": "^2.5.2",
+    "debug": "^2.0.0",
+    "eventemitter2": "^0.4.14",
+    "express": "4.x",
+    "inflection": "^1.4.2",
+    "jayson": "^1.1.1",
+    "js2xmlparser": "^0.1.3",
+    "mux-demux": "^3.7.9",
+    "qs": "^2.2.3",
+    "request": "^2.42.0",
+    "sse": "0.0.6",
     "traverse": "^0.6.6",
-    "request": "^2.55.0",
-    "qs": "^2.4.2",
-    "inflection": "^1.7.1",
-    "xml2js": "^0.4.8"
+    "xml2js": "^0.4.4"
   },
   "devDependencies": {
     "bluebird": "^2.9.25",
     "browserify": "~10.2.0",
-    "chai": "^2.3.0",
+    "chai": "^1.10.0",
+    "event-stream": "^3.3.1",
+    "eventsource": "^0.1.6",
     "grunt": "~0.4.5",
     "grunt-browserify": "~3.8.0",
     "grunt-cli": "^0.1.13",
