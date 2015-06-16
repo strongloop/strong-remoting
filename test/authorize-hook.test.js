@@ -55,4 +55,3 @@ describe('authorization hook', function() {
     remotes.invoke(method, args, callback);
   }
 });
-
