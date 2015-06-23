@@ -1813,17 +1813,113 @@ describe('strong-remoting-rest', function() {
     });
   });
 
-  it('returns 404 for unknown method of a shared class', function(done) {
-    var classUrl = givenSharedStaticMethod().classUrl;
+  describe('status codes', function() {
+    describe('using a custom satus code', function() {
+      it('returns a custom status code', function(done) {
+        var method = givenSharedStaticMethod(
+          function fn(cb) {
+            cb();
+          },
+          {
+            http: { status: 201 }
+          }
+        );
+        json(method.url)
+          .expect(201, done);
+      });
+      it('returns a custom error status code', function(done) {
+        var method = givenSharedStaticMethod(
+          function fn(cb) {
+            cb(new Error('test error'));
+          },
+          {
+            http: { status: 201, errorStatus: 508 }
+          }
+        );
+        json(method.url)
+          .expect(508, done);
+      });
+      it('returns a custom error status code (using the err object)', function(done) {
+        var method = givenSharedStaticMethod(
+          function fn(cb) {
+            var err = new Error('test error');
+            err.status = 555;
+            cb(err);
+          },
+          {
+            http: { status: 201, errorStatus: 508 }
+          }
+        );
+        json(method.url)
+          .expect(555, done);
+      });
+      it('returns a custom status code from a callback arg', function(done) {
+        var exampleStatus = 222;
+        var method = givenSharedStaticMethod(
+          function fn(status, cb) {
+            cb(null, status);
+          },
+          {
+            accepts: { arg: 'status', type: 'number' },
+            returns: {
+              arg: 'status',
+              http: { target: 'status' }
+            }
+          }
+        );
+        json(method.url + '?status=' + exampleStatus)
+          .expect(exampleStatus, done);
+      });
+    });
+    it('returns 404 for unknown method of a shared class', function(done) {
+      var classUrl = givenSharedStaticMethod().classUrl;
 
-    json(classUrl + '/unknown-method')
-      .expect(404, done);
+      json(classUrl + '/unknown-method')
+        .expect(404, done);
+    });
+
+    it('returns 404 with standard JSON body for uknown URL', function(done) {
+      json('/unknown-url')
+        .expect(404)
+        .end(expectErrorResponseContaining({status: 404}, done));
+    });
   });
 
-  it('returns 404 with standard JSON body for uknown URL', function(done) {
-    json('/unknown-url')
-      .expect(404)
-      .end(expectErrorResponseContaining({status: 404}, done));
+  describe('result args as headers', function() {
+    it('sets the header using the callback arg', function(done) {
+      var val = 'foobar';
+      var method = givenSharedStaticMethod(
+        function fn(input, cb) {
+          cb(null, input);
+        },
+        {
+          accepts: {arg: 'input', type: 'string'},
+          returns: {arg: 'output', type: 'string', http: { target: 'header' } }
+        }
+      );
+      json(method.url + '?input=' + val)
+        .expect('output', val)
+        .expect(200, done);
+    });
+    it('sets the custom header using the callback arg', function(done) {
+      var val = 'foobar';
+      var method = givenSharedStaticMethod(
+        function fn(input, cb) {
+          cb(null, input);
+        },
+        {
+          accepts: {arg: 'input', type: 'string'},
+          returns: {arg: 'output', type: 'string', http: {
+              target: 'header',
+              header: 'X-Custom-Header'
+            }
+          }
+        }
+      );
+      json(method.url + '?input=' + val)
+        .expect('X-Custom-Header', val)
+        .expect(200, done);
+    });
   });
 
   it('returns correct error response body', function(done) {
