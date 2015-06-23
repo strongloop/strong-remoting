@@ -1779,6 +1779,20 @@ describe('strong-remoting-rest', function() {
         json(method.url)
           .expect(508, done);
       });
+      it('returns a custom error status code (using the err object)', function(done) {
+        var method = givenSharedStaticMethod(
+          function fn(cb) {
+            var err = new Error('test error');
+            err.status = 555;
+            cb(err);
+          },
+          {
+            http: { status: 201, errorStatus: 508 }
+          }
+        );
+        json(method.url)
+          .expect(555, done);
+      });
       it('returns a custom status code from a callback arg', function(done) {
         var exampleStatus = 222;
         var method = givenSharedStaticMethod(
@@ -1797,7 +1811,6 @@ describe('strong-remoting-rest', function() {
           .expect(exampleStatus, done);
       });
     });
-
     it('returns 404 for unknown method of a shared class', function(done) {
       var classUrl = givenSharedStaticMethod().classUrl;
 
@@ -1809,6 +1822,43 @@ describe('strong-remoting-rest', function() {
       json('/unknown-url')
         .expect(404)
         .end(expectErrorResponseContaining({status: 404}, done));
+    });
+  });
+
+  describe('result args as headers', function() {
+    it('sets the header using the callback arg', function(done) {
+      var val = 'foobar';
+      var method = givenSharedStaticMethod(
+        function fn(input, cb) {
+          cb(null, input);
+        },
+        {
+          accepts: {arg: 'input', type: 'string'},
+          returns: {arg: 'output', type: 'string', http: { target: 'header' } }
+        }
+      );
+      json(method.url + '?input=' + val)
+        .expect('output', val)
+        .expect(200, done);
+    });
+    it('sets the custom header using the callback arg', function(done) {
+      var val = 'foobar';
+      var method = givenSharedStaticMethod(
+        function fn(input, cb) {
+          cb(null, input);
+        },
+        {
+          accepts: {arg: 'input', type: 'string'},
+          returns: {arg: 'output', type: 'string', http: {
+              target: 'header',
+              header: 'X-Custom-Header'
+            }
+          }
+        }
+      );
+      json(method.url + '?input=' + val)
+        .expect('X-Custom-Header', val)
+        .expect(200, done);
     });
   });
 
