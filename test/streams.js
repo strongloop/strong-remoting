@@ -29,11 +29,15 @@ describe('strong-remoting', function() {
   }
 
   it('should stream the file output', function(done) {
+    objects.convert('streamopts', function(val) {
+      return JSON.parse(val);
+    });
+
     remotes.fs = fs;
     fs.createReadStream.shared = true;
     fs.createReadStream.accepts = [
       { arg: 'path', type: 'string' },
-      { arg: 'encoding', type: 'string' }
+      { arg: 'opts', type: 'streamopts' }
     ];
     fs.createReadStream.returns = {arg: 'res', type: 'stream'};
     fs.createReadStream.http = {
@@ -44,7 +48,8 @@ describe('strong-remoting', function() {
       }
     };
 
-    json('get', '/fs/createReadStream?path=' + __dirname + '/data/foo.json&encoding=utf8')
+    var opts = encodeURIComponent(JSON.stringify({ encoding: 'utf8' }));
+    json('get', '/fs/createReadStream?path=' + __dirname + '/data/foo.json&opts=' + opts)
       .expect({bar: 'baz'}, done);
   });
 });
