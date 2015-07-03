@@ -1,6 +1,7 @@
 var request = require('supertest');
 var HttpContext = require('../lib/http-context');
 var SharedMethod = require('../lib/shared-method');
+var Dynamic = require('../lib/dynamic');
 var expect = require('chai').expect;
 
 describe('HttpContext', function() {
@@ -72,6 +73,24 @@ describe('HttpContext', function() {
         type: 'any',
         input: '000123',
         expectedValue: '000123'
+      }));
+    });
+
+    describe('arguments with custom type', function() {
+      Dynamic.define('CustomType', function(val) {
+        return JSON.parse(val);
+      });
+
+      it('should coerce dynamic type with string prop into object', givenMethodExpectArg({
+        type: 'CustomType',
+        input: JSON.stringify({ stringProp: 'string' }),
+        expectedValue: { stringProp: 'string' }
+      }));
+
+      it('should coerce dynamic type with int prop into object', givenMethodExpectArg({
+        type: 'CustomType',
+        input: JSON.stringify({ intProp: 1 }),
+        expectedValue: { intProp: 1 }
       }));
     });
   });
