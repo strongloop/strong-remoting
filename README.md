@@ -19,7 +19,7 @@ For higher-level transports, such as REST and Socket.IO, existing clients will w
 $ npm install strong-remoting
 ```
 
-##Quick start
+## Quick start
 
 The following example illustrates how to set up a basic strong-remoting server with a single remote method, user.greet.
 
@@ -68,21 +68,21 @@ Result:
 }
 ```
 
-##Concepts
+## Concepts
 
-###Remote objects
+### Remote objects
 
 Most Node applications expose a remotely-available API.  Strong-remoting enables you to build your app in vanilla JavaScript and export remote objects over the network the same way you export functions from a module. Since they're just plain JavaScript objects, you can always invoke methods on your remote objects locally in JavaScript, whether from tests or other, local objects.
 
-###Remote object collections
+### Remote object collections
 
 Collections that are the result of require('strong-remoting').create() are responsible for binding their remote objects to transports, allowing you to swap out the underlying transport without changing any of your application-specific code.
 
-###Adapters
+### Adapters
 
 Adapters provide the transport-specific mechanisms to make remote objects (and collections thereof) available over their transport. The REST adapter, for example, handles an HTTP server and facilitates mapping your objects to RESTful resources. Other adapters, on the other hand, might provide a less opionated, RPC-style network interface. Your application code doesn't need to know what adapter it's using.
 
-###Hooks
+### Hooks
 
 Hooks enable you to run code before remote objects are constructed or methods on those objects are invoked. For example, you can prevent actions based on context (HTTP request, user credentials, and so on).
 
@@ -144,7 +144,7 @@ remotes.after('**', function (ctx, next) {
 
 See the before-after example for more info.
 
-###Streams
+### Streams
 
 Strong-remoting supports methods that expect or return Readable and Writeable streams. This enables you to stream raw binary data such as files over the network without writing transport-specific behavior.
 
