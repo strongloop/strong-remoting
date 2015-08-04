@@ -37,6 +37,8 @@ describe('types', function() {
     });
     describe('Built in converters', function() {
       it('should convert Boolean values', function() {
+        var shouldConvert = _shouldConvert('boolean');
+
         shouldConvert(true, true);
         shouldConvert(false, false);
         shouldConvert(256, true);
@@ -55,12 +57,10 @@ describe('types', function() {
         shouldConvert('null', true);
         shouldConvert('undefined', true);
 
-        function shouldConvert(val, expected) {
-          var dyn = new Dynamic(val);
-          assert.equal(dyn.to('boolean'), expected);
-        }
       });
       it('should convert Number values', function() {
+        var shouldConvert = _shouldConvert('number');
+
         shouldConvert('-1', -1);
         shouldConvert('0', 0);
         shouldConvert('1', 1);
@@ -70,18 +70,50 @@ describe('types', function() {
         shouldConvert(false, 0);
         shouldConvert({}, 'NaN');
         shouldConvert([], 0);
+      });
 
-        function shouldConvert(val, expected) {
-          var dyn = new Dynamic(val);
+      it('should convert Array values', function() {
+        var shouldConvert = _shouldConvert('array');
 
-          if (expected === 'NaN') {
-            return assert(Number.isNaN(dyn.to('number')));
-          }
+        shouldConvert(0, [0]);
+        shouldConvert('a', ['a']);
+        shouldConvert(false, [false]);
+        shouldConvert(null, []);
+        shouldConvert(undefined, []);
+        shouldConvert('', []);
+        shouldConvert(['a'], ['a']);
+      });
 
-          assert.strictEqual(dyn.to('number'), expected);
-        }
+      it('should convert Arrays of types', function() {
+        var shouldConvert = _shouldConvert(['string']);
+
+        shouldConvert(['a', 0, 1, true], ['a', '0', '1', 'true'], ['string']);
+      });
+
+      it('should only convert Arrays one layer deep', function() {
+        var shouldConvert = _shouldConvert(['string']);
+
+        shouldConvert(['0', 1, [2, '3']], ['0', '1', '2,3']);
       });
     });
+
+    // Assert builder for Dynamic
+    function _shouldConvert(type) {
+      return function(val, expected) {
+        val = new Dynamic(val).to(type);
+
+        if (expected === 'NaN') return assert(Number.isNaN(val));
+
+        if (Array.isArray(type) || type === 'array') {
+          assert.deepEqual(val, expected);
+          for (var i = 0; i < val.length; i++) {
+            assert.strictEqual(val[i], expected[i]);
+          }
+        } else {
+          assert.strictEqual(val, expected);
+        }
+      };
+    }
   });
 
   describe('Sloppy HTTP converter', function() {
