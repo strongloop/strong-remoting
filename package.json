@@ -20,7 +20,7 @@
     "eventemitter2": "^0.4.14",
     "express": "4.x",
     "inflection": "^1.7.1",
-    "jayson": "^1.2.0",
+    "jayson": "~1.2.0",
     "js2xmlparser": "^0.1.9",
     "mux-demux": "^3.7.9",
     "qs": "^2.4.2",
