@@ -37,6 +37,9 @@ describe('strong-remoting-jsonrpc', function() {
         function greet(msg, fn) {
           fn(null, msg);
         }
+        greet.accepts = [
+          {'arg':'msg', 'type':'string'}
+        ];
 
         // Create a shared method directly on the function object
         remotes.user = {
