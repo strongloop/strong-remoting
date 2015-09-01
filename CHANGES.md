@@ -1,3 +1,9 @@
+2015-09-01, Version 2.20.3
+==========================
+
+ * Generate wrapper function with same params as the original one (Raymond Feng)
+
+
 2015-09-01, Version 2.20.2
 ==========================
 
