@@ -70,8 +70,5 @@
     "cors": false,
     "js2xmlparser": false
   },
-  "license": {
-    "name": "Dual MIT/StrongLoop",
-    "url": "https://github.com/strongloop/strong-remoting/blob/master/LICENSE"
-  }
+  "license": "SEE LICENSE IN LICENSE"
 }
