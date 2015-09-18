@@ -1,3 +1,11 @@
+2015-09-18, Version 2.21.0
+==========================
+
+ * Add options to `sharedClass.methods()` for including all methods (Ritchie Martori)
+
+ * stringify mockWrapper so we can generate coverage (Ryan Graham)
+
+
 2015-09-01, Version 2.20.3
 ==========================
 
