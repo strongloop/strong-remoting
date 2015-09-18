@@ -50,6 +50,23 @@ describe('SharedClass', function() {
       expect(fns).to.contain(SomeClass.staticMethod);
       expect(fns).to.contain(SomeClass.prototype.instanceMethod);
     });
+    it('returns all methods when includeDisabled is true', function() {
+      var sc = new SharedClass('MySharedClass', MySharedClass);
+      function MySharedClass() {
+        // this page left intentionally blank
+      }
+
+      var inputNames = ['foo', 'bar'];
+
+      sc.defineMethod(inputNames[0], {shared: false});
+      sc.defineMethod(inputNames[1], {shared: true});
+
+      var outputNames = sc.methods({includeDisabled: true}).map(function(m) {
+        return m.name;
+      });
+
+      expect(outputNames).to.eql(inputNames);
+    });
     it('only discovers a function once with aliases', function() {
       function MyClass() {}
       var sc = new SharedClass('some', MyClass);
