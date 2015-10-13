@@ -188,6 +188,31 @@ describe('strong-remoting-rest', function() {
         .end(done);
     });
 
+    it('should by default use defined error handler', function(done) {
+      app.use(function(err, req, res, next) {
+        res.send('custom-error-handler-called');
+      });
+
+      request(app).get('/thisUrlDoesNotExists/someMethod')
+        .expect(404)
+        .expect(function(res) {
+          expect(res.text).not.to.equal('custom-error-handler-called');
+        })
+        .end(done);
+    });
+
+    it('should turn off error handler', function(done) {
+      objects.options.rest = { handleErrors: false };
+      app.use(function(err, req, res, next) {
+        res.send('custom-error-handler-called');
+      });
+
+      request(app).get('/thisUrlDoesNotExists/someMethod')
+        .expect(200)
+        .expect('custom-error-handler-called')
+        .end(done);
+    });
+
     it('should configure custom REST content types', function(done) {
       var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
       objects.options.rest = { supportedTypes: supportedTypes };
