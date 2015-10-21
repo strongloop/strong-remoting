@@ -1,3 +1,13 @@
+2015-10-21, Version 2.22.0
+==========================
+
+ * Modify RestAdapter to allow disabling errorHandler (Richard Walker)
+
+ * Use strongloop conventions for licensing (Sam Roberts)
+
+ * Fix NPM license warning (Simon Ho)
+
+
 2015-09-18, Version 2.21.0
 ==========================
 
