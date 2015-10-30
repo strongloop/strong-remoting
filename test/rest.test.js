@@ -295,6 +295,25 @@ describe('strong-remoting-rest', function() {
         .expect('Content-Type', /xml/)
         .end(done);
     });
+
+    it('should treat application/vnd.api+json accept header correctly', function(done) {
+      objects.options.rest = { supportedTypes: ['application/vnd.api+json'] };
+
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, { value: 'value' }); },
+        { returns: { arg: 'result', type: 'object' } }
+      );
+
+      request(app).get(method.url)
+        .set('Accept', 'application/vnd.api+json')
+        .expect(200)
+        .expect('Content-Type', /application\/vnd\.api\+json/)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).to.deep.equal({ result: { value: 'value' }});
+          done();
+        });
+    });
   });
 
   describe('cors', function() {
