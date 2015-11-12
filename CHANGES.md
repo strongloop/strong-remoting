@@ -1,3 +1,11 @@
+2015-11-12, Version 2.22.2
+==========================
+
+ * Fix issue #251, now default responses are application/json (jaime.franco)
+
+ * Refer to licenses with a link (Sam Roberts)
+
+
 2015-10-30, Version 2.22.1
 ==========================
 
@@ -351,15 +359,7 @@
 
  * Update contribution guidelines (Ryan Graham)
 
-
-2014-09-30, Version 2.4.0
-=========================
-
  * Add sharedClass.disableMethod() (Ritchie Martori)
-
-
-2014-09-26, Version 2.3.0
-=========================
 
  * Add prototype shared method tests (Krishna Raman)
 
@@ -425,13 +425,13 @@
 
  * Bump version (Raymond Feng)
 
+
+2014-08-07, Version 2.0.3
+=========================
+
  * Update deps (especially for qs) (Raymond Feng)
 
  * Fix the broken sample (Raymond Feng)
-
-
-2014-07-29, Version 2.0.3
-=========================
 
  * Improve shared class and method docs (Ritchie Martori)
 
@@ -507,11 +507,23 @@
 
  * Add more classes to JSDocs; some doc cleanup. (crandmck)
 
+ * !fixup use strongloop/node.js literal convention (Ritchie Martori)
+
+ * !fixup isDelegate tests (Ritchie Martori)
+
+ * Add test for `sharedClass.find(name)` (Ritchie Martori)
+
+ * Rename willInvoke => isDelegateFor (Ritchie Martori)
+
  * 2.0.0-beta3 (Miroslav Bajtoš)
 
  * Exclude body-parser from the browser bundle (Miroslav Bajtoš)
 
  * Remove duplicate dep (Raymond Feng)
+
+ * Add sharedMethod aliases (Ritchie Martori)
+
+ * Add sharedMethod.willInvoke(suspect) (Ritchie Martori)
 
  * Bump version (Raymond Feng)
 
@@ -522,22 +534,6 @@
  * Sort the routes so that methods can be resolved in order (Raymond Feng)
 
  * Upgrade to express 4.x (Raymond Feng)
-
-
-2014-06-03, Version 1.5.0
-=========================
-
- * !fixup use strongloop/node.js literal convention (Ritchie Martori)
-
- * !fixup isDelegate tests (Ritchie Martori)
-
- * Add test for `sharedClass.find(name)` (Ritchie Martori)
-
- * Rename willInvoke => isDelegateFor (Ritchie Martori)
-
- * Add sharedMethod aliases (Ritchie Martori)
-
- * Add sharedMethod.willInvoke(suspect) (Ritchie Martori)
 
 
 2014-05-30, Version 1.4.3
