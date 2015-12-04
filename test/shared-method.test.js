@@ -188,17 +188,38 @@ describe('SharedMethod', function() {
         });
       });
     });
-
-    function givenSharedMethod(fn, options) {
-      if (options === undefined && typeof fn === 'object') {
-        options = fn;
-        fn = function() {
-          arguments[arguments.length - 1]();
-        };
-      }
-
-      var mockSharedClass = { fn: fn };
-      return new SharedMethod(fn, 'fn', mockSharedClass, options);
-    }
   });
+
+  describe('accepts coercion', function() {
+
+    it('Doesn\'t coerce null to "null"', function(done) {
+      var method = givenSharedMethod(
+        function(str) {
+          expect(str).to.eql(null);
+          expect(typeof str).to.eql('object');
+          return Promise.resolve();
+        },
+        {
+          accepts: [{ arg: 'str', type: 'string' }]
+        }
+      );
+
+      method.invoke('ctx', { str: null }, function(err, result) {
+        expect(err && err.message).not.to.exist;
+        done();
+      });
+    });
+  });
+
+  function givenSharedMethod(fn, options) {
+    if (options === undefined && typeof fn === 'object') {
+      options = fn;
+      fn = function() {
+        arguments[arguments.length - 1]();
+      };
+    }
+
+    var mockSharedClass = { fn: fn };
+    return new SharedMethod(fn, 'fn', mockSharedClass, options);
+  }
 });
