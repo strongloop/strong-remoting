@@ -29,6 +29,14 @@ describe('SharedMethod', function() {
         { arg: 'data', type: ['any'] }
       ]);
     });
+
+    it('passes along `documented` flag correctly', function() {
+      var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
+        documented: false
+      });
+
+      expect(sharedMethod.documented).to.eql(false);
+    });
   });
 
   describe('sharedMethod.isDelegateFor(suspect, [isStatic])', function() {
