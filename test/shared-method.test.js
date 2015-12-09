@@ -87,7 +87,7 @@ describe('SharedMethod', function() {
       method.invoke('ctx', { num: NaN }, function(err) {
         setImmediate(function() {
           expect(err).to.exist;
-          expect(err.message).to.contain('num must be a number');
+          expect(err.message).to.contain('\'num\' must be a number');
           expect(err.statusCode).to.equal(400);
           done();
         });
