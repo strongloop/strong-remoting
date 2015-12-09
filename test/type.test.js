@@ -144,6 +144,18 @@ describe('types', function() {
       shouldConvert('["a","b","c"]', '["a","b","c"]');
     });
 
+    it('should convert literal null to null', function() {
+      shouldConvert(null, null);
+    });
+
+    it('should convert literal undefined to undefined', function() {
+      shouldConvert(undefined, undefined);
+    });
+
+    it('should convert the empty string to undefined', function() {
+      shouldConvert('', undefined); // chosen for compat with es6 defaults
+    });
+
     it('should coerce JSON-parsable strings', function() {
       shouldConvertArray('["a","b","c"]', ['a', 'b', 'c']);
       shouldConvertArray('[1,2,3]', [1, 2, 3]);

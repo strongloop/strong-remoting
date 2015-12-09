@@ -4,6 +4,7 @@ var expect = require('chai').expect;
 var SharedMethod = require('../lib/shared-method');
 var factory = require('./helpers/shared-objects-factory.js');
 var Promise = global.Promise || require('bluebird');
+var Dynamic = require('../lib/dynamic');
 
 describe('SharedMethod', function() {
   var STUB_CLASS = {};
@@ -208,6 +209,49 @@ describe('SharedMethod', function() {
         expect(err && err.message).not.to.exist;
         done();
       });
+    });
+  });
+
+  describe('arguments with custom type', function() {
+    Dynamic.define('CustomType', function(val) {
+      return JSON.parse(val);
+    });
+
+    it('should coerce dynamic type with string prop into object', function(done) {
+      var data = {stringProp: 'string'};
+      var method = givenSharedMethod(
+        function(input) {
+          expect(input).to.eql(data);
+          return Promise.resolve();
+        },
+        {
+          accepts: [{arg: 'input', type: 'CustomType'}]
+        }
+      );
+
+      method.invoke('ctx', {input: JSON.stringify(data)}, function(err, result) {
+        expect(err && err.message).not.to.exist;
+        done();
+      });
+    });
+
+    it('should coerce dynamic type with int prop into object', function(done) {
+      var data = {intProp: 1};
+      var method = givenSharedMethod(
+        function(input) {
+          expect(input).to.eql(data);
+          return Promise.resolve();
+        },
+        {
+          accepts: [{arg: 'input', type: 'CustomType'}]
+        }
+      );
+
+      method.invoke('ctx', {input: JSON.stringify(data)}, function(err, result) {
+        expect(err && err.message).not.to.exist;
+        done();
+      });
+
     });
   });
 

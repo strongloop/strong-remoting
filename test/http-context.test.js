@@ -10,79 +10,123 @@ describe('HttpContext', function() {
   });
 
   describe('ctx.args', function() {
-    describe('arguments with a defined type (not any)', function() {
-      it('should include a named string arg', givenMethodExpectArg({
+    // These are strict JSON coercion, aka no string -> type nonsense
+    describe('JSON input should only coerce arrays', function() {
+      it('should include a named string arg', givenJSONExpectArg({
         type: 'string',
         input: 'foobar',
         expectedValue: 'foobar'
       }));
-      it('should coerce integer strings into actual numbers', givenMethodExpectArg({
+      it('should not coerce integer strings into numbers', givenJSONExpectArg({
         type: 'number',
         input: '123456',
-        expectedValue: 123456
-      }));
-      it('should coerce float strings into actual numbers', givenMethodExpectArg({
-        type: 'number',
-        input: '0.123456',
-        expectedValue: 0.123456
-      }));
-      it('should coerce numbers into strings', givenMethodExpectArg({
-        type: 'string',
-        input: 123456,
         expectedValue: '123456'
       }));
-      it('should coerce number strings preceded by 0 into numbers', givenMethodExpectArg({
+      it('should not coerce float strings into numbers', givenJSONExpectArg({
+        type: 'number',
+        input: '0.123456',
+        expectedValue: '0.123456'
+      }));
+      it('should not coerce numbers into strings', givenJSONExpectArg({
+        type: 'string',
+        input: 123456,
+        expectedValue: 123456
+      }));
+      it('should not coerce number strings preceded by 0 into numbers', givenJSONExpectArg({
         type: 'number',
         input: '000123',
-        expectedValue: 123
+        expectedValue: '000123'
       }));
-      it('should not coerce null strings into null', givenMethodExpectArg({
+      it('should not coerce null strings into null', givenJSONExpectArg({
         type: 'string',
         input: 'null',
         expectedValue: 'null'
       }));
-      it('should not coerce null into the null string', givenMethodExpectArg({
+      it('should not coerce null into the null string', givenJSONExpectArg({
         type: 'string',
         input: null,
         expectedValue: null
       }));
-      it('should not coerce undefined into the undefined string', givenMethodExpectArg({
+      it('should not coerce undefined into the undefined string', givenJSONExpectArg({
         type: 'string',
         input: undefined,
         expectedValue: undefined
       }));
-      it('should coerce array types properly with non-array input', givenMethodExpectArg({
+      it('should not coerce into array', givenJSONExpectArg({
         type: ['string'],
         input: 123,
-        expectedValue: ['123']
+        expectedValue: 123
       }));
-      it('should not coerce a single string into a number', givenMethodExpectArg({
+      it('should not coerce a single string into an array of strings', givenJSONExpectArg({
         type: ['string'],
         input: '123',
-        expectedValue: ['123']
+        expectedValue: '123'
       }));
     });
 
     describe('don\'t coerce arguments without a defined type (or any) in JSON', function() {
-      it('should not coerce boolean strings into actual booleans', givenMethodExpectArg({
+      it('should not coerce boolean strings into actual booleans', givenJSONExpectArg({
         type: 'any',
         input: 'true',
         expectedValue: 'true'
       }));
-      it('should not coerce integer strings into actual numbers', givenMethodExpectArg({
+      it('should not coerce integer strings into actual numbers', givenJSONExpectArg({
         type: 'any',
         input: '123456',
         expectedValue: '123456'
       }));
-      it('should not coerce float strings into actual numbers', givenMethodExpectArg({
+      it('should not coerce float strings into actual numbers', givenJSONExpectArg({
         type: 'any',
         input: '0.123456',
         expectedValue: '0.123456'
       }));
-      it('should not coerce null strings into null', givenMethodExpectArg({
+      it('should not coerce null strings into null', givenJSONExpectArg({
         type: 'any',
         input: 'null',
         expectedValue: 'null'
+      }));
+    });
+
+    describe('limited arg coercion with a defined type in formdata', function() {
+      it('should coerce boolean strings into actual booleans', givenFormDataExpectArg({
+        type: 'boolean',
+        input: 'true',
+        expectedValue: true
+      }));
+      it('should coerce boolean strings into actual booleans', givenFormDataExpectArg({
+        type: 'boolean',
+        input: 'false',
+        expectedValue: false
+      }));
+      it('should coerce numbers into actual booleans', givenFormDataExpectArg({
+        type: 'boolean',
+        input: 0,
+        expectedValue: false
+      }));
+      it('should coerce numbers into actual booleans', givenFormDataExpectArg({
+        type: 'boolean',
+        input: 1,
+        expectedValue: true
+      }));
+      it('should coerce integer strings into actual numbers', givenFormDataExpectArg({
+        type: 'number',
+        input: '123456',
+        expectedValue: 123456
+      }));
+      it('should coerce float strings into actual numbers', givenFormDataExpectArg({
+        type: 'number',
+        input: '0.123456',
+        expectedValue: 0.123456
+      }));
+      it('should coerce null strings into null', givenFormDataExpectArg({
+        type: 'boolean',
+        input: 'null',
+        expectedValue: null
+      }));
+      it('should coerce number strings preceded by 0 into numbers', givenFormDataExpectArg({
+        type: 'number',
+        input: '000123',
+        expectedValue: 123
       }));
     });
 
@@ -141,29 +185,11 @@ describe('HttpContext', function() {
         expectedValue: '000123'
       }));
     });
-
-    describe('arguments with custom type', function() {
-      Dynamic.define('CustomType', function(val) {
-        return JSON.parse(val);
-      });
-
-      it('should coerce dynamic type with string prop into object', givenMethodExpectArg({
-        type: 'CustomType',
-        input: JSON.stringify({ stringProp: 'string' }),
-        expectedValue: { stringProp: 'string' }
-      }));
-
-      it('should coerce dynamic type with int prop into object', givenMethodExpectArg({
-        type: 'CustomType',
-        input: JSON.stringify({ intProp: 1 }),
-        expectedValue: { intProp: 1 }
-      }));
-    });
   });
 });
 
 // Tests sending JSON - should be strict conversions
-function givenMethodExpectArg(options) {
+function givenJSONExpectArg(options) {
   return function(done) {
     var method = new SharedMethod(noop, 'testMethod', noop, {
       accepts: [{arg: 'testArg', type: options.type}]
