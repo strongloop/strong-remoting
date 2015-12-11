@@ -103,7 +103,23 @@ describe('SharedMethod', function() {
       method.invoke('ctx', { obj: 'test' }, function(err) {
         setImmediate(function() {
           expect(err).to.exist;
-          expect(err.message).to.contain('invalid value for argument');
+          expect(err.message).to.contain('Invalid value for argument');
+          expect(err.statusCode).to.equal(400);
+          done();
+        });
+      });
+    });
+
+    it('returns 400 and doesn\'t reflect data', function(done) {
+      var method = givenSharedMethod({
+        accepts: [{ arg: 'obj', type: 'object' }]
+      });
+
+      method.invoke('ctx', { obj: '<script>alert(1)</script>' }, function(err) {
+        setImmediate(function() {
+          expect(err).to.exist;
+          expect(err.message).to.contain('Invalid value for argument');
+          expect(err.message).not.to.contain('script');
           expect(err.statusCode).to.equal(400);
           done();
         });
