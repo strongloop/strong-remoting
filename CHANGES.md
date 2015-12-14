@@ -1,3 +1,11 @@
+2015-12-14, Version 2.23.0
+==========================
+
+ * Refactor and rework http coercion. (Samuel Reed)
+
+ * Test case for sharedClass property in restClass (David Cheung)
+
+
 2015-11-12, Version 2.22.2
 ==========================
 
