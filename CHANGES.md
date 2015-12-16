@@ -1,3 +1,9 @@
+2015-12-16, Version 2.23.1
+==========================
+
+ * Revert "Refactor and rework http coercion." (Miroslav Bajtoš)
+
+
 2015-12-14, Version 2.23.0
 ==========================
 
