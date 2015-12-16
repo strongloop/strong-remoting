@@ -26,11 +26,6 @@ describe('HttpContext', function() {
         input: '0.123456',
         expectedValue: 0.123456
       }));
-      it('should coerce numbers into strings', givenMethodExpectArg({
-        type: 'string',
-        input: 123456,
-        expectedValue: '123456'
-      }));
       it('should coerce number strings preceded by 0 into numbers', givenMethodExpectArg({
         type: 'number',
         input: '000123',
@@ -40,16 +35,6 @@ describe('HttpContext', function() {
         type: 'string',
         input: 'null',
         expectedValue: 'null'
-      }));
-      it('should not coerce null into the null string', givenMethodExpectArg({
-        type: 'string',
-        input: null,
-        expectedValue: null
-      }));
-      it('should not coerce undefined into the undefined string', givenMethodExpectArg({
-        type: 'string',
-        input: undefined,
-        expectedValue: undefined
       }));
       it('should coerce array types properly with non-array input', givenMethodExpectArg({
         type: ['string'],
@@ -63,79 +48,28 @@ describe('HttpContext', function() {
       }));
     });
 
-    describe('don\'t coerce arguments without a defined type (or any) in JSON', function() {
-      it('should not coerce boolean strings into actual booleans', givenMethodExpectArg({
-        type: 'any',
-        input: 'true',
-        expectedValue: 'true'
-      }));
-      it('should not coerce integer strings into actual numbers', givenMethodExpectArg({
-        type: 'any',
-        input: '123456',
-        expectedValue: '123456'
-      }));
-      it('should not coerce float strings into actual numbers', givenMethodExpectArg({
-        type: 'any',
-        input: '0.123456',
-        expectedValue: '0.123456'
-      }));
-      it('should not coerce null strings into null', givenMethodExpectArg({
-        type: 'any',
-        input: 'null',
-        expectedValue: 'null'
-      }));
-    });
-
-    describe('coerce arguments without a defined type (or any) in formdata', function() {
-      it('should coerce boolean strings into actual booleans', givenFormDataExpectArg({
+    describe('arguments without a defined type (or any)', function() {
+      it('should coerce boolean strings into actual booleans', givenMethodExpectArg({
         type: 'any',
         input: 'true',
         expectedValue: true
       }));
-      it('should coerce integer strings into actual numbers', givenFormDataExpectArg({
+      it('should coerce integer strings into actual numbers', givenMethodExpectArg({
         type: 'any',
         input: '123456',
         expectedValue: 123456
       }));
-      it('should coerce float strings into actual numbers', givenFormDataExpectArg({
+      it('should coerce float strings into actual numbers', givenMethodExpectArg({
         type: 'any',
         input: '0.123456',
         expectedValue: 0.123456
       }));
-      it('should coerce null strings into null', givenFormDataExpectArg({
+      it('should coerce null strings into null', givenMethodExpectArg({
         type: 'any',
         input: 'null',
         expectedValue: null
       }));
-      it('should coerce number strings preceded by 0 into strings', givenFormDataExpectArg({
-        type: 'any',
-        input: '000123',
-        expectedValue: '000123'
-      }));
-    });
-
-    describe('coerce arguments without a defined type (or any) in QS', function() {
-      it('should coerce boolean strings into actual booleans', givenQSExpectArg({
-        type: 'any',
-        input: 'true',
-        expectedValue: true
-      }));
-      it('should coerce integer strings into actual numbers', givenQSExpectArg({
-        type: 'any',
-        input: '123456',
-        expectedValue: 123456
-      }));
-      it('should coerce float strings into actual numbers', givenQSExpectArg({
-        type: 'any',
-        input: '0.123456',
-        expectedValue: 0.123456
-      }));
-      it('should coerce null strings into null', givenQSExpectArg({
-        type: 'any',
-        input: 'null',
-        expectedValue: null
-      }));
-      it('should coerce number strings preceded by 0 into strings', givenQSExpectArg({
+      it('should coerce number strings preceded by 0 into strings', givenMethodExpectArg({
         type: 'any',
         input: '000123',
         expectedValue: '000123'
@@ -162,62 +96,7 @@ describe('HttpContext', function() {
   });
 });
 
-// Tests sending JSON - should be strict conversions
 function givenMethodExpectArg(options) {
-  return function(done) {
-    var method = new SharedMethod(noop, 'testMethod', noop, {
-      accepts: [{arg: 'testArg', type: options.type}]
-    });
-
-    var app = require('express')();
-    app.use(require('body-parser').json());
-
-    app.post('/', function(req, res) {
-      var ctx = new HttpContext(req, res, method);
-      try {
-        expect(ctx.args.testArg).to.eql(options.expectedValue);
-      } catch (e) {
-        return done(e);
-      }
-      done();
-    });
-
-    request(app).post('/')
-      .type('json')
-      .send({testArg: options.input})
-      .end();
-  };
-}
-
-// Tests sending via formdata - should be sloppy conversions
-function givenFormDataExpectArg(options) {
-  return function(done) {
-    var method = new SharedMethod(noop, 'testMethod', noop, {
-      accepts: [{arg: 'testArg', type: options.type}]
-    });
-
-    var app = require('express')();
-    app.use(require('body-parser').urlencoded({extended: false}));
-
-    app.post('/', function(req, res) {
-      var ctx = new HttpContext(req, res, method);
-      try {
-        expect(ctx.args.testArg).to.eql(options.expectedValue);
-      } catch (e) {
-        return done(e);
-      }
-      done();
-    });
-
-    request(app).post('/')
-      .type('form')
-      .send({testArg: options.input})
-      .end();
-  };
-}
-
-// Tests sending via querystring - should be sloppy conversions
-function givenQSExpectArg(options) {
   return function(done) {
     var method = new SharedMethod(noop, 'testMethod', noop, {
       accepts: [{arg: 'testArg', type: options.type}]
