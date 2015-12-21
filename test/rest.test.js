@@ -2046,6 +2046,34 @@ describe('strong-remoting-rest', function() {
       .end(done);
   });
 
+  it('returns correct content-type in an empty XML response', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(); },
+      { accepts: { arg: 'arg', type: 'Model' } });
+
+    request(app)
+      .get(method.url + '?arg={"x":1}&_format=xml')
+      .expect(204)
+      .end(function(err, res) {
+        expect(res.get('Content-type')).to.match(/xml/);
+        done();
+      });
+  });
+
+  it('defaults content-type to application/json', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(); },
+      { accepts: { arg: 'arg', type: 'Model' } });
+
+    request(app)
+      .get(method.url + '?arg={"x":1}')
+      .expect(204)
+      .end(function(err, res) {
+        expect(res.get('Content-type')).to.match(/application\/json/);
+        done();
+      });
+  });
+
   describe('client', function() {
 
     describe('call of constructor method', function() {
