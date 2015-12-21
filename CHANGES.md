@@ -1,3 +1,11 @@
+2015-12-21, Version 2.23.2
+==========================
+
+ * Retain accepted content-type with no-content (David Cheung)
+
+ * Fix incorrect boolean logic on shared-method's `documented` flag. (Samuel Reed)
+
+
 2015-12-16, Version 2.23.1
 ==========================
 
