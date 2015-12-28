@@ -202,6 +202,27 @@ describe('strong-remoting-rest', function() {
         });
       });
 
+      it('should allow arguments in the formData', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(a, b, cb) {
+            cb(null, a + b);
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number', http: {source: 'formData' }  },
+              { arg: 'a', type: 'number', http: {source: 'formData' } }
+            ],
+            returns: { arg: 'n', type: 'number' },
+            http: { path: '/' }
+          }
+        );
+
+        objects.invoke(method.name, [1, 2], function(err, n) {
+          assert.equal(n, 3);
+          done();
+        });
+      });
+
       it('should respond with correct args if returns has multiple args', function(done) {
         var method = givenSharedStaticMethod(
           function(a, b, cb) {
