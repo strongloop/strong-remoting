@@ -1359,6 +1359,121 @@ describe('strong-remoting-rest', function() {
           });
       });
 
+      it('should allow customized xml root element', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(cb) {
+            cb(null, {a: 1, b: 2});
+          },
+          {
+            returns: {
+              arg: 'data', type: 'object', root: true,
+              xml: { wrapperElement: 'foo'}
+            },
+            http: { path: '/' }
+          }
+        );
+        request(app).get(method.classUrl)
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send()
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            expect(res.text).to.equal(
+              '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n' +
+              '<foo>\n  ' +
+                '<a>1</a>\n  ' +
+                '<b>2</b>\n' +
+              '</foo>');
+            done(err, res);
+          });
+      });
+
+      it('should allow xml declaration to be disabled', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(cb) {
+            cb(null, {a: 1, b: 2});
+          },
+          {
+            returns: {
+              arg: 'data', type: 'object', root: true,
+              xml: { declaration : false }
+            },
+            http: { path: '/' }
+          }
+        );
+        request(app).get(method.classUrl)
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send()
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            expect(res.text).to.equal(
+              '<response>\n  ' +
+                '<a>1</a>\n  ' +
+                '<b>2</b>\n' +
+              '</response>');
+            done(err, res);
+          });
+      });
+
+      it('should allow string results to output as xml', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(cb) {
+            var stringResult = 'a quick brown fox jumps over the lazy dog';
+            cb(null, stringResult);
+          },
+          {
+            returns: {
+              root: true,
+              xml: { wrapperElement : 'text' }
+            },
+            http: { path: '/' }
+          }
+        );
+        request(app).get(method.classUrl)
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send()
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            expect(res.text).to.equal(
+              '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n' +
+              '<text>a quick brown fox jumps over the lazy dog' +
+              '</text>');
+            done(err, res);
+          });
+      });
+
+      it('should handle UTF-8 & special & reserved characters', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(cb) {
+            var stringA = 'foo\xC1\xE1\u0102\u03A9asd><=$~!@#$%^&*()-_=+/.,;\'"[]{}?';
+            cb(null, {a: stringA});
+          },
+          {
+            returns: {
+              arg: 'data', type: 'object', root: true,
+              xml: { wrapperElement: false }
+            },
+            http: { path: '/' }
+          }
+        );
+        request(app).get(method.classUrl)
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send()
+          .expect('Content-Type', /xml/)
+          .expect(200, function(err, res) {
+            expect(res).to.be.utf8;
+            expect(res.text).to.equal(
+            '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n' +
+            '<response>\n  ' +
+              '<a>fooÁáĂΩasd&gt;&lt;=$~!@#$%^&amp;*()-_=+/.,;&apos;&quot;[]{}?</a>\n' +
+            '</response>');
+            done();
+          });
+      });
+
       it('should produce xml from json objects with toXML()', function(done) {
         var method = givenSharedStaticMethod(
           function bar(a, cb) {
