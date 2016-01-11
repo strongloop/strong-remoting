@@ -1,3 +1,9 @@
+2016-01-11, Version 2.24.0
+==========================
+
+ * Remove old rest-models example (Ritchie Martori)
+
+
 2015-12-21, Version 2.23.2
 ==========================
 
