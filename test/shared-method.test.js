@@ -86,6 +86,47 @@ describe('SharedMethod', function() {
     });
   });
 
+  describe('sharedMethod.isDelegateForName(suspect)', function() {
+
+    // stub function
+    function myFunction() {}
+
+    it('checks by name if static function is going to be invoked', function() {
+      var mockSharedClass = { myName: myFunction };
+      var options = { isStatic: true };
+      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      assert.equal(sharedMethod.isDelegateForName('myName'), true);
+    });
+
+    it('checks by alias if static function is going to be invoked', function() {
+      var mockSharedClass = { myName: myFunction };
+      var options = { isStatic: true, aliases: ['myAlias'] };
+      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      assert.equal(sharedMethod.isDelegateForName('myAlias'), true);
+    });
+
+    it('checks by name if prototype function is going to be invoked', function() {
+      var mockSharedClass = { myName: myFunction };
+      var options = { isStatic: false };
+      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      assert.equal(sharedMethod.isDelegateForName('prototype.myName'), true);
+    });
+
+    it('checks by alias if prototype function is going to be invoked', function() {
+      var mockSharedClass = { myName: myFunction };
+      var options = { isStatic: false, aliases: ['myAlias'] };
+      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      assert.equal(sharedMethod.isDelegateForName('prototype.myAlias'), true);
+    });
+
+    it('checks if the given name is a string', function() {
+      var mockSharedClass = {};
+      var err;
+      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass);
+      expect(function() { sharedMethod.isDelegateForName(myFunction); }).to.throw(/argument.*string/);
+    });
+  });
+
   describe('sharedMethod.invoke', function() {
     it('returns 400 when number argument is `NaN`', function(done) {
       var method = givenSharedMethod({
