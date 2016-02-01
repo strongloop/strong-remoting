@@ -67,6 +67,63 @@ describe('phase handlers', function() {
     });
   });
 
+  describe('registerPhaseHandler', function() {
+    var handlersRun;
+
+    beforeEach(function() {
+      User.static = function(cb) { cb(); };
+      User.static.shared = true;
+
+      User.prototype.proto = function(cb) { cb(); };
+      User.prototype.proto.shared = true;
+
+      handlersRun = [];
+      function register(wildcard) {
+        remotes.registerPhaseHandler('invoke', wildcard, function(ctx, next) {
+          handlersRun.push(wildcard);
+          next();
+        });
+      }
+
+      register('**');
+      register('User.**');
+
+      register('User.*');
+      register('User.static');
+      register('User.proto'); // does not exist
+
+      register('User.prototype.*');
+      register('User.prototype.proto');
+      register('User.prototype.static'); // does not exist
+    });
+
+    it('matches static methods using wildcards', function(done) {
+      invokeRemote('User.static', function(err) {
+        if (err) return done(err);
+        expect(handlersRun).to.eql([
+          '**',
+          'User.**',
+          'User.*',
+          'User.static',
+        ]);
+        done();
+      });
+    });
+
+    it('matches prototype methods using wildcards', function(done) {
+      invokeRemote('User.prototype.proto', function(err) {
+        if (err) return done(err);
+        expect(handlersRun).to.eql([
+          '**',
+          'User.**',
+          'User.prototype.*',
+          'User.prototype.proto',
+        ]);
+        done();
+      });
+    });
+  });
+
   function invokeRemote(method, callback) {
     var args = [];
     clientRemotes.invoke(method, args, callback);
