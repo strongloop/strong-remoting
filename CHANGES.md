@@ -1,3 +1,19 @@
+2016-02-02, Version 3.0.0-alpha.1
+=================================
+
+ * Add remotes.registerPhaseHandler (Miroslav Bajtoš)
+
+ * Add remote invocation phases (Miroslav Bajtoš)
+
+ * Simplify invokeMethodInContext (Miroslav Bajtoš)
+
+ * Extract ContextBase and ctx.getScope() (Miroslav Bajtoš)
+
+ * Customize XML root element in remoteMethod (David Cheung)
+
+ * Setup transition to 3.0. (Candy)
+
+
 2016-01-11, Version 2.24.0
 ==========================
 
@@ -531,8 +547,6 @@
 2014-06-13, Version 2.0.0-beta4
 ===============================
 
- * 2.0.0-beta4 (Miroslav Bajtoš)
-
  * Add more classes to JSDocs; some doc cleanup. (crandmck)
 
  * !fixup use strongloop/node.js literal convention (Ritchie Martori)
@@ -592,8 +606,6 @@
 
 2014-06-03, Version 2.0.0-beta3
 ===============================
-
- * 2.0.0-beta3 (Miroslav Bajtoš)
 
  * Exclude body-parser from the browser bundle (Miroslav Bajtoš)
 
