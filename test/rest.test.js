@@ -2730,6 +2730,24 @@ describe('strong-remoting-rest', function() {
         });
     });
 
+    it('is not called on success', function(done) {
+      var hookCalled = false;
+      var method = givenSharedStaticMethod(function(cb) {
+        cb();
+      });
+
+      objects.afterError(method.name, function(ctx, next) {
+        hookCalled = true;
+        next();
+      });
+
+      json(method.url).end(function(err) {
+        if (err) return done(err);
+        expect(hookCalled, 'hookCalled').to.equal(false);
+        done();
+      });
+    });
+
     function verifyErrorHookIsCalled(method, expectedError, done) {
       var hookContext = 'hook not called';
 
