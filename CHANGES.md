@@ -1,3 +1,11 @@
+2016-02-09, Version 2.25.1
+==========================
+
+ * Back-port pull request #283 from strongloop/fix/afterError (Miroslav Bajtoš)
+
+ * Do not call "afterError" on success (Miroslav Bajtoš)
+
+
 2016-02-02, Version 2.25.0
 ==========================
 
