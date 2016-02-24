@@ -2046,20 +2046,47 @@ describe('strong-remoting-rest', function() {
 
   describe('result args as headers', function() {
     it('sets the header using the callback arg', function(done) {
-      var val = 'foobar';
+      var A_STRING_VALUE = 'foobar';
       var method = givenSharedStaticMethod(
         function fn(input, cb) {
-          cb(null, input);
+          cb(null, input, input);
         },
         {
           accepts: {arg: 'input', type: 'string'},
-          returns: {arg: 'output', type: 'string', http: { target: 'header' } }
+          returns: [
+            {arg: 'value', type: 'string' },
+            {arg: 'output', type: 'string', http: { target: 'header' } }
+          ]
         }
       );
-      json(method.url + '?input=' + val)
-        .expect('output', val)
-        .expect(200, done);
+      json(method.url + '?input=' + A_STRING_VALUE)
+        .expect(200)
+        .expect('output', A_STRING_VALUE)
+        .expect({ value: A_STRING_VALUE })
+        .end(done);
     });
+
+    it('sets the header using the callback arg - root arg', function(done) {
+      var A_STRING_VALUE = 'foobar';
+      var method = givenSharedStaticMethod(
+        function fn(input, cb) {
+          cb(null, { value: input }, input);
+        },
+        {
+          accepts: {arg: 'input', type: 'string'},
+          returns: [
+            {arg: 'value', type: 'object', root: true },
+            {arg: 'output', type: 'string', http: { target: 'header' } }
+          ]
+        }
+      );
+      json(method.url + '?input=' + A_STRING_VALUE)
+        .expect(200)
+        .expect('output', A_STRING_VALUE)
+        .expect({ value: A_STRING_VALUE })
+        .end(done);
+    });
+
     it('sets the custom header using the callback arg', function(done) {
       var val = 'foobar';
       var method = givenSharedStaticMethod(
