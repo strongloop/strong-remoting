@@ -1,3 +1,11 @@
+2016-02-24, Version 3.0.0-alpha.2
+=================================
+
+ * Do not call "afterError" on success (Miroslav Bajtoš)
+
+ * Change method call to find remote method (Candy)
+
+
 2016-02-02, Version 3.0.0-alpha.1
 =================================
 
