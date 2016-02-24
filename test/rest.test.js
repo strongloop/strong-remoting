@@ -7,6 +7,7 @@ var request = require('supertest');
 var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
 var Promise = global.Promise || require('bluebird');
+var Readable = require('stream').Readable;
 
 var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
 var TEST_ERROR = new Error('expected test error');
@@ -2105,6 +2106,72 @@ describe('strong-remoting-rest', function() {
       json(method.url + '?input=' + val)
         .expect('X-Custom-Header', val)
         .expect(200, done);
+    });
+  });
+
+  describe('returns type "file"', function() {
+    var METHOD_SIGNATURE = {
+      returns: [
+        { arg: 'body', type: 'file', root: true },
+        { arg: 'Content-Type', type: 'string', http: { target: 'header' } },
+      ],
+    };
+
+    it('should send back Buffer body', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, new Buffer('some-text'), 'text/plain'); },
+        METHOD_SIGNATURE);
+
+      return request(app).get(method.url)
+        .expect(200)
+        .expect('Content-Type', /^text\/plain/)
+        .expect('some-text')
+        .end(done);
+    });
+
+    it('should send back String body', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, 'some-text', 'text/plain'); },
+        METHOD_SIGNATURE);
+
+      return request(app).get(method.url)
+        .expect(200)
+        .expect('Content-Type', /^text\/plain/)
+        .expect('some-text')
+        .end(done);
+    });
+
+    it('should send back Stream body', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) {
+          var stream = new Readable();
+          stream.push('some-text');
+          stream.push(null); // EOF
+          cb(null, stream, 'text/plain');
+        },
+        METHOD_SIGNATURE);
+
+      return request(app).get(method.url)
+        .expect(200)
+        .expect('Content-Type', /^text\/plain/)
+        .expect('some-text')
+        .end(done);
+    });
+
+    it('should fail for unsupported value type', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, [1, 2]); },
+        METHOD_SIGNATURE);
+
+      return request(app).get(method.url)
+        .expect(500)
+        .expect('Content-Type', /json/)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).to.have.property('error');
+          expect(res.body.error.message).to.match(/array/);
+          done();
+        });
     });
   });
 
