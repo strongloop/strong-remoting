@@ -7,6 +7,7 @@ var request = require('supertest');
 var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
 var Promise = global.Promise || require('bluebird');
+var Readable = require('stream').Readable;
 
 var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
 var TEST_ERROR = new Error('expected test error');
@@ -2046,20 +2047,47 @@ describe('strong-remoting-rest', function() {
 
   describe('result args as headers', function() {
     it('sets the header using the callback arg', function(done) {
-      var val = 'foobar';
+      var A_STRING_VALUE = 'foobar';
       var method = givenSharedStaticMethod(
         function fn(input, cb) {
-          cb(null, input);
+          cb(null, input, input);
         },
         {
           accepts: {arg: 'input', type: 'string'},
-          returns: {arg: 'output', type: 'string', http: { target: 'header' } }
+          returns: [
+            {arg: 'value', type: 'string' },
+            {arg: 'output', type: 'string', http: { target: 'header' } }
+          ]
         }
       );
-      json(method.url + '?input=' + val)
-        .expect('output', val)
-        .expect(200, done);
+      json(method.url + '?input=' + A_STRING_VALUE)
+        .expect(200)
+        .expect('output', A_STRING_VALUE)
+        .expect({ value: A_STRING_VALUE })
+        .end(done);
     });
+
+    it('sets the header using the callback arg - root arg', function(done) {
+      var A_STRING_VALUE = 'foobar';
+      var method = givenSharedStaticMethod(
+        function fn(input, cb) {
+          cb(null, { value: input }, input);
+        },
+        {
+          accepts: {arg: 'input', type: 'string'},
+          returns: [
+            {arg: 'value', type: 'object', root: true },
+            {arg: 'output', type: 'string', http: { target: 'header' } }
+          ]
+        }
+      );
+      json(method.url + '?input=' + A_STRING_VALUE)
+        .expect(200)
+        .expect('output', A_STRING_VALUE)
+        .expect({ value: A_STRING_VALUE })
+        .end(done);
+    });
+
     it('sets the custom header using the callback arg', function(done) {
       var val = 'foobar';
       var method = givenSharedStaticMethod(
@@ -2078,6 +2106,72 @@ describe('strong-remoting-rest', function() {
       json(method.url + '?input=' + val)
         .expect('X-Custom-Header', val)
         .expect(200, done);
+    });
+  });
+
+  describe('returns type "file"', function() {
+    var METHOD_SIGNATURE = {
+      returns: [
+        { arg: 'body', type: 'file', root: true },
+        { arg: 'Content-Type', type: 'string', http: { target: 'header' } },
+      ],
+    };
+
+    it('should send back Buffer body', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, new Buffer('some-text'), 'text/plain'); },
+        METHOD_SIGNATURE);
+
+      return request(app).get(method.url)
+        .expect(200)
+        .expect('Content-Type', /^text\/plain/)
+        .expect('some-text')
+        .end(done);
+    });
+
+    it('should send back String body', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, 'some-text', 'text/plain'); },
+        METHOD_SIGNATURE);
+
+      return request(app).get(method.url)
+        .expect(200)
+        .expect('Content-Type', /^text\/plain/)
+        .expect('some-text')
+        .end(done);
+    });
+
+    it('should send back Stream body', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) {
+          var stream = new Readable();
+          stream.push('some-text');
+          stream.push(null); // EOF
+          cb(null, stream, 'text/plain');
+        },
+        METHOD_SIGNATURE);
+
+      return request(app).get(method.url)
+        .expect(200)
+        .expect('Content-Type', /^text\/plain/)
+        .expect('some-text')
+        .end(done);
+    });
+
+    it('should fail for unsupported value type', function(done) {
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, [1, 2]); },
+        METHOD_SIGNATURE);
+
+      return request(app).get(method.url)
+        .expect(500)
+        .expect('Content-Type', /json/)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).to.have.property('error');
+          expect(res.body.error.message).to.match(/array/);
+          done();
+        });
     });
   });
 
