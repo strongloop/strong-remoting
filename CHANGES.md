@@ -1,3 +1,11 @@
+2016-02-26, Version 2.26.0
+==========================
+
+ * Add support for "file" return args (Miroslav Bajtoš)
+
+ * Fix handling of args with http.target:header (Miroslav Bajtoš)
+
+
 2016-02-09, Version 2.25.1
 ==========================
 
