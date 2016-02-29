@@ -229,29 +229,50 @@ describe('strong-remoting-rest', function() {
       it('should allow and return falsy required arguments of correct type',
         function(done) {
           var method = givenSharedStaticMethod(
-            function bar(num, str, bool, cb) {
-              cb(null, num, str, bool);
+            function bar(num, bool, cb) {
+              cb(null, num, bool);
             },
             {
               accepts: [
                 { arg: 'num', type: 'number', required: true },
-                { arg: 'str', type: 'string', required: true },
                 { arg: 'bool', type: 'boolean', required: true }
               ],
               returns: [
                 { arg: 'num', type: 'number' },
-                { arg: 'str', type: 'string' },
                 { arg: 'bool', type: 'boolean' }
               ],
               http: { path: '/' }
             }
           );
 
-          objects.invoke(method.name, [0, '', false], function(err, a, b, c) {
+          objects.invoke(method.name, [0, false], function(err, a, b) {
             expect(err).to.not.be.an.instanceof(Error);
             assert.equal(a, 0);
-            assert.equal(b, '');
-            assert.equal(c, false);
+            assert.equal(b, false);
+            done();
+          });
+        }
+      );
+
+      it('should reject empty string when string required',
+        function(done) {
+          var method = givenSharedStaticMethod(
+            function bar(str, cb) {
+              cb(null, str);
+            },
+            {
+              accepts: [
+                { arg: 'str', type: 'string', required: true },
+              ],
+              returns: [
+                { arg: 'str', type: 'string' },
+              ],
+              http: { path: '/' }
+            }
+          );
+
+          objects.invoke(method.name, [''], function(err, a, b, c) {
+            expect(err).to.be.an.instanceof(Error);
             done();
           });
         }
