@@ -1974,7 +1974,7 @@ describe('strong-remoting-rest', function() {
   });
 
   describe('status codes', function() {
-    describe('using a custom satus code', function() {
+    describe('using a custom status code', function() {
       it('returns a custom status code', function(done) {
         var method = givenSharedStaticMethod(
           function fn(cb) {
@@ -2038,7 +2038,7 @@ describe('strong-remoting-rest', function() {
         .expect(404, done);
     });
 
-    it('returns 404 with standard JSON body for uknown URL', function(done) {
+    it('returns 404 with standard JSON body for unknown URL', function(done) {
       json('/unknown-url')
         .expect(404)
         .end(expectErrorResponseContaining({status: 404}, done));

@@ -80,7 +80,7 @@ Collections that are the result of require('strong-remoting').create() are respo
 
 ### Adapters
 
-Adapters provide the transport-specific mechanisms to make remote objects (and collections thereof) available over their transport. The REST adapter, for example, handles an HTTP server and facilitates mapping your objects to RESTful resources. Other adapters, on the other hand, might provide a less opionated, RPC-style network interface. Your application code doesn't need to know what adapter it's using.
+Adapters provide the transport-specific mechanisms to make remote objects (and collections thereof) available over their transport. The REST adapter, for example, handles an HTTP server and facilitates mapping your objects to RESTful resources. Other adapters, on the other hand, might provide a less opinionated, RPC-style network interface. Your application code doesn't need to know what adapter it's using.
 
 ### Hooks
 
