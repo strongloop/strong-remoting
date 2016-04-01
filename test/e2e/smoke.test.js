@@ -10,7 +10,7 @@ describe('smoke test', function() {
     it('invokes a remote static method', function(done) {
       remotes.invoke(
         'User.login',
-        [{username: 'joe', password: 'secret'}],
+        [{ username: 'joe', password: 'secret' }],
         function(err, session) {
           expect(err).to.not.exist();
           expect(session.userId).to.equal(123);

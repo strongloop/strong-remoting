@@ -14,27 +14,27 @@ module.exports = function(grunt) {
     // Task configuration.
     uglify: {
       options: {
-        banner: '<%= banner %>'
+        banner: '<%= banner %>',
       },
       dist: {
         files: {
-          'dist/strong-remoting.min.js': ['dist/strong-remoting.js']
-        }
-      }
+          'dist/strong-remoting.min.js': ['dist/strong-remoting.js'],
+        },
+      },
     },
     eslint: {
       options: {
-        jshintrc: true
+        jshintrc: true,
       },
       gruntfile: {
-        src: 'Gruntfile.js'
+        src: 'Gruntfile.js',
       },
       lib: {
-        src: ['lib/**/*.js']
+        src: ['lib/**/*.js'],
       },
       test: {
-        src: ['test/**/*.js']
-      }
+        src: ['test/**/*.js'],
+      },
     },
     watch: {
       gruntfile: {
@@ -57,9 +57,9 @@ module.exports = function(grunt) {
         },
         options: {
           ignore: ['nodemailer', 'passport'],
-          standalone: 'strong-remoting'
-        }
-      }
+          standalone: 'strong-remoting',
+        },
+      },
     },
     karma: {
       unit: {
@@ -73,7 +73,7 @@ module.exports = function(grunt) {
           // list of files / patterns to load in the browser
           files: [
             'test/e2e/fixtures/*.js',
-            'test/e2e/smoke.test.js'
+            'test/e2e/smoke.test.js',
           ],
 
           // list of files to exclude
@@ -112,7 +112,7 @@ module.exports = function(grunt) {
           // - PhantomJS
           // - IE (only Windows)
           browsers: [
-            'Chrome'
+            'Chrome',
           ],
 
           // If browser does not capture in given timeout [ms], kill it
@@ -127,7 +127,7 @@ module.exports = function(grunt) {
             // extensions: ['.coffee'],
             ignore: [
               'superagent',
-              'supertest'
+              'supertest',
             ],
             // transform: ['coffeeify'],
             // debug: true,
@@ -138,11 +138,11 @@ module.exports = function(grunt) {
           // Add browserify to preprocessors
           preprocessors: {
             'test/e2e/**': ['browserify'],
-            'lib/*.js': ['browserify']
-          }
-        }
-      }
-    }
+            'lib/*.js': ['browserify'],
+          },
+        },
+      },
+    },
 
   });
 

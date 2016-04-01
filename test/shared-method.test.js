@@ -12,27 +12,27 @@ describe('SharedMethod', function() {
   describe('constructor', function() {
     it('normalizes "array" type in "accepts" arguments', function() {
       var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
-        accepts: { arg: 'data', type: 'array' }
+        accepts: { arg: 'data', type: 'array' },
       });
 
       expect(sharedMethod.accepts).to.eql([
-        { arg: 'data', type: ['any'] }
+        { arg: 'data', type: ['any'] },
       ]);
     });
 
     it('normalizes "array" type in "returns" arguments', function() {
       var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
-        returns: { arg: 'data', type: 'array' }
+        returns: { arg: 'data', type: 'array' },
       });
 
       expect(sharedMethod.returns).to.eql([
-        { arg: 'data', type: ['any'] }
+        { arg: 'data', type: ['any'] },
       ]);
     });
 
     it('passes along `documented` flag correctly', function() {
       var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
-        documented: false
+        documented: false,
       });
 
       expect(sharedMethod.documented).to.eql(false);
@@ -51,7 +51,7 @@ describe('SharedMethod', function() {
     });
 
     it('checks by name if a function is going to be invoked', function() {
-      var mockSharedClass = { prototype: { myName: myFunction } };
+      var mockSharedClass = { prototype: { myName: myFunction }};
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass);
       assert.equal(sharedMethod.isDelegateFor('myName', false), true);
       assert.equal(sharedMethod.isDelegateFor('myName', true), false);
@@ -130,7 +130,7 @@ describe('SharedMethod', function() {
   describe('sharedMethod.invoke', function() {
     it('returns 400 when number argument is `NaN`', function(done) {
       var method = givenSharedMethod({
-        accepts: [{ arg: 'num', type: 'number' }]
+        accepts: [{ arg: 'num', type: 'number' }],
       });
 
       method.invoke('ctx', { num: NaN }, function(err) {
@@ -145,7 +145,7 @@ describe('SharedMethod', function() {
 
     it('returns 400 and doesn\'t crash with unparsable object', function(done) {
       var method = givenSharedMethod({
-        accepts: [{ arg: 'obj', type: 'object' }]
+        accepts: [{ arg: 'obj', type: 'object' }],
       });
 
       method.invoke('ctx', { obj: 'test' }, function(err) {
@@ -168,8 +168,8 @@ describe('SharedMethod', function() {
         {
           returns: [
             { arg: 'first', type: 'string' },
-            { arg: 'second', type: 'string' }
-          ]
+            { arg: 'second', type: 'string' },
+          ],
         });
 
       method.invoke('ctx', {}, function(err, result) {
@@ -190,7 +190,7 @@ describe('SharedMethod', function() {
         {
           returns: [
             { arg: 'value', type: 'string' },
-          ]
+          ],
         });
 
       method.invoke('ctx', {}, function(err, result) {
@@ -210,8 +210,8 @@ describe('SharedMethod', function() {
         },
         {
           returns: [
-            { arg: 'value', type: ['string']},
-          ]
+            { arg: 'value', type: ['string'] },
+          ],
         });
 
       method.invoke('ctx', {}, function(err, result) {

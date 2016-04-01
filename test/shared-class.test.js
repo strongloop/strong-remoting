@@ -59,10 +59,10 @@ describe('SharedClass', function() {
 
       var inputNames = ['foo', 'bar'];
 
-      sc.defineMethod(inputNames[0], {shared: false, isStatic: true});
-      sc.defineMethod(inputNames[1], {shared: true, isStatic: true});
+      sc.defineMethod(inputNames[0], { shared: false, isStatic: true });
+      sc.defineMethod(inputNames[1], { shared: true, isStatic: true });
 
-      var outputNames = sc.methods({includeDisabled: true}).map(function(m) {
+      var outputNames = sc.methods({ includeDisabled: true }).map(function(m) {
         return m.name;
       });
 
@@ -139,7 +139,7 @@ describe('SharedClass', function() {
       var METHOD_NAME = 'myMethod';
       sc.defineMethod(METHOD_NAME, {
         prototype: true,
-        accessType: 'READ'
+        accessType: 'READ',
       });
       var methods = sc.methods().map(getName);
       expect(methods).to.contain(METHOD_NAME);
@@ -172,7 +172,7 @@ describe('SharedClass', function() {
       MyClass.obj = {
         dyn: function(cb) {
           cb();
-        }
+        },
       };
       var sharedClass = new SharedClass('MyClass', MyClass);
       sharedClass.resolve(function(define) {
@@ -192,7 +192,7 @@ describe('SharedClass', function() {
       SomeClass.prototype.myMethod = function() {};
       var METHOD_NAME = 'myMethod';
       sm = sc.defineMethod(METHOD_NAME, {
-        prototype: true
+        prototype: true,
       });
     });
 
@@ -209,7 +209,7 @@ describe('SharedClass', function() {
     it('finds sharedMethod by prototype method name', function() {
       var sc = new SharedClass('SomeClass', SomeClass);
       var sm = sc.defineMethod('testMethod', {
-        isStatic: false
+        isStatic: false,
       });
       assert(sc.findMethodByName('prototype.testMethod') === sm);
     });
@@ -217,7 +217,7 @@ describe('SharedClass', function() {
     it('find sharedMethod by static method name', function() {
       var sc = new SharedClass('SomeClass', SomeClass);
       var sm = sc.defineMethod('myMethod', {
-        isStatic: true
+        isStatic: true,
       });
       assert(sc.findMethodByName('myMethod') === sm);
     });
@@ -243,10 +243,10 @@ describe('SharedClass', function() {
 
     beforeEach(function() {
       sc = new SharedClass('SomeClass', SomeClass);
-      sm = sc.defineMethod(METHOD_NAME, {isStatic: true});
-      sm = sc.defineMethod(INST_METHOD_NAME, {isStatic: false});
+      sm = sc.defineMethod(METHOD_NAME, { isStatic: true });
+      sm = sc.defineMethod(INST_METHOD_NAME, { isStatic: false });
       sc.resolve(function(define) {
-        define(DYN_METHOD_NAME, {isStatic: true});
+        define(DYN_METHOD_NAME, { isStatic: true });
       });
     });
 
@@ -273,7 +273,7 @@ describe('SharedClass', function() {
     it('excludes disabled static methods from the method list', function() {
       var METHOD_NAME = 'testMethod';
       var sc = new SharedClass('SomeClass', SomeClass);
-      var sm = sc.defineMethod(METHOD_NAME, {isStatic: true});
+      var sm = sc.defineMethod(METHOD_NAME, { isStatic: true });
       sc.disableMethodByName(METHOD_NAME);
       var methods = sc.methods().map(getName);
       expect(methods).to.not.contain(METHOD_NAME);
@@ -282,7 +282,7 @@ describe('SharedClass', function() {
     it('excludes disabled prototype methods from the method list', function() {
       var INST_METHOD_NAME = 'prototype.instTestMethod';
       var sc = new SharedClass('SomeClass', SomeClass);
-      var sm = sc.defineMethod('instTestMethod', {isStatic: false});
+      var sm = sc.defineMethod('instTestMethod', { isStatic: false });
       sc.disableMethodByName(INST_METHOD_NAME);
       var methods = sc.methods().map(getName);
       expect(methods).to.not.contain(INST_METHOD_NAME);

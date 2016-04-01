@@ -58,9 +58,9 @@ describe('support for HTTP Authentication', function() {
 
   describe('when Bearer auth is required', function() {
     it('succeeds with correct credentials',
-      succeeds('/bearerAuth', {bearer: 'bearertoken'}));
+      succeeds('/bearerAuth', { bearer: 'bearertoken' }));
     it('fails with bad credentials',
-      fails('/bearerAuth', {bearer: 'badtoken'}));
+      fails('/bearerAuth', { bearer: 'badtoken' }));
     it('fails with no credentials',
       fails('/bearerAuth'));
   });
@@ -104,7 +104,7 @@ describe('support for HTTP Authentication', function() {
       if (split && split.length === 2) {
         auth = {
           username: split[0],
-          password: split[1]
+          password: split[1],
         };
       }
     } else if (credentials && typeof credentials === 'object') {
@@ -113,7 +113,7 @@ describe('support for HTTP Authentication', function() {
 
     var url = fmt('http://127.0.0.1:%d%s', port, path);
     var method = 'User.login';
-    var args = [{username: 'joe', password: 'secret'}];
+    var args = [{ username: 'joe', password: 'secret' }];
     remotes.connect(url, 'rest');
     remotes.auth = auth;
     remotes.invoke(method, args, callback);

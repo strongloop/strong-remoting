@@ -7,7 +7,7 @@ var helper = require('../../../').extend(module.exports);
  * Returns a secret message.
  */
 helper.method(getSecret, {
-  returns: { name: 'secret', type: 'string' }
+  returns: { name: 'secret', type: 'string' },
 });
 function getSecret(callback) {
   callback(null, 'shhh!');
@@ -19,7 +19,7 @@ function getSecret(callback) {
 helper.method(transform, {
   accepts: [{ name: 'str', type: 'string', required: true, description: 'The value to update' }],
   returns: { name: 'str', type: 'string' },
-  description: 'Takes a string and returns an updated string.'
+  description: 'Takes a string and returns an updated string.',
 });
 function transform(str, callback) {
   callback(null, 'transformed: ' + str);

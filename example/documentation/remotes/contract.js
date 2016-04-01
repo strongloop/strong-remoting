@@ -5,7 +5,7 @@ var helper = require('../../../').extend(module.exports);
  */
 helper.method(getSecret, {
   http: { verb: 'GET', path: '/customizedGetSecret' },
-  returns: { name: 'secret', type: 'string' }
+  returns: { name: 'secret', type: 'string' },
 });
 function getSecret(callback) {
   callback(null, 'shhh!');
@@ -17,7 +17,7 @@ function getSecret(callback) {
 helper.method(transform, {
   http: { verb: 'PUT', path: '/customizedTransform' },
   accepts: [{ name: 'str', type: 'string', required: true }],
-  returns: { name: 'str', type: 'string' }
+  returns: { name: 'str', type: 'string' },
 });
 function transform(str, callback) {
   callback(null, 'transformed: ' + str);

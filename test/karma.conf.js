@@ -14,13 +14,13 @@ module.exports = function(config) {
       'karma-mocha',
       'karma-phantomjs-launcher',
       'karma-chrome-launcher',
-      'karma-junit-reporter'
+      'karma-junit-reporter',
     ],
 
     // list of files / patterns to load in the browser
     files: [
       'test/e2e/fixtures/*.js',
-      'test/e2e/smoke.test.js'
+      'test/e2e/smoke.test.js',
     ],
 
     // list of files to exclude
@@ -59,7 +59,7 @@ module.exports = function(config) {
     // - PhantomJS
     // - IE (only Windows)
     browsers: [
-      'Chrome'
+      'Chrome',
     ],
 
     // If browser does not capture in given timeout [ms], kill it
@@ -74,7 +74,7 @@ module.exports = function(config) {
       // extensions: ['.coffee'],
       ignore: [
         'superagent',
-        'supertest'
+        'supertest',
       ],
       // transform: ['coffeeify'],
       debug: true,
@@ -86,6 +86,6 @@ module.exports = function(config) {
     preprocessors: {
       'test/e2e/**': ['browserify'],
       //'lib/*.js': ['browserify']
-    }
+    },
   });
 };
