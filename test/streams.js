@@ -9,9 +9,7 @@ var es = require('event-stream');
 var EventSource = require('eventsource');
 
 describe('strong-remoting', function() {
-  var app;
-  var remotes;
-  var objects;
+  var app, remotes, objects;
 
   beforeEach(function() {
     objects = RemoteObjects.create();
@@ -56,9 +54,7 @@ describe('strong-remoting', function() {
 describe('a function returning a ReadableStream', function() {
   var Readable = require('stream').Readable;
   var remotes = RemoteObjects.create();
-  var streamClass;
-  var server;
-  var app;
+  var streamClass, server, app;
 
   before(function(done) {
     var test = this;

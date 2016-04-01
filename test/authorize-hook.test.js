@@ -6,8 +6,7 @@ var fmt = require('util').format;
 var User = require('./e2e/fixtures/user');
 
 describe('authorization hook', function() {
-  var server;
-  var remotes;
+  var server, remotes;
 
   before(function setupServer(done) {
     var app = express();

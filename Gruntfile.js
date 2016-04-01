@@ -1,6 +1,5 @@
 /*global module:false*/
 module.exports = function(grunt) {
-
   // Project configuration.
   grunt.initConfig({
     // Metadata.
@@ -162,5 +161,4 @@ module.exports = function(grunt) {
 
   // browser / e2e testing...
   grunt.registerTask('e2e', ['e2e-server', 'karma']);
-
 };

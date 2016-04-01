@@ -13,13 +13,8 @@ var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
 var TEST_ERROR = new Error('expected test error');
 
 describe('strong-remoting-rest', function() {
-  var app;
-  var appSupportingJsonOnly;
-  var server;
-  var objects;
-  var remotes;
+  var app, appSupportingJsonOnly, server, objects, remotes, lastRequest, lastResponse;
   var adapterName = 'rest';
-  var lastRequest, lastResponse;
 
   before(function(done) {
     app = express();
@@ -1154,7 +1149,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should split array string when configured', function(done) {
-      objects.options.rest = { arrayItemDelimiters:  [',', '|'] };
+      objects.options.rest = { arrayItemDelimiters: [',', '|'] };
       var method = givenSharedStaticMethod(
         function(a, cb) { cb(null, a); },
         {
@@ -1167,7 +1162,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should not create empty string array with empty string arg', function(done) {
-      objects.options.rest = { arrayItemDelimiters:  [',', '|'] };
+      objects.options.rest = { arrayItemDelimiters: [',', '|'] };
       var method = givenSharedStaticMethod(
         function(a, cb) { cb(null, a); },
         {
@@ -1180,7 +1175,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should still support JSON arrays with arrayItemDelimiters', function(done) {
-      objects.options.rest = { arrayItemDelimiters:  [',', '|'] };
+      objects.options.rest = { arrayItemDelimiters: [',', '|'] };
       var method = givenSharedStaticMethod(
         function(a, cb) { cb(null, a); },
         {
@@ -1397,7 +1392,7 @@ describe('strong-remoting-rest', function() {
           {
             returns: {
               arg: 'data', type: 'object', root: true,
-              xml: { declaration : false },
+              xml: { declaration: false },
             },
             http: { path: '/' },
           }
@@ -1426,7 +1421,7 @@ describe('strong-remoting-rest', function() {
           {
             returns: {
               root: true,
-              xml: { wrapperElement : 'text' },
+              xml: { wrapperElement: 'text' },
             },
             http: { path: '/' },
           }
@@ -1508,7 +1503,6 @@ describe('strong-remoting-rest', function() {
     });
 
     describe('_format support', function() {
-
       it('should produce xml if _format is xml', function(done) {
         var method = givenSharedStaticMethod(
           function bar(a, cb) {
@@ -1592,22 +1586,23 @@ describe('strong-remoting-rest', function() {
           .end(expectErrorResponseContaining({ message: 'an error' }, done));
       });
 
-      it('should return 500 for unhandled errors thrown from before hooks', function(done) {
-        var method = givenSharedStaticMethod();
+      it('should return 500 for unhandled errors thrown from before hooks',
+        function(done) {
+          var method = givenSharedStaticMethod();
 
-        objects.before(method.name, function(ctx, next) {
-          process.nextTick(next);
+          objects.before(method.name, function(ctx, next) {
+            process.nextTick(next);
+          });
+
+          objects.before(method.name, function(ctx, next) {
+            throw new Error('test error');
+          });
+
+          request(app).get(method.url)
+            .set('Accept', 'application/json')
+            .expect(500)
+            .end(expectErrorResponseContaining({ message: 'test error' }, done));
         });
-
-        objects.before(method.name, function(ctx, next) {
-          throw new Error('test error');
-        });
-
-        request(app).get(method.url)
-          .set('Accept', 'application/json')
-          .expect(500)
-          .end(expectErrorResponseContaining({ message: 'test error' }, done));
-      });
     });
 
     it('should return 500 when method returns an error', function(done) {
@@ -1662,7 +1657,6 @@ describe('strong-remoting-rest', function() {
       json(method.url)
         .expect(400, done);
     });
-
   });
 
   describe('call of static method with asynchronous hook', function() {
@@ -2284,7 +2278,6 @@ describe('strong-remoting-rest', function() {
   });
 
   describe('client', function() {
-
     describe('call of constructor method', function() {
       it('should work', function(done) {
         var method = givenSharedStaticMethod(
@@ -2744,7 +2737,6 @@ describe('strong-remoting-rest', function() {
 
   it('should skip the super class and only expose user defined remote methods',
     function(done) {
-
       function base() {
       }
 

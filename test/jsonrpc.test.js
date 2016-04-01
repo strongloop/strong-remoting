@@ -5,10 +5,7 @@ var request = require('supertest');
 var SharedClass = require('../lib/shared-class');
 
 describe('strong-remoting-jsonrpc', function() {
-  var app;
-  var server;
-  var objects;
-  var remotes;
+  var app, server, objects, remotes;
 
   // setup
   beforeEach(function() {
@@ -38,7 +35,7 @@ describe('strong-remoting-jsonrpc', function() {
           fn(null, msg);
         }
         greet.accepts = [
-          { 'arg':'msg', 'type':'string' },
+          { 'arg': 'msg', 'type': 'string' },
         ];
 
         // Create a shared method directly on the function object
@@ -52,15 +49,15 @@ describe('strong-remoting-jsonrpc', function() {
           cb(null, numA + numB);
         }
         remotes.mathematic = {
-          sum:sum,
+          sum: sum,
         };
         sum.accepts = [
-          { 'arg':'numA', 'type':'number' },
-          { 'arg':'numB', 'type':'number' },
+          { 'arg': 'numA', 'type': 'number' },
+          { 'arg': 'numB', 'type': 'number' },
         ];
         sum.returns = {
-          'arg':'sum',
-          'type':'number',
+          'arg': 'sum',
+          'type': 'number',
         };
         sum.shared = true;
 

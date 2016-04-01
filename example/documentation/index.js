@@ -3,8 +3,7 @@ var remotes = require('./remotes');
 var meta = require('../../ext/meta');
 var swagger = require('../../ext/swagger');
 var port = process.argv[2] || 3000;
-var handler;
-var adapter;
+var handler, adapter;
 
 // The installation order sets which routes are captured by Swagger.
 swagger(remotes, {

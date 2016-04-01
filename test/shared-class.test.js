@@ -184,8 +184,7 @@ describe('SharedClass', function() {
   });
 
   describe('sharedClass.find()', function() {
-    var sc;
-    var sm;
+    var sc, sm;
 
     beforeEach(function() {
       sc = new SharedClass('SomeClass', SomeClass);
@@ -235,8 +234,7 @@ describe('SharedClass', function() {
   });
 
   describe('sharedClass.disableMethod(methodName, isStatic)', function() {
-    var sc;
-    var sm;
+    var sc, sm;
     var METHOD_NAME = 'testMethod';
     var INST_METHOD_NAME = 'instTestMethod';
     var DYN_METHOD_NAME = 'dynMethod';

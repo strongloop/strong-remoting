@@ -8,10 +8,7 @@ var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
 
 describe('strong-remoting-rest', function() {
-  var app;
-  var server;
-  var objects;
-  var remotes;
+  var app, server, objects, remotes;
   var adapterName = 'rest';
 
   before(function(done) {
@@ -351,5 +348,4 @@ describe('strong-remoting-rest', function() {
       done();
     };
   }
-
 });

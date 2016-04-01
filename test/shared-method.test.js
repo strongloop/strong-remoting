@@ -40,7 +40,6 @@ describe('SharedMethod', function() {
   });
 
   describe('sharedMethod.isDelegateFor(suspect, [isStatic])', function() {
-
     // stub function
     function myFunction() {}
 
@@ -87,7 +86,6 @@ describe('SharedMethod', function() {
   });
 
   describe('sharedMethod.isDelegateForName(suspect)', function() {
-
     // stub function
     function myFunction() {}
 

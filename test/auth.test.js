@@ -96,8 +96,7 @@ describe('support for HTTP Authentication', function() {
   }
 
   function invokeRemote(port, path, credentials, callback) {
-    var auth;
-    var split;
+    var auth, split;
 
     if (typeof credentials === 'string') {
       split = credentials && credentials.split(':');

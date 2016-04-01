@@ -284,7 +284,6 @@ describe('RestAdapter', function() {
         { route: { verb: 'del', path: '/:id' }},
         { route: { verb: 'delete', path: '/' }},
       ]);
-
     });
 
     it('should sort routes based on path accuracy', function() {
@@ -303,7 +302,6 @@ describe('RestAdapter', function() {
         { route: { verb: 'get', path: '/:id' }},
         { route: { verb: 'get', path: '/' }},
       ]);
-
     });
 
     it('should sort routes with common parts', function() {
@@ -318,7 +316,6 @@ describe('RestAdapter', function() {
         { route: { verb: 'get', path: '/sum/1' }},
         { route: { verb: 'get', path: '/sum' }},
       ]);
-
     });
 
     it('should sort routes with trailing /', function() {
@@ -333,7 +330,6 @@ describe('RestAdapter', function() {
         { route: { verb: 'get', path: '/sum/1' }},
         { route: { verb: 'get', path: '/sum/' }},
       ]);
-
     });
   });
 
@@ -416,7 +412,6 @@ describe('RestAdapter', function() {
         expect(_res).to.equal(res);
         done();
       });
-
     });
 
     function givenRestStaticMethod(methodConfig, classConfig) {

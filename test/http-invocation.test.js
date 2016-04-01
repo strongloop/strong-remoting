@@ -7,7 +7,6 @@ var expect = require('chai').expect;
 
 describe('HttpInvocation', function() {
   describe('namedArgs', function() {
-
     function expectNamedArgs(accepts, inputArgs, expectedNamedArgs) {
       var method = givenSharedStaticMethod({
         accepts: accepts,

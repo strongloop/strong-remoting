@@ -17,7 +17,10 @@ function getSecret(callback) {
  * Takes a string and returns an updated string.
  */
 helper.method(transform, {
-  accepts: [{ name: 'str', type: 'string', required: true, description: 'The value to update' }],
+  accepts: [{ name: 'str',
+              type: 'string',
+              required: true,
+              description: 'The value to update' }],
   returns: { name: 'str', type: 'string' },
   description: 'Takes a string and returns an updated string.',
 });
