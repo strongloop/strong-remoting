@@ -13,15 +13,15 @@ var fileService = remotes.exports.files = {
   },
   download: function() {
     return fs.createReadStream(path.join(__dirname, 'streams.js'));
-  }
-}
+  },
+};
 
 fileService.upload.http = {
   // pipe to the request
   // to the result of the function
   pipe: {
-    source: 'req'
-  }
+    source: 'req',
+  },
 };
 fileService.upload.shared = true;
 
@@ -30,8 +30,8 @@ fileService.download.http = {
   // pipe to the response
   // for the http transport
   pipe: {
-    dest: 'res'
-  }
+    dest: 'res',
+  },
 };
 fileService.download.shared = true;
 

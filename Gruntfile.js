@@ -1,6 +1,5 @@
 /*global module:false*/
 module.exports = function(grunt) {
-
   // Project configuration.
   grunt.initConfig({
     // Metadata.
@@ -14,46 +13,41 @@ module.exports = function(grunt) {
     // Task configuration.
     uglify: {
       options: {
-        banner: '<%= banner %>'
+        banner: '<%= banner %>',
       },
       dist: {
         files: {
-          'dist/strong-remoting.min.js': ['dist/strong-remoting.js']
-        }
-      }
+          'dist/strong-remoting.min.js': ['dist/strong-remoting.js'],
+        },
+      },
     },
-    jshint: {
+    eslint: {
       options: {
-        jshintrc: true
+        jshintrc: true,
       },
       gruntfile: {
-        src: 'Gruntfile.js'
+        src: 'Gruntfile.js',
       },
       lib: {
-        src: ['lib/**/*.js']
+        src: ['lib/**/*.js'],
       },
       test: {
-        src: ['test/**/*.js']
-      }
-    },
-    jscs: {
-      gruntfile: 'Gruntfile.js',
-      lib: '<%= jshint.lib.src %>',
-      test: '<%= jshint.test.src %>'
+        src: ['test/**/*.js'],
+      },
     },
     watch: {
       gruntfile: {
-        files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile', 'jscs:gruntfile']
+        files: '<%= eslint.gruntfile.src %>',
+        tasks: ['eslint:gruntfile'],
       },
       lib: {
-        files: '<%= jshint.lib.src %>',
-        tasks: ['jshint:lib', 'jscs:lib']
+        files: '<%= eslint.lib.src %>',
+        tasks: ['eslint:lib'],
       },
       test: {
-        files: '<%= jshint.test.src %>',
-        tasks: ['jshint:test', 'jscs:test']
-      }
+        files: '<%= eslint.test.src %>',
+        tasks: ['eslint:test'],
+      },
     },
     browserify: {
       dist: {
@@ -62,9 +56,9 @@ module.exports = function(grunt) {
         },
         options: {
           ignore: ['nodemailer', 'passport'],
-          standalone: 'strong-remoting'
-        }
-      }
+          standalone: 'strong-remoting',
+        },
+      },
     },
     karma: {
       unit: {
@@ -78,7 +72,7 @@ module.exports = function(grunt) {
           // list of files / patterns to load in the browser
           files: [
             'test/e2e/fixtures/*.js',
-            'test/e2e/smoke.test.js'
+            'test/e2e/smoke.test.js',
           ],
 
           // list of files to exclude
@@ -117,7 +111,7 @@ module.exports = function(grunt) {
           // - PhantomJS
           // - IE (only Windows)
           browsers: [
-            'Chrome'
+            'Chrome',
           ],
 
           // If browser does not capture in given timeout [ms], kill it
@@ -132,7 +126,7 @@ module.exports = function(grunt) {
             // extensions: ['.coffee'],
             ignore: [
               'superagent',
-              'supertest'
+              'supertest',
             ],
             // transform: ['coffeeify'],
             // debug: true,
@@ -143,11 +137,11 @@ module.exports = function(grunt) {
           // Add browserify to preprocessors
           preprocessors: {
             'test/e2e/**': ['browserify'],
-            'lib/*.js': ['browserify']
-          }
-        }
-      }
-    }
+            'lib/*.js': ['browserify'],
+          },
+        },
+      },
+    },
 
   });
 
@@ -158,8 +152,7 @@ module.exports = function(grunt) {
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-jscs');
+  grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-karma');
 
@@ -168,5 +161,4 @@ module.exports = function(grunt) {
 
   // browser / e2e testing...
   grunt.registerTask('e2e', ['e2e-server', 'karma']);
-
 };

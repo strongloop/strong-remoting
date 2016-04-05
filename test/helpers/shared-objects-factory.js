@@ -38,7 +38,7 @@ exports.createSharedClass =  function createSharedClass(config) {
     shared: true,
     accepts: [{ arg: 'id', type: 'any', http: { source: 'path' }}],
     http: { path: '/:id' },
-    returns: { root: true }
+    returns: { root: true },
   });
 
   return SharedClass;

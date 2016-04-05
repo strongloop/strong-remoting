@@ -8,22 +8,22 @@ var fs = remotes.exports.fs = require('fs');
 fs.createReadStream.shared = true;
 
 // describe the arguments
-fs.createReadStream.accepts = {arg: 'path', type: 'string'};
+fs.createReadStream.accepts = { arg: 'path', type: 'string' };
 
 // describe the stream destination
 fs.createReadStream.http = {
   // pipe to the response
   // for the http transport
   pipe: {
-    dest: 'res'
-  }
+    dest: 'res',
+  },
 };
 
 // over rest / http
 require('http')
   .createServer(remotes.handler('rest'))
   .listen(3000);
-  
+
 /*
 
 Test the above with curl or a rest client:

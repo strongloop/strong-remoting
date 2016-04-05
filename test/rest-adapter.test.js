@@ -103,8 +103,8 @@ describe('RestAdapter', function() {
       it('returns the path of the first route', function() {
         var restClass = givenRestClass({ http: [
           { path: '/a-path' },
-          { path: '/another-path' }
-        ]});
+          { path: '/another-path' },
+        ] });
         expect(restClass.getPath()).to.equal('/a-path');
       });
     });
@@ -158,35 +158,35 @@ describe('RestAdapter', function() {
     describe('isReturningArray()', function() {
       it('returns true when there is single root Array arg', function() {
         var method = givenRestStaticMethod({
-          returns: { root: true, type: Array }
+          returns: { root: true, type: Array },
         });
         expect(method.isReturningArray()).to.equal(true);
       });
 
       it('returns true when there is single root "array" arg', function() {
         var method = givenRestStaticMethod({
-          returns: { root: true, type: Array }
+          returns: { root: true, type: Array },
         });
         expect(method.isReturningArray()).to.equal(true);
       });
 
       it('returns true when there is single root [Model] arg', function() {
         var method = givenRestStaticMethod({
-          returns: { root: true, type: ['string'] }
+          returns: { root: true, type: ['string'] },
         });
         expect(method.isReturningArray()).to.equal(true);
       });
 
       it('returns false otherwise', function() {
         var method = givenRestStaticMethod({
-          returns: { arg: 'result', type: Array }
+          returns: { arg: 'result', type: Array },
         });
         expect(method.isReturningArray()).to.equal(false);
       });
 
       it('handles invalid type', function() {
         var method = givenRestStaticMethod({
-          returns: { root: true }
+          returns: { root: true },
         });
         expect(method.isReturningArray()).to.equal(false);
       });
@@ -198,15 +198,15 @@ describe('RestAdapter', function() {
           accepts: {
             arg: 'data',
             type: Object,
-            http: { source: 'body' }
-          }
+            http: { source: 'body' },
+          },
         });
         expect(method.acceptsSingleBodyArgument()).to.equal(true);
       });
 
       it('returns false otherwise', function() {
         var method = givenRestStaticMethod({
-          accepts: { arg: 'data', type: Object }
+          accepts: { arg: 'data', type: Object },
         });
         expect(method.acceptsSingleBodyArgument()).to.equal(false);
       });
@@ -214,17 +214,17 @@ describe('RestAdapter', function() {
 
     describe('getHttpMethod', function() {
       it('returns POST for `all`', function() {
-        var method = givenRestStaticMethod({ http: { verb: 'all'} });
+        var method = givenRestStaticMethod({ http: { verb: 'all' }});
         expect(method.getHttpMethod()).to.equal('POST');
       });
 
       it('returns DELETE for `del`', function() {
-        var method = givenRestStaticMethod({ http: { verb: 'del'} });
+        var method = givenRestStaticMethod({ http: { verb: 'del' }});
         expect(method.getHttpMethod()).to.equal('DELETE');
       });
 
       it('returns upper-case value otherwise', function() {
-        var method = givenRestStaticMethod({ http: { verb: 'get'} });
+        var method = givenRestStaticMethod({ http: { verb: 'get' }});
         expect(method.getHttpMethod()).to.equal('GET');
       });
     });
@@ -233,8 +233,8 @@ describe('RestAdapter', function() {
       it('returns the path of the first route', function() {
         var method = givenRestStaticMethod({ http: [
           { path: '/a-path' },
-          { path: '/another-path' }
-        ]});
+          { path: '/another-path' },
+        ] });
         expect(method.getPath()).to.equal('/a-path');
       });
     });
@@ -242,8 +242,8 @@ describe('RestAdapter', function() {
     describe('getFullPath', function() {
       it('returns class path + method path', function() {
         var method = givenRestStaticMethod(
-          { http: { path: '/a-method' } },
-          { http: { path: '/a-class' } }
+          { http: { path: '/a-method' }},
+          { http: { path: '/a-class' }}
         );
 
         expect(method.getFullPath()).to.equal('/a-class/a-method');
@@ -253,7 +253,7 @@ describe('RestAdapter', function() {
     function givenRestStaticMethod(methodConfig, classConfig) {
       var name = 'testMethod';
       methodConfig = extend({ shared: true }, methodConfig);
-      classConfig = extend({ shared: true}, classConfig);
+      classConfig = extend({ shared: true }, classConfig);
       remotes.testClass = extend({}, classConfig);
       var fn = remotes.testClass[name] = extend(function() {}, methodConfig);
 
@@ -268,72 +268,68 @@ describe('RestAdapter', function() {
   describe('sortRoutes', function() {
     it('should sort routes based on verb & path', function() {
       var routes = [
-        {route: {verb: 'get', path: '/'}},
-        {route: {verb: 'get', path: '/:id'}},
-        {route: {verb: 'get', path: '/findOne'}},
-        {route: {verb: 'delete', path: '/'}},
-        {route: {verb: 'del', path: '/:id'}}
+        { route: { verb: 'get', path: '/' }},
+        { route: { verb: 'get', path: '/:id' }},
+        { route: { verb: 'get', path: '/findOne' }},
+        { route: { verb: 'delete', path: '/' }},
+        { route: { verb: 'del', path: '/:id' }},
       ];
 
       routes.sort(RestAdapter.sortRoutes);
 
       expect(routes).to.eql([
-        {route: {verb: 'get', path: '/findOne'}},
-        {route: {verb: 'get', path: '/:id'}},
-        {route: {verb: 'get', path: '/'}},
-        {route: {verb: 'del', path: '/:id'}},
-        {route: {verb: 'delete', path: '/'}}
+        { route: { verb: 'get', path: '/findOne' }},
+        { route: { verb: 'get', path: '/:id' }},
+        { route: { verb: 'get', path: '/' }},
+        { route: { verb: 'del', path: '/:id' }},
+        { route: { verb: 'delete', path: '/' }},
       ]);
-
     });
 
     it('should sort routes based on path accuracy', function() {
       var routes = [
-        {route: {verb: 'get', path: '/'}},
-        {route: {verb: 'get', path: '/:id/docs'}},
-        {route: {verb: 'get', path: '/:id'}},
-        {route: {verb: 'get', path: '/findOne'}}
+        { route: { verb: 'get', path: '/' }},
+        { route: { verb: 'get', path: '/:id/docs' }},
+        { route: { verb: 'get', path: '/:id' }},
+        { route: { verb: 'get', path: '/findOne' }},
       ];
 
       routes.sort(RestAdapter.sortRoutes);
 
       expect(routes).to.eql([
-        {route: {verb: 'get', path: '/findOne'}},
-        {route: {verb: 'get', path: '/:id/docs'}},
-        {route: {verb: 'get', path: '/:id'}},
-        {route: {verb: 'get', path: '/'}}
+        { route: { verb: 'get', path: '/findOne' }},
+        { route: { verb: 'get', path: '/:id/docs' }},
+        { route: { verb: 'get', path: '/:id' }},
+        { route: { verb: 'get', path: '/' }},
       ]);
-
     });
 
     it('should sort routes with common parts', function() {
       var routes = [
-        {route: {verb: 'get', path: '/sum'}},
-        {route: {verb: 'get', path: '/sum/1'}}
+        { route: { verb: 'get', path: '/sum' }},
+        { route: { verb: 'get', path: '/sum/1' }},
       ];
 
       routes.sort(RestAdapter.sortRoutes);
 
       expect(routes).to.eql([
-        {route: {verb: 'get', path: '/sum/1'}},
-        {route: {verb: 'get', path: '/sum'}}
+        { route: { verb: 'get', path: '/sum/1' }},
+        { route: { verb: 'get', path: '/sum' }},
       ]);
-
     });
 
     it('should sort routes with trailing /', function() {
       var routes = [
-        {route: {verb: 'get', path: '/sum/'}},
-        {route: {verb: 'get', path: '/sum/1'}}
+        { route: { verb: 'get', path: '/sum/' }},
+        { route: { verb: 'get', path: '/sum/1' }},
       ];
 
       routes.sort(RestAdapter.sortRoutes);
 
       expect(routes).to.eql([
-        {route: {verb: 'get', path: '/sum/1'}},
-        {route: {verb: 'get', path: '/sum/'}}
+        { route: { verb: 'get', path: '/sum/1' }},
+        { route: { verb: 'get', path: '/sum/' }},
       ]);
-
     });
   });
 
@@ -416,7 +412,6 @@ describe('RestAdapter', function() {
         expect(_res).to.equal(res);
         done();
       });
-
     });
 
     function givenRestStaticMethod(methodConfig, classConfig) {

@@ -6,8 +6,7 @@ var fmt = require('util').format;
 var User = require('./e2e/fixtures/user');
 
 describe('authorization hook', function() {
-  var server;
-  var remotes;
+  var server, remotes;
 
   before(function setupServer(done) {
     var app = express();
@@ -49,7 +48,7 @@ describe('authorization hook', function() {
   function invokeRemote(port, callback) {
     var url = 'http://127.0.0.1:' + port;
     var method = 'User.login';
-    var args = [{username: 'joe', password: 'secret'}];
+    var args = [{ username: 'joe', password: 'secret' }];
 
     remotes.connect(url, 'rest');
     remotes.invoke(method, args, callback);

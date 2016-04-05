@@ -12,10 +12,10 @@ User.sharedCtor = function(id, callback) {
   callback(null, user);
 };
 User.sharedCtor.shared = true;
-User.sharedCtor.accepts = {arg: 'id', type: 'string'};
+User.sharedCtor.accepts = { arg: 'id', type: 'string' };
 User.sharedCtor.http = [
-  {path: '/:id', verb: 'get'},
-  {path: '/', verb: 'get'}
+  { path: '/:id', verb: 'get' },
+  { path: '/', verb: 'get' },
 ];
 
 var login = User.login = function(credentials, callback) {
@@ -24,17 +24,17 @@ var login = User.login = function(credentials, callback) {
     if (!credentials.password) {
       return callback(new Error('password required'));
     }
-    callback(null, {userId: 123});
+    callback(null, { userId: 123 });
   }, 0);
 };
 login.shared = true;
-login.accepts = {arg: 'credentials', type: 'object'};
-login.returns = {arg: 'session', type: 'object'};
+login.accepts = { arg: 'credentials', type: 'object' };
+login.returns = { arg: 'session', type: 'object' };
 
 var hasUsername = User.prototype.hasUsername = function(username, callback) {
   callback(null, username === this.username);
 };
 
 hasUsername.shared = true;
-hasUsername.accepts = {arg: 'username', type: 'string'};
-hasUsername.returns = {arg: 'hasUsername', type: 'boolean'};
+hasUsername.accepts = { arg: 'username', type: 'string' };
+hasUsername.returns = { arg: 'hasUsername', type: 'boolean' };

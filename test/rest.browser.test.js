@@ -8,10 +8,7 @@ var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
 
 describe('strong-remoting-rest', function() {
-  var app;
-  var server;
-  var objects;
-  var remotes;
+  var app, server, objects, remotes;
   var adapterName = 'rest';
 
   before(function(done) {
@@ -41,7 +38,7 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: { arg: 'person', type: 'string' },
-            returns: { arg: 'msg', type: 'string' }
+            returns: { arg: 'msg', type: 'string' },
           }
         );
 
@@ -60,10 +57,10 @@ describe('strong-remoting-rest', function() {
           {
             accepts: [
               { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: {source: 'path' } }
+              { arg: 'a', type: 'number', http: { source: 'path' }},
             ],
             returns: { arg: 'n', type: 'number' },
-            http: { path: '/:a' }
+            http: { path: '/:a' },
           }
         );
 
@@ -81,10 +78,10 @@ describe('strong-remoting-rest', function() {
           {
             accepts: [
               { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: {source: 'query' } }
+              { arg: 'a', type: 'number', http: { source: 'query' }},
             ],
             returns: { arg: 'n', type: 'number' },
-            http: { path: '/' }
+            http: { path: '/' },
           }
         );
 
@@ -102,10 +99,10 @@ describe('strong-remoting-rest', function() {
           {
             accepts: [
               { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: {source: 'header' } }
+              { arg: 'a', type: 'number', http: { source: 'header' }},
             ],
             returns: { arg: 'n', type: 'number' },
-            http: { path: '/' }
+            http: { path: '/' },
           }
         );
 
@@ -125,8 +122,8 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' }
-            ]
+              { arg: 'b', type: 'number' },
+            ],
           }
         );
 
@@ -143,15 +140,15 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: {source: 'body' }  }
+              { arg: 'a', type: 'object', http: { source: 'body' }},
             ],
             returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' }
+            http: { path: '/' },
           }
         );
 
         var obj = {
-          foo: 'bar'
+          foo: 'bar',
         };
 
         objects.invoke(method.name, [obj], function(err, data) {
@@ -167,16 +164,16 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: {source: 'body' }  }
+              { arg: 'a', type: 'object', http: { source: 'body' }},
             ],
             returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' }
+            http: { path: '/' },
           }
         );
 
-        var data = {date: {$type: 'date', $data: new Date()}};
+        var data = { date: { $type: 'date', $data: new Date() }};
         objects.invoke(method.name, [data], function(err, resData) {
-          expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
+          expect(resData).to.deep.equal({ date: data.date.$data.toISOString() });
           done();
         });
       });
@@ -188,11 +185,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number', http: {source: 'form' }  },
-              { arg: 'a', type: 'number', http: {source: 'form' } }
+              { arg: 'b', type: 'number', http: { source: 'form' }},
+              { arg: 'a', type: 'number', http: { source: 'form' }},
             ],
             returns: { arg: 'n', type: 'number' },
-            http: { path: '/' }
+            http: { path: '/' },
           }
         );
 
@@ -210,12 +207,12 @@ describe('strong-remoting-rest', function() {
           {
             accepts: [
               { arg: 'a', type: 'number' },
-              { arg: 'b', type: 'number' }
+              { arg: 'b', type: 'number' },
             ],
             returns: [
               { arg: 'a', type: 'number' },
-              { arg: 'b', type: 'number' }
-            ]
+              { arg: 'b', type: 'number' },
+            ],
           }
         );
 
@@ -236,14 +233,14 @@ describe('strong-remoting-rest', function() {
               accepts: [
                 { arg: 'num', type: 'number', required: true },
                 { arg: 'str', type: 'string', required: true },
-                { arg: 'bool', type: 'boolean', required: true }
+                { arg: 'bool', type: 'boolean', required: true },
               ],
               returns: [
                 { arg: 'num', type: 'number' },
                 { arg: 'str', type: 'string' },
-                { arg: 'bool', type: 'boolean' }
+                { arg: 'bool', type: 'boolean' },
               ],
-              http: { path: '/' }
+              http: { path: '/' },
             }
           );
 
@@ -266,14 +263,14 @@ describe('strong-remoting-rest', function() {
             accepts: [
               { arg: 'num', type: 'number', required: true },
               { arg: 'str', type: 'string', required: true },
-              { arg: 'bool', type: 'boolean', required: true }
+              { arg: 'bool', type: 'boolean', required: true },
             ],
             returns: [
               { arg: 'num', type: 'number' },
               { arg: 'str', type: 'string' },
-              { arg: 'bool', type: 'boolean' }
+              { arg: 'bool', type: 'boolean' },
             ],
-            http: { path: '/' }
+            http: { path: '/' },
           }
         );
 
@@ -315,7 +312,7 @@ describe('strong-remoting-rest', function() {
     return {
       name: 'testClass.testMethod',
       url: '/testClass/testMethod',
-      classUrl: '/testClass'
+      classUrl: '/testClass',
     };
   }
 
@@ -338,7 +335,7 @@ describe('strong-remoting-rest', function() {
       getUrlForId: function(id) {
         return this.getClassUrlForId(id) + '/testMethod';
       },
-      url: '/testClass/an-id/testMethod'
+      url: '/testClass/an-id/testMethod',
     };
   }
 
@@ -351,5 +348,4 @@ describe('strong-remoting-rest', function() {
       done();
     };
   }
-
 });

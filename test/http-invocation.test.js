@@ -7,10 +7,9 @@ var expect = require('chai').expect;
 
 describe('HttpInvocation', function() {
   describe('namedArgs', function() {
-
     function expectNamedArgs(accepts, inputArgs, expectedNamedArgs) {
       var method = givenSharedStaticMethod({
-        accepts: accepts
+        accepts: accepts,
       });
       var inv = new HttpInvocation(method, null, inputArgs);
       expect(inv.namedArgs).to.deep.equal(expectedNamedArgs);
@@ -18,25 +17,25 @@ describe('HttpInvocation', function() {
 
     it('should correctly name a single arg', function() {
       expectNamedArgs(
-        [{arg: 'a', type: 'number'}],
+        [{ arg: 'a', type: 'number' }],
         [1],
-        {a: 1}
+        { a: 1 }
       );
     });
 
     it('should correctly name multiple args', function() {
       expectNamedArgs(
-        [{arg: 'a', type: 'number'}, {arg: 'str', type: 'string'}],
+        [{ arg: 'a', type: 'number' }, { arg: 'str', type: 'string' }],
         [1, 'foo'],
-        {a: 1, str: 'foo'}
+        { a: 1, str: 'foo' }
       );
     });
 
     it('should correctly name multiple args when a partial set is provided', function() {
       expectNamedArgs(
-        [{arg: 'a', type: 'number'}, {arg: 'str', type: 'string'}],
+        [{ arg: 'a', type: 'number' }, { arg: 'str', type: 'string' }],
         [1],
-        {a: 1}
+        { a: 1 }
       );
     });
 
@@ -44,7 +43,7 @@ describe('HttpInvocation', function() {
       it('should accept an acceptable argument', function() {
         var acceptable = HttpInvocation.isAcceptable(2, {
           arg: 'foo',
-          type: 'number'
+          type: 'number',
         });
         expect(acceptable).to.equal(true);
       });
@@ -52,7 +51,7 @@ describe('HttpInvocation', function() {
       it('should always accept args when type is any', function() {
         var acceptable = HttpInvocation.isAcceptable(2, {
           arg: 'bar',
-          type: 'any'
+          type: 'any',
         });
         expect(acceptable).to.equal(true);
       });
@@ -60,7 +59,7 @@ describe('HttpInvocation', function() {
       it('should always accept args when type is complex', function() {
         var acceptable = HttpInvocation.isAcceptable({}, {
           arg: 'bar',
-          type: 'MyComplexType'
+          type: 'MyComplexType',
         });
         expect(acceptable).to.equal(true);
       });
@@ -68,7 +67,7 @@ describe('HttpInvocation', function() {
       it('should accept null arg when type is complex', function() {
         var acceptable = HttpInvocation.isAcceptable(null, {
           arg: 'bar',
-          type: 'MyComplexType'
+          type: 'MyComplexType',
         });
         expect(acceptable).to.equal(true);
       });
@@ -88,11 +87,11 @@ describe('HttpInvocation', function() {
       setupReturnTypes({
         arg: 'data',
         type: 'bar',
-        root: true
+        root: true,
       }, 'bar', function(data) {
         return data ? new TestClass(data) : data;
       }, {
-        body: { foo: 'bar' }
+        body: { foo: 'bar' },
       }, function(err, inst) {
         expect(err).to.be.null;
         expect(inst).to.be.instanceOf(TestClass);
@@ -109,14 +108,14 @@ describe('HttpInvocation', function() {
       setupReturnTypes({
         arg: 'data',
         type: ['bar'],
-        root: true
+        root: true,
       }, 'bar', function(data) {
         return data ? new TestClass(data) : data;
       }, {
         body: [
           { foo: 'bar' },
-          { foo: 'grok' }
-        ]
+          { foo: 'grok' },
+        ],
       }, function(err, insts) {
         expect(err).to.be.null;
         expect(insts).to.be.an('array');
@@ -143,11 +142,11 @@ describe('HttpInvocation', function() {
             message: 'Custom error message',
             statusCode: 555,
             details: {
-              key: 'value'
+              key: 'value',
             },
-            extra: 'extra value'
-          }
-        }
+            extra: 'extra value',
+          },
+        },
       };
 
       inv.transformResponse(res, res.body, function(err) {
@@ -168,7 +167,7 @@ describe('HttpInvocation', function() {
       var inv = new HttpInvocation(method);
       var res = {
         statusCode: 555,
-        body: 'error body'
+        body: 'error body',
       };
 
       inv.transformResponse(res, res.body, function(err) {

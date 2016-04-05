@@ -12,8 +12,8 @@
     "tag": "next"
   },
   "scripts": {
-    "pretest": "grunt jscs jshint",
-    "test": "mocha"
+    "test": "mocha",
+    "posttest": "grunt eslint"
   },
   "dependencies": {
     "async": "^0.9.0",
@@ -35,6 +35,7 @@
     "xml2js": "^0.4.8"
   },
   "devDependencies": {
+    "eslint-config-loopback": "^1.0.0",
     "bluebird": "^2.9.25",
     "browserify": "~10.2.0",
     "chai": "^2.3.0",
@@ -43,10 +44,9 @@
     "grunt": "~0.4.5",
     "grunt-browserify": "~3.8.0",
     "grunt-cli": "^0.1.13",
-    "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-uglify": "~0.9.1",
     "grunt-contrib-watch": "~0.6.1",
-    "grunt-jscs": "^1.8.0",
+    "grunt-eslint": "^18.0.0",
     "grunt-karma": "~0.10.1",
     "http-auth": "^2.2.5",
     "karma": "~0.12.31",

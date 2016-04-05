@@ -3,9 +3,9 @@ var remotes = require('../').create();
 
 // expose a simple object
 var user = remotes.exports.user = {
-  greet: function (fn) {
-    fn(null, {msg: 'hello, world!'});
-  }
+  greet: function(fn) {
+    fn(null, { msg: 'hello, world!' });
+  },
 };
 
 // share the greet method
@@ -15,13 +15,13 @@ user.greet.shared = true;
 require('http')
   .createServer(remotes.handler('rest'))
   .listen(3000);
-  
+
 /*
 
 Test the above with curl or a rest client:
-  
+
   $ node simple.js
-  $ curl http://localhost:3000/user/greet 
+  $ curl http://localhost:3000/user/greet
   {
     "msg": "hello, world!"
   }

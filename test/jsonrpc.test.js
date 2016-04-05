@@ -5,15 +5,12 @@ var request = require('supertest');
 var SharedClass = require('../lib/shared-class');
 
 describe('strong-remoting-jsonrpc', function() {
-  var app;
-  var server;
-  var objects;
-  var remotes;
+  var app, server, objects, remotes;
 
   // setup
   beforeEach(function() {
     if (server) server.close();
-    objects = RemoteObjects.create({json: {limit: '1kb'}});
+    objects = RemoteObjects.create({ json: { limit: '1kb' }});
     remotes = objects.exports;
     app = express();
   });
@@ -22,7 +19,7 @@ describe('strong-remoting-jsonrpc', function() {
     return request(app).post(url)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
-      .send({'jsonrpc': '2.0', 'method': method, 'params': parameters, 'id': 1})
+      .send({ 'jsonrpc': '2.0', 'method': method, 'params': parameters, 'id': 1 })
       .expect(200)
       .expect('Content-Type', /json/);
   }
@@ -38,12 +35,12 @@ describe('strong-remoting-jsonrpc', function() {
           fn(null, msg);
         }
         greet.accepts = [
-          {'arg':'msg', 'type':'string'}
+          { 'arg': 'msg', 'type': 'string' },
         ];
 
         // Create a shared method directly on the function object
         remotes.user = {
-          greet: greet
+          greet: greet,
         };
         greet.shared = true;
 
@@ -52,15 +49,15 @@ describe('strong-remoting-jsonrpc', function() {
           cb(null, numA + numB);
         }
         remotes.mathematic = {
-          sum:sum
+          sum: sum,
         };
         sum.accepts = [
-          {'arg':'numA', 'type':'number'},
-          {'arg':'numB', 'type':'number'},
+          { 'arg': 'numA', 'type': 'number' },
+          { 'arg': 'numB', 'type': 'number' },
         ];
         sum.returns = {
-          'arg':'sum',
-          'type':'number'
+          'arg': 'sum',
+          'type': 'number',
         };
         sum.shared = true;
 
@@ -75,21 +72,21 @@ describe('strong-remoting-jsonrpc', function() {
         };
 
         var productClass = new SharedClass('product', Product, {});
-        productClass.defineMethod('getPrice', {isStatic: true});
+        productClass.defineMethod('getPrice', { isStatic: true });
         objects.addClass(productClass);
       });
 
       it('should support calling object methods', function(done) {
         jsonrpc('/user/jsonrpc', 'greet', ['JS'])
-          .expect({'jsonrpc': '2.0', 'id': 1, 'result': 'JS'}, done);
+          .expect({ 'jsonrpc': '2.0', 'id': 1, 'result': 'JS' }, done);
       });
       it('Should successfully call a method with named parameters', function(done) {
-        jsonrpc('/mathematic/jsonrpc', 'sum', {'numB': 9, 'numA': 2})
-          .expect({'jsonrpc': '2.0', 'id': 1, 'result': 11}, done);
+        jsonrpc('/mathematic/jsonrpc', 'sum', { 'numB': 9, 'numA': 2 })
+          .expect({ 'jsonrpc': '2.0', 'id': 1, 'result': 11 }, done);
       });
       it('should support a remote method using shared method', function(done) {
         jsonrpc('/product/jsonrpc', 'getPrice', [])
-          .expect({'jsonrpc': '2.0', 'id': 1, 'result': 100}, done);
+          .expect({ 'jsonrpc': '2.0', 'id': 1, 'result': 100 }, done);
       });
 
       it('should report error for non-existent methods', function(done) {
@@ -99,8 +96,8 @@ describe('strong-remoting-jsonrpc', function() {
             'id': 1,
             'error': {
               'code': -32601,
-              'message': 'Method not found'
-            }
+              'message': 'Method not found',
+            },
           }, done);
       });
 
