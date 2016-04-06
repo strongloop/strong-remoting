@@ -1577,6 +1577,38 @@ describe('strong-remoting-rest', function() {
           .end(expectErrorResponseContaining({message: 'an error'}, done));
       });
 
+      it('should return 500 if an array of errors is thrown', function(done) {
+        var testError = new Error('expected test error');
+        var errArray = [testError, testError];
+
+        function method(error) {
+          return givenSharedStaticMethod(function(cb) {
+            cb(error);
+          });
+        }
+
+        request(app).get(method(testError).url)
+          .set('Accept', 'application/json')
+          .expect(500)
+          .end(function(err, res) {
+            if (err) return done(err);
+            expectedDetail = res.body.error;
+            delete expectedDetail.statusCode;
+
+            request(app).get(method(errArray).url)
+              .set('Accept', 'application/json')
+              .expect(500)
+              .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body.error;
+                expect(error).to.have.property('message').that.match(/multiple errors/);
+                expect(error).to.include.keys('details');
+                expect(error.details).to.include(expectedDetail);
+                done();
+              });
+          });
+      });
+
       it('should return 500 if an error string is thrown', function(done) {
         remotes.shouldThrow = {
           bar: function(fn) {
