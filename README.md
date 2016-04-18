@@ -142,6 +142,22 @@ remotes.after('**', function (ctx, next) {
 });
 ```
 
+Hooks accept an async handler function that is called for every request. This handler function signal the completion either by accepting a callback argument or returning a promise.
+
+```js
+// accepting a callback argument
+remotes.after('dog.prototype.speak', function(ctx, next) {
+  console.log('After speak!');
+  next();
+});
+
+// returning a promise
+remotes.after('dog.prototype.speak', function(ctx) {
+  console.log('After speak!');
+  return Promise.resolve();
+});
+```
+
 See the before-after example for more info.
 
 ### Streams
