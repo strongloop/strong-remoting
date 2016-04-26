@@ -142,7 +142,7 @@ remotes.after('**', function (ctx, next) {
 });
 ```
 
-Hooks accept an async handler function that is called for every request. This handler function signal the completion either by accepting a callback argument or returning a promise.
+Hooks accept an asynchronous handler function that is called for every request. This handler function signals the completion either by accepting a callback argument or returning a promise.  For example:
 
 ```js
 // accepting a callback argument
