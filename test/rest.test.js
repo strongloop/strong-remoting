@@ -45,7 +45,7 @@ describe('strong-remoting-rest', function() {
       process.env.NODE_ENV = 'test';
     }
     objects = RemoteObjects.create({ json: { limit: '1kb' },
-      errorHandler: { disableStackTrace: false }});
+      strongErrorHandler: { disableStackTrace: false }});
     remotes = objects.exports;
 
     // connect to the app
@@ -110,7 +110,7 @@ describe('strong-remoting-rest', function() {
         }
       );
 
-      objects.options.errorHandler.handler = function(err, req, res, next) {
+      objects.options.strongErrorHandler.handler = function(err, req, res, next) {
         expect(err.message).to.contain('foo');
         err = new Error('foobar');
         called = true;
@@ -127,7 +127,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should disable stack trace', function(done) {
-      objects.options.errorHandler.disableStackTrace = true;
+      objects.options.strongErrorHandler.disableStackTrace = true;
       var method = givenSharedStaticMethod(
         function(cb) {
           cb(new Error('test-error'));
