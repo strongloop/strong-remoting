@@ -56,8 +56,5 @@
     "express": false,
     "request": "browser-request"
   },
-  "license": {
-    "name": "Dual MIT/StrongLoop",
-    "url": "https://github.com/strongloop/strong-remoting/blob/master/LICENSE"
-  }
+  "license": "Artistic-2.0"
 }
