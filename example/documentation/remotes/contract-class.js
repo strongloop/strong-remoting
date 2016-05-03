@@ -1,3 +1,8 @@
+// Copyright IBM Corp. 2013,2016. All Rights Reserved.
+// Node module: strong-remoting
+// This file is licensed under the Artistic License 2.0.
+// License text available at https://opensource.org/licenses/Artistic-2.0
+
 // This example shows using the helper for a type in a "definitive" fashion.
 var helper = require('../../../').extend(module.exports);
 var clshelper;

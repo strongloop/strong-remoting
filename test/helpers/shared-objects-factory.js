@@ -1,3 +1,8 @@
+// Copyright IBM Corp. 2013,2016. All Rights Reserved.
+// Node module: strong-remoting
+// This file is licensed under the Artistic License 2.0.
+// License text available at https://opensource.org/licenses/Artistic-2.0
+
 /* Copyright (c) 2013 StrongLoop, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
