@@ -4,11 +4,9 @@ var expect = require('chai').expect;
 var Trie = require('../lib/trie');
 
 describe('Trie', function() {
-  var trie;
-  var route;
+  var trie, route;
 
   describe('trie.add()', function() {
-
     beforeEach(function() {
       trie = new Trie();
       route = { fullPath: '', verb: '' };
@@ -30,7 +28,6 @@ describe('Trie', function() {
     });
 
     it('registers handler for path: /Planets', function() {
-
       trie.add(setRoute(route, '/Planets', 'get'), 'handler()');
       expect(trie).to.have.deep.property('Planets.methods.get', 'handler()');
     });
@@ -51,22 +48,20 @@ describe('Trie', function() {
 
     it('While registering more than one handlers for one verb+path,' +
       ' preserves the handler which was registered first', function() {
+      trie.add(setRoute(route, '/Planets', 'get'), 'getHandler()');
+      expect(trie).to.have.deep.property('Planets.methods.get', 'getHandler()');
+      trie.add(setRoute(route, '/Planets', 'get'), 'anotherGetHandler()');
 
-        trie.add(setRoute(route, '/Planets', 'get'), 'getHandler()');
-        expect(trie).to.have.deep.property('Planets.methods.get', 'getHandler()');
-        trie.add(setRoute(route,'/Planets', 'get'), 'anotherGetHandler()');
-
-        expect(trie).to.have.deep.property('Planets.methods.get')
+      expect(trie).to.have.deep.property('Planets.methods.get')
           .to.not.equal('anotherGetHandler()');
-      });
+    });
   });
 
   describe('trie.find()', function() {
-
     it('should return handler for matching path', function() {
       expect(trie).to.have.property('Planets');
       trie.add(setRoute(route, '/Planets/count', 'get'), 'getCount()');
-      trie.add(setRoute(route,'/Planets/count', 'post'), 'postCount()');
+      trie.add(setRoute(route, '/Planets/count', 'post'), 'postCount()');
       var handlers = trie.find('/Planets/count');
       expect(handlers.get).to.be.equal('getCount()');
       expect(handlers.post).to.be.equal('postCount()');
