@@ -286,6 +286,10 @@ describe('strong-remoting-rest', function() {
       });
 
       describe('uncaught errors', function() {
+        beforeEach(function() {
+          var optsErrorHandler = { errorHandler: { debug: true, log: false }};
+          extend(objects.options, optsErrorHandler);
+        });
         it('should return 500 if an error object is thrown', function(done) {
           var errMsg = 'an error';
           var method = givenSharedStaticMethod(

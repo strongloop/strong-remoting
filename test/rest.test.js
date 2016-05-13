@@ -46,11 +46,8 @@ describe('strong-remoting-rest', function() {
 
   // setup
   beforeEach(function() {
-    if (process.env.NODE_ENV === 'production') {
-      process.env.NODE_ENV = 'test';
-    }
     objects = RemoteObjects.create({ json: { limit: '1kb' },
-      errorHandler: { disableStackTrace: false }});
+      errorHandler: { debug: true, log: false }});
     remotes = objects.exports;
 
     // connect to the app
@@ -131,36 +128,18 @@ describe('strong-remoting-rest', function() {
         }));
     });
 
-    it('should disable stack trace', function(done) {
-      objects.options.errorHandler.disableStackTrace = true;
+    it('should exclude stack traces by default', function(done) {
       var method = givenSharedStaticMethod(
-        function(cb) {
-          cb(new Error('test-error'));
-        }
-      );
+        function(cb) { cb(new Error('test-error')); });
 
-      // Send a plain, non-json request to make sure the error handler
-      // always returns a json response.
+      // reset the errorHandler options
+      objects.options.errorHandler = {};
+
       request(app).get(method.url)
         .expect('Content-Type', /json/)
         .expect(500)
-        .end(expectErrorResponseContaining({ message: 'test-error' }, ['stack'], done));
-    });
-
-    it('should disable stack trace', function(done) {
-      process.env.NODE_ENV = 'production';
-      var method = givenSharedStaticMethod(
-        function(cb) {
-          cb(new Error('test-error'));
-        }
-      );
-
-      // Send a plain, non-json request to make sure the error handler
-      // always returns a json response.
-      request(app).get(method.url)
-        .expect('Content-Type', /json/)
-        .expect(500)
-        .end(expectErrorResponseContaining({ message: 'test-error' }, ['stack'], done));
+        .end(expectErrorResponseContaining(
+          { message: 'Internal Server Error' }, ['stack'], done));
     });
 
     it('should turn off url-not-found handler', function(done) {
@@ -2072,7 +2051,7 @@ describe('strong-remoting-rest', function() {
     it('returns 404 with standard JSON body for unknown URL', function(done) {
       json('/unknown-url')
         .expect(404)
-        .end(expectErrorResponseContaining({ status: 404 }, done));
+        .end(expectErrorResponseContaining({ statusCode: 404 }, done));
     });
   });
 
