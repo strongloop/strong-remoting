@@ -46,7 +46,7 @@ describe('Trie', function() {
       expect(trie).to.have.deep.property('Planets.methods.delete', 'deleteHandler()');
     });
 
-    it('While registering more than one handlers for one verb+path,' +
+    it('While registering more than one handler for one verb+path,' +
       ' preserves the handler which was registered first', function() {
       trie.add(setRoute(route, '/Planets', 'get'), 'getHandler()');
       expect(trie).to.have.deep.property('Planets.methods.get', 'getHandler()');

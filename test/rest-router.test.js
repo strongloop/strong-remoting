@@ -1,60 +1,93 @@
 var assert = require('assert');
 var expect = require('chai').expect;
-var RestRouter = require('../lib/rest-router');
+var RestRouter = require('../lib/rest-router.js');
+var Trie = require('../lib/trie.js');
+var express = require('express');
+var supertest = require('supertest');
+var http = require('http');
 
-describe('Custom Router', function() {
-  var restRouter;
-  var route = { verb: 'get', fullPath: '/Planets' };
-  var handler = function(req, res, next) { res.handled = true; };
-  var req = {
-    method: 'get',
-    url: '/Planets',
-  };
-  var res = {};
-  var next = function() { res.calledWhenPathNotFound = true; };
-
-  beforeEach(function() {
-    restRouter = new RestRouter();
+describe('RestRouter', function() {
+  // Test init
+  it('initializes with Trie datastructure', function(done) {
+    var router = new RestRouter();
+    expect(router).to.have.property('_trie');
+    expect(router._trie).to.be.instanceOf(Trie);
+    done();
   });
 
-  describe('RestRouter()', function() {
-
-    it('initiates a restRouter obj with Trie and options', function() {
-      expect(restRouter).to.have.keys(['trie', 'options']);
+  // test handle
+  it('handles a request', function(done) {
+    var app = express();
+    var router = new RestRouter();
+    var route = { fullPath: '/example', verb: 'get' };
+    var resBody = 'Hello Wold!';
+    // this doesn't make sense to me that I have to call router.get(...)
+    // as well as have route.verb = get
+    // it doesn't work without it
+    router.get(route, function(req, res) {
+      res.end(resBody);
     });
+    app.use(router);
+    console.log(router._trie);
+    supertest(app)
+      .get(route.fullPath)
+      .expect(200)
+      .expect(resBody)
+      .end(function(err, res) {
+        if (err) return done(err);
+        done();
+      });
   });
 
-  describe('restRouter.registerPathAndHandlers()', function() {
-    it('register handler for GET: /Planets', function() {
-      restRouter.registerPathAndHandlers(route, handler);
-      expect(restRouter.trie).to.have.deep.property('planets.methods.get');
+  // test handle param
+  it('handles a request with a parameter', function(done) {
+    var app = express();
+    var router = new RestRouter();
+    var route = { fullPath: '/example/:id', verb: 'get' };
+    var id = '1';
+    // this doesn't make sense to me that I have to call router.get(...)
+    // as well as have route.verb = get
+    // it doesn't work without it
+    router.get(route, function(req, res, next) {
+      console.log('hit');
+      res.end(id);
     });
-  });
-
-  describe('restRouter.handle()', function() {
-    it('returns a function --which invokes matching handler-- with three arguments',
-      function() {
-        restRouter.registerPathAndHandlers(route, handler);
-        var returned = restRouter.handle();
-        expect(returned).to.have.length(3);
-      });
-
-    it('invokes the handler function for matching verb+path',
-      function() {
-        restRouter.registerPathAndHandlers(route, handler);
-        restRouter.handle()(req, res, next);
-        expect(res.handled).to.be.true;
-      });
-
-    it('invokes supplied next() if no matching handler found for verb+path',
-      function() {
-        restRouter.registerPathAndHandlers(route, handler);
-        req.method = 'post';
-        res = {};
-        restRouter.handle()(req, res, next);
-        expect(res.calledWhenPathNotFound).to.be.true;
-        expect(res.handled).to.be.undefined;
+    app.use(router);
+    console.log(router._trie);
+    supertest(app)
+      .get(route.fullPath.replace(':id', id))
+      .expect(200)
+      .expect(id)
+      .end(function(err, res) {
+        console.log(res.body);
+        if (err) return done(err);
+        done();
       });
   });
 
+  // test handle param with method after
+  // it('handles a request for a instance method', function() {
+  //   var app = express();
+  //   var router = new RestRouter();
+  //   var route = { fullPath: '/example/:id/properties', verb: 'get' };
+  //   var id = '1';
+  //   // this doesn't make sense to me that I have to call router.get(...)
+  //   // as well as have route.verb = get
+  //   // it doesn't work without it
+  //   router.get(route, function(req, res, next) {
+  //     // List the properties of a mock object
+  //     res.end(req.fullPath);
+  //   });
+  //   app.use(router);
+  //   console.log(router._trie);
+  //   supertest(app)
+  //     .get(route.fullPath.replace(':id', id))
+  //     .expect(200)
+  //     .expect(id)
+  //     .end(function(err, res) {
+  //       console.log(res.body);
+  //       if (err) return done(err);
+  //       done();
+  //     });
+  // });
 });
