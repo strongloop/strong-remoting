@@ -28,7 +28,7 @@ describe('RestRouter', function() {
       res.end(resBody);
     });
     app.use(router);
-    console.log(router._trie);
+    // console.log(router._trie);
     supertest(app)
       .get(route.fullPath)
       .expect(200)
@@ -49,17 +49,17 @@ describe('RestRouter', function() {
     // as well as have route.verb = get
     // it doesn't work without it
     router.get(route, function(req, res, next) {
-      console.log('hit');
-      res.end(id);
+      console.log('req.params: ', req.params);
+      res.end(req.params.id);
     });
     app.use(router);
-    console.log(router._trie);
+    // console.log(router._trie);
     supertest(app)
       .get(route.fullPath.replace(':id', id))
       .expect(200)
       .expect(id)
       .end(function(err, res) {
-        console.log(res.body);
+        // console.log(res.body);
         if (err) return done(err);
         done();
       });
