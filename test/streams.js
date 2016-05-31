@@ -37,24 +37,33 @@ describe('strong-remoting', function() {
       .expect('Content-Type', /json/);
   }
 
-  it('should stream the file output', function(done) {
+  function createSteam() {
     remotes.fs = fs;
     fs.createReadStream.shared = true;
     fs.createReadStream.accepts = [
       { arg: 'path', type: 'string' },
-      { arg: 'encoding', type: 'string' }
+      { arg: 'encoding', type: 'string' },
     ];
-    fs.createReadStream.returns = {arg: 'res', type: 'stream'};
+    fs.createReadStream.returns = { arg: 'res', type: 'stream' };
     fs.createReadStream.http = {
       verb: 'get',
-      // path: '/fs/createReadStream',
       pipe: {
-        dest: 'res'
-      }
+        dest: 'res',
+      },
     };
+  }
 
+  it('should stream the file output', function(done) {
+    createSteam();
     json('get', '/fs/createReadStream?path=' + __dirname + '/data/foo.json&encoding=utf8')
-      .expect({bar: 'baz'}, done);
+      .expect({ bar: 'baz' }, done);
+  });
+
+  it('should stream the file output with no compression', function(done) {
+    createSteam();
+    request(app).get('/fs/createReadStream')
+      .expect('Content-Encoding', 'x-no-compression');
+    done();
   });
 });
 
