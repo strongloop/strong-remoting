@@ -31,6 +31,7 @@
     "qs": "^2.4.2",
     "request": "^2.55.0",
     "sse": "0.0.6",
+    "strong-error-handler": "^1.0.0",
     "traverse": "^0.6.6",
     "xml2js": "^0.4.8"
   },
@@ -73,7 +74,8 @@
     "express": false,
     "body-parser": false,
     "cors": false,
-    "js2xmlparser": false
+    "js2xmlparser": false,
+    "strong-error-handler": false
   },
   "license": "Artistic-2.0"
 }
