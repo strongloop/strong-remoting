@@ -211,11 +211,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number', http: {source: 'formData' }  },
-              { arg: 'a', type: 'number', http: {source: 'formData' } }
+              { arg: 'b', type: 'number', http: { source: 'formData' }},
+              { arg: 'a', type: 'number', http: { source: 'formData' }},
             ],
             returns: { arg: 'n', type: 'number' },
-            http: { path: '/' }
+            http: { path: '/' },
           }
         );
 
