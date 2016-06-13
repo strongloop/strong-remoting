@@ -65,4 +65,4 @@ function suite(prefix, ctx) {
       ['arg={"a":true}', true],
     ]);
   });
-};
+}

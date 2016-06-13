@@ -63,7 +63,7 @@ describe('Coercion in RestAdapter', function() {
 
   function loadAllTestFiles() {
     var _describe = global.describe;
-    describe = function(name, fn) {
+    global.describe = function(name, fn) {
       _describe.call(this, name, function() {
         beforeEach(function() {
           ctx.runtime.currentSuiteName = name;
@@ -87,7 +87,7 @@ describe('Coercion in RestAdapter', function() {
       require(fullPath)(ctx);
     }
 
-    describe = _describe;
+    global.describe = _describe;
   }
 
   function prettyExpectation(expectedValue) {

@@ -69,4 +69,4 @@ function suite(prefix, ctx) {
       ['arg={"a":true}', ERROR_BAD_REQUEST],
     ]);
   });
-};
+}

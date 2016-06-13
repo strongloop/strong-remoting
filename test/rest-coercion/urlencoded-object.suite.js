@@ -118,4 +118,4 @@ function suite(prefix, ctx) {
       ['arg=[malformed]', ERROR_BAD_REQUEST],
     ]);
   });
-};
+}

@@ -64,4 +64,4 @@ function suite(prefix, ctx) {
       ['arg=-1.234e%2B30', '-1.234e+30'],
     ]);
   });
-};
+}

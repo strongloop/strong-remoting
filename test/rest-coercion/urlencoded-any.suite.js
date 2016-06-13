@@ -72,4 +72,4 @@ function suite(prefix, ctx) {
         'Thu May 19 2016 15:28:51 GMT 0200 (CEST)'],
     ]);
   });
-};
+}
