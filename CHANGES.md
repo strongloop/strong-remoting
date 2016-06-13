@@ -1,3 +1,45 @@
+2016-06-13, Version 3.0.0-alpha.3
+=================================
+
+ * Fix integration tests for coercion in REST (Miroslav Bajtoš)
+
+ * Add integration tests for coercion in REST (Miroslav Bajtoš)
+
+ * rest-adapter to use strong-error-handler (David Cheung)
+
+ * Implement getEndpoints (Amir Jafarian)
+
+ * travis: add v4 and v6, drop io.js (Miroslav Bajtoš)
+
+ * update copyright notices (Ryan Graham)
+
+ * relicense as Artistic-2.0 only (Ryan Graham)
+
+ * Update README.md (Rand McKinney)
+
+ * Remove reference to jshintrc (Candy)
+
+ * Set to no compression when using change stream (Candy)
+
+ * remove doc files (juehou)
+
+ * Hooks return either promise or callback (juehou)
+
+ * Handle array of errors. (Richard Pringle)
+
+ * Fix linting errors (gunjpan)
+
+ * Auto-update by eslint --fix (gunjpan)
+
+ * Add eslint infrastructure (gunjpan)
+
+ * Fix typo (Candy)
+
+ * Add support for "file" return args (Miroslav Bajtoš)
+
+ * Fix handling of args with http.target:header (Miroslav Bajtoš)
+
+
 2016-02-24, Version 3.0.0-alpha.2
 =================================
 
