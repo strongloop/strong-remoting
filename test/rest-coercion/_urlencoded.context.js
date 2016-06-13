@@ -14,13 +14,13 @@ var extend = util._extend;
 var EMPTY_QUERY = '';
 
 module.exports = function createUrlEncodedContext(ctx, target) {
+  var TARGET_QUERY_STRING = target === 'qs';
+
   return extend({
     /** Send empty data, i.e. empty request body or no query string */
     EMPTY_QUERY: EMPTY_QUERY,
     verifyTestCases: verifyTestCases,
   }, ctx);
-
-  var TARGET_QUERY_STRING = target === 'qs';
 
   /**
    * Verify a set of test-cases for a given argument specification

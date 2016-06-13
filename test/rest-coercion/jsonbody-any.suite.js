@@ -63,7 +63,6 @@ module.exports = function(ctx) {
       [{ x: '' }],
       [['']],
 
-
       [{ x: true }],
       [[true]],
       [{ x: 'true' }],

@@ -260,4 +260,4 @@ function suite(prefix, ctx) {
       ['arg=[malformed]', ['[malformed]']],
     ]);
   });
-};
+}
