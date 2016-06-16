@@ -2,7 +2,7 @@ var assert = require('assert');
 var expect = require('chai').expect;
 var RouterLookup = require('../lib/router-lookup');
 
-describe.only('Router-Lookup', function() {
+describe('Router-Lookup', function() {
   var routerLookup, verb, fullPath;
 
   describe('functional test for routerLookup.addNodes()', function() {
