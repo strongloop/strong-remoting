@@ -36,15 +36,21 @@ exports.createSharedClass =  function createSharedClass(config) {
   SharedClass.shared = true;
 
   SharedClass.sharedCtor = function(id, cb) {
-    cb(null, new SharedClass(id));
+    // allow tests to override the implementation of shared ctor
+    // while preserving remoting metadata
+    this._sharedCtor(id, cb);
   };
 
   extend(SharedClass.sharedCtor, {
     shared: true,
     accepts: [{ arg: 'id', type: 'any', http: { source: 'path' }}],
     http: { path: '/:id' },
-    returns: { root: true },
+    returns: { arg: 'instance', type: 'object', root: true },
   });
+
+  SharedClass._sharedCtor = function(id, cb) {
+    cb(null, new SharedClass(id));
+  };
 
   return SharedClass;
 };
