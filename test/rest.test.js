@@ -13,6 +13,7 @@ var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
 var Promise = global.Promise || require('bluebird');
 var Readable = require('stream').Readable;
+var sinon = require('sinon');
 
 var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
 var TEST_ERROR = new Error('expected test error');
@@ -2039,6 +2040,28 @@ describe('strong-remoting-rest', function() {
         // Notice that the id was correctly coerced to a Number ^^^^
         done();
       });
+    });
+
+    it('should not call sharedCtor when not authenticated', function(done) {
+      var sharedCtorCalled = false;
+
+      var method = givenSharedPrototypeMethod();
+      sinon.spy(method.ctor, '_sharedCtor');
+
+      objects.authorization = function(ctx, next) {
+        var err = new Error('Not Authorized');
+        err.statusCode = 401;
+        next(err);
+      };
+
+      json(method.getUrlForId('instId'))
+        .expect(401)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(method.ctor._sharedCtor.called, 'shared ctor was called')
+            .to.equal(false);
+          done();
+        });
     });
   });
 
