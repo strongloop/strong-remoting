@@ -2042,6 +2042,25 @@ describe('strong-remoting-rest', function() {
       });
     });
 
+    it('should prioritise auth errors over sharedCtor errors', function(done) {
+      var method = givenSharedPrototypeMethod();
+      method.ctor._sharedCtor = function(ctx, next) {
+        var err = new Error('Not Found');
+        err.statusCode = 404;
+        next(err);
+      };
+
+      objects.authorization = function(ctx, next) {
+        var err = new Error('Not Authorized');
+        err.statusCode = 401;
+        next(err);
+      };
+
+      json(method.getUrlForId('instId'))
+        // Verify that we return 401 Not Authorized and hide 404 Not Found
+        .expect(401, done);
+    });
+
     it('should not call sharedCtor when not authenticated', function(done) {
       var sharedCtorCalled = false;
 
