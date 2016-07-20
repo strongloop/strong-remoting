@@ -976,27 +976,63 @@ describe('strong-remoting-rest', function() {
           done();
         });
     });
+    describe('data type - integer', function() {
+      it('should coerce integer strings', function(done) {
+        remotes.foo = {
+          bar: function(a, b, fn) {
+            fn(null, a + b);
+          },
+        };
 
-    it('should coerce contents of array with simple array types', function(done) {
-      remotes.foo = {
-        bar: function(a, fn) {
-          fn(null, a.reduce(function(memo, val) { return memo + val; }, 0));
-        }
-      };
+        var fn = remotes.foo.bar;
 
-      var fn = remotes.foo.bar;
+        fn.shared = true;
+        fn.accepts = [
+          { arg: 'a', type: 'integer' },
+          { arg: 'b', type: 'integer' },
+        ];
+        fn.returns = { root: true };
 
-      fn.shared = true;
-      fn.accepts = [
-        {arg: 'a', type: ['number']}
-      ];
-      fn.returns = {root: true};
+        json('get', '/foo/bar?a=53&b=2')
+          .expect(200, function(err, res) {
+            assert.equal(res.body, 55);
+            done();
+          });
+      });
 
-      json('get', '/foo/bar?a=["1","2","3","4","5"]')
-        .expect(200, function(err, res) {
-          assert.equal(res.body, 15);
-          done();
-        });
+      it('supports target type [integer]', function(done) {
+        var method = givenSharedStaticMethod(
+          function(arg, cb) {
+            cb(null, { value: arg });
+          },
+          {
+            accepts: { arg: 'arg', type: ['integer'] },
+            returns: { arg: 'data', type: ['integer'], root: true },
+            http: { method: 'POST' },
+          });
+
+        request(app).post(method.url)
+          .send({ arg: [1, 2] })
+          .expect(200, { value: [1, 2] })
+          .end(done);
+      });
+
+      it('supports return type [integer]', function(done) {
+        var method = givenSharedStaticMethod(
+          function(arg, cb) {
+            cb(null, [arg[0], arg[1]]);
+          },
+          {
+            accepts: { arg: 'arg', type: ['number'] },
+            returns: { arg: 'data', type: ['integer'] },
+            http: { method: 'POST' },
+          });
+
+        request(app).post(method.url)
+          .send({ arg: [1, 2] })
+          .expect(200, { data: [1, 2] })
+          .end(done);
+      });
     });
 
     it('should pass an array argument even when non-array passed', function(done) {
@@ -2320,6 +2356,17 @@ describe('strong-remoting-rest', function() {
       .expect(400)
       .end(done);
   });
+
+  it('rejects multi-item array passed to an integer argument',
+    function(done) {
+      var method = givenSharedStaticMethod(
+        function(arg, cb) { cb(); },
+        { accepts: { arg: 'arg', type: 'integer' }});
+
+      request(app).get(method.url + '?arg=2&arg=3')
+        .expect(400)
+        .end(done);
+    });
 
   it('supports "Object" type string', function(done) {
     var method = givenSharedStaticMethod(
