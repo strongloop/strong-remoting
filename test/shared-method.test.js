@@ -94,7 +94,7 @@ describe('SharedMethod', function() {
   describe('sharedMethod.invoke', function() {
     it('returns 400 when number argument is `NaN`', function(done) {
       var method = givenSharedMethod({
-        accepts: [{ arg: 'num', type: 'number' }]
+        accepts: { arg: 'num', type: 'number' },
       });
 
       method.invoke('ctx', { num: NaN }, function(err) {
@@ -103,6 +103,125 @@ describe('SharedMethod', function() {
           expect(err.message).to.contain('num must be a number');
           expect(err.statusCode).to.equal(400);
           done();
+        });
+      });
+    });
+    describe('data type: integer', function() {
+      describe('SharedMethod.getType - determine actual type based on value', function() {
+        it('returns type: number for decimal value & integer target type',
+          function() {
+            expect(SharedMethod.getType(15.2, 'integer')).to.equal('number');
+          });
+        it('returns type:integer for intiger value & integer target type',
+          function() {
+            expect(SharedMethod.getType(14, 'integer')).to.equal('integer');
+          });
+      });
+
+      it('returns 400 when integer argument is a decimal number',
+        function(done) {
+          var method = givenSharedMethod({
+            accepts: { arg: 'num', type: 'integer' },
+          });
+
+          method.invoke('ctx', { num: 2.5 }, function(err) {
+            setImmediate(function() {
+              expect(err).to.exist;
+              expect(err.message).to.match(/integer/i);
+              expect(err.statusCode).to.equal(400);
+              done();
+            });
+          });
+        });
+
+      it('returns 400 when integer argument is `NaN`', function(done) {
+        var method = givenSharedMethod({
+          accepts: { arg: 'num', type: 'integer' },
+        });
+
+        method.invoke('ctx', { num: NaN }, function(err) {
+          setImmediate(function() {
+            expect(err).to.exist;
+            expect(err.message).to.match(/integer/i);
+            expect(err.statusCode).to.equal(400);
+            done();
+          });
+        });
+      });
+
+      it('returns 400 when integer argument is not a safe integer',
+        function(done) {
+          var method = givenSharedMethod(
+            function(arg, cb) {
+              return cb({ 'num': arg });
+            },
+            {
+              accepts: { arg: 'num', type: 'integer' },
+            });
+
+          method.invoke('ctx', { num: 2343546576878989879789 }, function(err) {
+            setImmediate(function() {
+              expect(err).to.exist;
+              expect(err.message).to.match(/integer/i);
+              expect(err.statusCode).to.equal(400);
+              done();
+            });
+          });
+        });
+
+      it('treats integer argument of type x.0 as integer', function(done) {
+        var method = givenSharedMethod(
+          function(arg, cb) {
+            return cb({ 'num': arg });
+          },
+          {
+            accepts: { arg: 'num', type: 'integer' },
+          });
+
+        method.invoke('ctx', { num: '12.0' }, function(result) {
+          setImmediate(function() {
+            expect(result.num).to.equal(12);
+            done();
+          });
+        });
+      });
+
+      it('returns 500 for non-integer return value if type: `integer`',
+        function(done) {
+          var method = givenSharedMethod(
+            function(cb) {
+              cb(null, 3.141);
+            },
+            {
+              returns: { arg: 'value', type: 'integer' },
+            });
+
+          method.invoke('ctx', {}, function(err, result) {
+            setImmediate(function() {
+              expect(err).to.exist;
+              expect(err.message).to.match(/integer/i);
+              expect(err.statusCode).to.equal(500);
+              done();
+            });
+          });
+        });
+
+      it('returns 500 if returned value is not a safe integer', function(done) {
+        var method = givenSharedMethod(
+          function(cb) {
+            cb(null, -2343546576878989879789);
+          },
+          {
+            returns: { arg: 'value', type: 'integer' },
+          });
+
+        method.invoke('ctx', {}, function(err, result) {
+          setImmediate(function() {
+            expect(err).to.exist;
+            expect(err.message).to.match(/safe integer/i);
+            expect(err.statusCode).to.equal(500);
+            done();
+          });
         });
       });
     });
