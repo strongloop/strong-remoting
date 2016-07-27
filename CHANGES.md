@@ -1,3 +1,12 @@
+2016-07-27, Version 2.29.0
+==========================
+
+ * Introduce support for integer datatype (gunjpan)
+
+
+2016-06-21, Version 2.28.1
+==========================
+
 
 
 2016-06-21, Version 2.28.0
