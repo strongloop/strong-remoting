@@ -32,6 +32,7 @@
     "request": "^2.55.0",
     "sse": "0.0.6",
     "strong-error-handler": "^1.0.0",
+    "strong-globalize": "^2.6.6",
     "traverse": "^0.6.6",
     "xml2js": "^0.4.8"
   },
