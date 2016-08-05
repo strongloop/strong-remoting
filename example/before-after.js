@@ -3,6 +3,7 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+var g = require('strong-globalize')();
 // create a set of shared classes
 var remotes = require('../').create();
 
@@ -48,38 +49,38 @@ Dog.prototype.speak.shared = true;
 remotes.exports.dog = Dog;
 
 // do something before greet
-remotes.before('user.greet', function (ctx, next) {
-  if((ctx.req.param('password') || '').toString() !== '1234') {
-    next(new Error('bad password!'));
+remotes.before('user.greet', function(ctx, next) {
+  if ((ctx.req.param('password') || '').toString() !== '1234') {
+    next(new Error(g.f('bad password!')));
   } else {
     next();
   }
 });
 
 // do something before any user method
-remotes.before('user.*', function (ctx, next) {
-  console.log('calling a user method');
+remotes.before('user.*', function(ctx, next) {
+  g.log('calling a user method');
   next();
 });
 
 // do something before a dog instance method
 remotes.before('dog.prototype.*', function (ctx, next) {
   var dog = this;
-  console.log('calling a method on', dog.name);
+  g.log('calling a method on %s', dog.name);
   next();
 });
 
 // do something after the dog speak method
 // note: you cannot cancel a method after
 // it has been called
-remotes.after('dog.prototype.speak', function (ctx, next) {
-  console.log('after speak!');
+remotes.after('dog.prototype.speak', function(ctx, next) {
+  g.log('after {{speak}}!');
   next();
 });
 
 // do something before all methods
-remotes.before('**', function (ctx, next, method) {
-  console.log('calling', method.name);
+remotes.before('**', function(ctx, next, method) {
+  g.log('calling %s', method.name);
   next();
 });
 
