@@ -79,6 +79,12 @@ describe('HttpContext', function() {
         input: '000123',
         expectedValue: '000123',
       }));
+      it('skips coercion on "any" if user asks for it', givenMethodExpectArg({
+        type: 'any',
+        input: '200000000000000000000001',
+        expectedValue: '200000000000000000000001',
+        options: { coerce: false },
+      }));
     });
 
     describe('arguments with custom type', function() {
@@ -110,7 +116,7 @@ function givenMethodExpectArg(options) {
     var app = require('express')();
 
     app.get('/', function(req, res) {
-      var ctx = new HttpContext(req, res, method);
+      var ctx = new HttpContext(req, res, method, options.options);
       try {
         expect(ctx.args.testArg).to.eql(options.expectedValue);
       } catch (e) {
