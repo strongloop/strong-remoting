@@ -9,6 +9,7 @@ var expect = require('chai').expect;
 var SharedClass = require('../lib/shared-class');
 var factory = require('./helpers/shared-objects-factory.js');
 var RemoteObjects = require('../');
+function NOOP() {}
 
 describe('SharedClass', function() {
   var SomeClass;
@@ -185,8 +186,10 @@ describe('SharedClass', function() {
   });
 
   describe('sharedClass.find()', function() {
+    ignoreDeprecationsInThisBlock();
     var sc;
     var sm;
+
     beforeEach(function() {
       sc = new SharedClass('SomeClass', SomeClass);
       SomeClass.prototype.myMethod = function() {};
@@ -215,6 +218,7 @@ describe('SharedClass', function() {
   });
 
   describe('sharedClass.disableMethod(methodName, isStatic)', function() {
+    ignoreDeprecationsInThisBlock();
     var sc;
     var sm;
     var METHOD_NAME = 'testMethod';
@@ -256,4 +260,14 @@ function getName(obj) {
 
 function getFn(obj) {
   return obj.fn;
+}
+
+function ignoreDeprecationsInThisBlock() {
+  before(function() {
+    process.on('deprecation', NOOP);
+  });
+
+  after(function() {
+    process.removeListener('deprecation', NOOP);
+  });
 }
