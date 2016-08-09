@@ -3,6 +3,7 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+var g = require('strong-globalize')();
 var http = require('http');
 var remotes = require('./remotes');
 var meta = require('../../ext/meta');
@@ -21,9 +22,9 @@ http
   .createServer(remotes.handler('rest'))
   .listen(port, function (err) {
     if (err) {
-      console.error('Failed to start server with: %s', err.stack || err.message || err);
+      g.error('Failed to start server with: %s', err.stack || err.message || err);
       process.exit(1);
     }
 
-    console.log('Listening on port %s...', port);
+    g.log('Listening on port %s...', port);
   });
