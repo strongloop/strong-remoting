@@ -7,5 +7,8 @@
  * remotes ~ public api
  */
 
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+
 module.exports = require('./lib/remote-objects');
 module.exports.SharedClass = require('./lib/shared-class');
