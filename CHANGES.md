@@ -1,3 +1,19 @@
+2016-08-11, Version 3.0.0-alpha.4
+=================================
+
+ * Add globalization (deepakrkris)
+
+ * Introduce support for integer datatype (gunjpan)
+
+ * Update URLs in CONTRIBUTING.md (#321) (Ryan Graham)
+
+ * Prioritise auth errors over sharedCtor errors (Miroslav Bajtoš)
+
+ * Fix style violations introduced by a1b156b9 (Miroslav Bajtoš)
+
+ * Add http source "formData" (Fabian Off)
+
+
 2016-06-13, Version 3.0.0-alpha.3
 =================================
 
