@@ -9,6 +9,7 @@ var expect = require('chai').expect;
 var SharedClass = require('../lib/shared-class');
 var factory = require('./helpers/shared-objects-factory.js');
 var RemoteObjects = require('../');
+function NOOP() {};
 
 describe('SharedClass', function() {
   var SomeClass;
@@ -143,12 +144,13 @@ describe('SharedClass', function() {
       SomeClass.prototype.myMethod = function() {};
       var METHOD_NAME = 'myMethod';
       sc.defineMethod(METHOD_NAME, {
+        isStatic: true,
         prototype: true,
         accessType: 'READ',
       });
       var methods = sc.methods().map(getName);
       expect(methods).to.contain(METHOD_NAME);
-      expect(sc.find(METHOD_NAME).accessType).to.eql('READ');
+      expect(sc.findMethodByName(METHOD_NAME).accessType).to.eql('READ');
     });
 
     it('should allow a shared class to resolve dynamically defined functions',
@@ -189,6 +191,7 @@ describe('SharedClass', function() {
   });
 
   describe('sharedClass.find()', function() {
+    ignoreDeprecationsInThisBlock();
     var sc, sm;
 
     beforeEach(function() {
@@ -239,6 +242,7 @@ describe('SharedClass', function() {
   });
 
   describe('sharedClass.disableMethod(methodName, isStatic)', function() {
+    ignoreDeprecationsInThisBlock();
     var sc, sm;
     var METHOD_NAME = 'testMethod';
     var INST_METHOD_NAME = 'instTestMethod';
@@ -300,4 +304,14 @@ function getName(obj) {
 
 function getFn(obj) {
   return obj.fn;
+}
+
+function ignoreDeprecationsInThisBlock() {
+  before(function() {
+    process.on('deprecation', NOOP);
+  });
+
+  after(function() {
+    process.removeListener('deprecation', NOOP);
+  });
 }
