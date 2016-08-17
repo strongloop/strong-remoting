@@ -7,7 +7,7 @@
     "Remoting",
     "REST"
   ],
-  "version": "2.29.0",
+  "version": "2.30.0",
   "scripts": {
     "pretest": "grunt jscs jshint",
     "test": "mocha"

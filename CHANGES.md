@@ -1,3 +1,15 @@
+2016-08-17, Version 2.30.0
+==========================
+
+ * Add new API for finding/disabling remote methods (Candy)
+
+ * Remove the usage of deprecated methods (Amir Jafarian)
+
+ * Revert globalization of assert() messages (Miroslav Bajtoš)
+
+ * Backport of #329 (deepakrkris)
+
+
 2016-07-27, Version 2.29.0
 ==========================
 
