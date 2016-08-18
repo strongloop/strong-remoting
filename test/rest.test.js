@@ -2246,7 +2246,7 @@ describe('strong-remoting-rest', function() {
         function(cb) { cb(null, new Buffer('some-text'), 'text/plain'); },
         METHOD_SIGNATURE);
 
-      return request(app).get(method.url)
+      request(app).get(method.url)
         .expect(200)
         .expect('Content-Type', /^text\/plain/)
         .expect('some-text')
@@ -2258,7 +2258,7 @@ describe('strong-remoting-rest', function() {
         function(cb) { cb(null, 'some-text', 'text/plain'); },
         METHOD_SIGNATURE);
 
-      return request(app).get(method.url)
+      request(app).get(method.url)
         .expect(200)
         .expect('Content-Type', /^text\/plain/)
         .expect('some-text')
@@ -2275,7 +2275,7 @@ describe('strong-remoting-rest', function() {
         },
         METHOD_SIGNATURE);
 
-      return request(app).get(method.url)
+      request(app).get(method.url)
         .expect(200)
         .expect('Content-Type', /^text\/plain/)
         .expect('some-text')
@@ -2287,7 +2287,7 @@ describe('strong-remoting-rest', function() {
         function(cb) { cb(null, [1, 2]); },
         METHOD_SIGNATURE);
 
-      return request(app).get(method.url)
+      request(app).get(method.url)
         .expect(500)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
