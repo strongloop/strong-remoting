@@ -28,7 +28,6 @@ describe('strong-remoting-jsonrpc', function() {
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .send({'jsonrpc': '2.0', 'method': method, 'params': parameters, 'id': 1})
-      .expect(200)
       .expect('Content-Type', /json/);
   }
 

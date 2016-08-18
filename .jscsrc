@@ -14,9 +14,7 @@
      "allowComments": false,
      "allowRegex": true
   },
-  "validateJSDoc": {
-    "checkParamNames": false,
-    "checkRedundantParams": false,
-    "requireParamTypes": true
-  }
+  "jsDoc": false,
+  "disallowSpaceAfterObjectKeys": false,
+  "requireSpaceBeforeObjectValues": false,
 }
