@@ -21,9 +21,9 @@ module.exports = function(ctx) {
       [{ arg: true }, true],
 
       // Empty values should trigger ERROR_BAD_REQUEST
-      [EMPTY_BODY, false],
-      [{ arg: null }, false],
-      [{ arg: '' }, false],
+      [EMPTY_BODY, ERROR_BAD_REQUEST],
+      [{ arg: null }, ERROR_BAD_REQUEST],
+      [{ arg: '' }, ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -31,15 +31,15 @@ module.exports = function(ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: 'boolean' }, [
       // Empty values
-      [EMPTY_BODY, false], // should be: undefined
-      [{ arg: null }, false], // should be: undefined or null
+      [EMPTY_BODY, undefined],
+      [{ arg: null }, null],
 
       // Valid values
       [{ arg: false }, false],
       [{ arg: true }, true],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
-      [{ arg: '' }, false],
+      [{ arg: '' }, ERROR_BAD_REQUEST],
       [{ arg: 'null' }, false],
       [{ arg: 'false' }, false],
       [{ arg: 'true' }, true],

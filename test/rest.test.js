@@ -892,7 +892,7 @@ describe('strong-remoting-rest', function() {
         .expect(400, done);
     });
 
-    it('should coerce boolean strings - true', function(done) {
+    it('should not coerce nested boolean strings - true', function(done) {
       remotes.foo = {
         bar: function(a, fn) {
           fn(null, a);
@@ -908,10 +908,10 @@ describe('strong-remoting-rest', function() {
       fn.returns = {root: true};
 
       json('get', '/foo/bar?a[foo]=true')
-        .expect({foo: true}, done);
+        .expect({foo: 'true'}, done);
     });
 
-    it('should coerce boolean strings - false', function(done) {
+    it('should not coerce nested boolean strings - false', function(done) {
       remotes.foo = {
         bar: function(a, fn) {
           fn(null, a);
@@ -927,7 +927,7 @@ describe('strong-remoting-rest', function() {
       fn.returns = {root: true};
 
       json('get', '/foo/bar?a[foo]=false')
-        .expect({foo: false}, done);
+        .expect({foo: 'false'}, done);
     });
 
     it('should coerce number strings', function(done) {
@@ -1217,7 +1217,7 @@ describe('strong-remoting-rest', function() {
         });
 
       json('post', method.url + '?a=')
-        .expect({ data: [] }, done);
+        .expect({ /* data is undefined */ }, done);
     });
 
     it('should still support JSON arrays with arrayItemDelimiters', function(done) {

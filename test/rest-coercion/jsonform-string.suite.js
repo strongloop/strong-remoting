@@ -22,8 +22,8 @@ module.exports = function(ctx) {
 
       // Empty values should trigger ERROR_BAD_REQUEST
       [EMPTY_BODY, ERROR_BAD_REQUEST],
-      [{ arg: '' }, ''],
-      [{ arg: null }, 'null'],
+      [{ arg: '' }, ERROR_BAD_REQUEST],
+      [{ arg: null }, ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -33,7 +33,7 @@ module.exports = function(ctx) {
       // Empty values
       [EMPTY_BODY, undefined],
       [{ arg: '' }, ''],
-      [{ arg: null }, 'null'], // should be: null
+      [{ arg: null }, null], // should be: null
 
       // Valid values
       [{ arg: 'text' }, 'text'],
@@ -59,7 +59,7 @@ module.exports = function(ctx) {
       [{ arg: 1.2 }, '1.2'],
       [{ arg: -1.2 }, '-1.2'],
       [{ arg: [] }, ''],
-      [{ arg: {}}, '[object Object]'],
+      [{ arg: {}}, '{}'],
     ]);
   });
 };

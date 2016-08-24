@@ -27,12 +27,12 @@ function suite(prefix, ctx) {
 
       // Empty values should trigger ERROR_BAD_REQUEST
       [EMPTY_QUERY, ERROR_BAD_REQUEST],
-      ['arg', INVALID_DATE],
-      ['arg=', INVALID_DATE],
+      ['arg', ERROR_BAD_REQUEST],
+      ['arg=', ERROR_BAD_REQUEST],
 
       // Empty-like values should trigger ERROR_BAD_REQUEST too
-      ['arg=undefined', INVALID_DATE],
-      ['arg=null', INVALID_DATE],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg=null', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -41,8 +41,9 @@ function suite(prefix, ctx) {
     verifyTestCases({ arg: 'arg', type: 'date' }, [
       // Empty values
       [EMPTY_QUERY, undefined],
-      ['arg', INVALID_DATE], // should be: undefined
-      ['arg=', INVALID_DATE], // should be: undefined
+      ['arg', undefined],
+      ['arg=', undefined],
+      ['arg=null', null],
 
       // Valid values - ISO format
       ['arg=2016-05-19T13:28:51.299Z', new Date('2016-05-19T13:28:51.299Z')],
@@ -66,19 +67,18 @@ function suite(prefix, ctx) {
       ['arg=-1.2', new Date('-1.2')], // 2001-01-01T23:00:00.000Z
 
       // Invalid values should trigger ERROR_BAD_REQUEST
-      ['arg=undefined', INVALID_DATE],
-      ['arg=null', INVALID_DATE],
-      ['arg=false', INVALID_DATE],
-      ['arg=true', INVALID_DATE],
-      ['arg=text', INVALID_DATE],
-      ['arg=[]', INVALID_DATE],
-      ['arg={}', INVALID_DATE],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg=false', ERROR_BAD_REQUEST],
+      ['arg=true', ERROR_BAD_REQUEST],
+      ['arg=text', ERROR_BAD_REQUEST],
+      ['arg=[]', ERROR_BAD_REQUEST],
+      ['arg={}', ERROR_BAD_REQUEST],
       // Numbers larger than MAX_SAFE_INTEGER - should cause ERROR_BAD_REQUEST
-      ['arg=2343546576878989879789', INVALID_DATE],
-      ['arg=-2343546576878989879789', INVALID_DATE],
+      ['arg=2343546576878989879789', ERROR_BAD_REQUEST],
+      ['arg=-2343546576878989879789', ERROR_BAD_REQUEST],
       // Scientific notation - should cause ERROR_BAD_REQUEST
-      ['arg=1.234e%2B30', INVALID_DATE],
-      ['arg=-1.234e%2B30', INVALID_DATE],
+      ['arg=1.234e%2B30', ERROR_BAD_REQUEST],
+      ['arg=-1.234e%2B30', ERROR_BAD_REQUEST],
     ]);
   });
 }

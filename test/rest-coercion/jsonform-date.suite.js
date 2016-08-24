@@ -26,8 +26,8 @@ module.exports = function(ctx) {
 
       // Empty values should trigger ERROR_BAD_REQUEST
       [EMPTY_BODY, ERROR_BAD_REQUEST],
-      [{ arg: null }, new Date(0)], // should be: ERROR_BAD_REQUEST
-      [{ arg: '' }, INVALID_DATE], // should be: ERROR_BAD_REQUEST
+      [{ arg: null }, ERROR_BAD_REQUEST],
+      [{ arg: '' }, ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -35,8 +35,8 @@ module.exports = function(ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: 'date' }, [
       // Empty cases
-      [EMPTY_BODY, undefined], // should be: undefined
-      [{ arg: null }, new Date(0)], // should be: null
+      [EMPTY_BODY, undefined],
+      [{ arg: null }, null],
 
       // Valid values - ISO format
       [{ arg: '2016-05-19T13:28:51.299Z' }, new Date('2016-05-19T13:28:51.299Z')],
@@ -59,21 +59,22 @@ module.exports = function(ctx) {
       [{ arg: '-1.2' }, new Date('-1.2')],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
-      [{ arg: '' }, INVALID_DATE], // should be: ERROR_BAD_REQUEST
-      [{ arg: 'null' }, INVALID_DATE], // should be: ERROR_BAD_REQUEST
-      [{ arg: false }, new Date(0)], // should be: ERROR_BAD_REQUEST
-      [{ arg: 'false' }, INVALID_DATE], // should be: ERROR_BAD_REQUEST
-      [{ arg: true }, new Date(1)], // should be: ERROR_BAD_REQUEST
-      [{ arg: 'true' }, INVALID_DATE], // should be: ERROR_BAD_REQUEST
-      [{ arg: 'text' }, INVALID_DATE], // should be: ERROR_BAD_REQUEST
-      [{ arg: [] }, INVALID_DATE], // should be: ERROR_BAD_REQUEST
-      [{ arg: {}}, INVALID_DATE], // should be: ERROR_BAD_REQUEST
+      [{ arg: '' }, ERROR_BAD_REQUEST],
+      [{ arg: 'null' }, ERROR_BAD_REQUEST],
+      [{ arg: false }, new Date(0)],
+      [{ arg: 'false' }, ERROR_BAD_REQUEST],
+      [{ arg: true }, new Date(1)],
+      [{ arg: 'true' }, ERROR_BAD_REQUEST],
+      [{ arg: 'text' }, ERROR_BAD_REQUEST],
+      [{ arg: [] }, ERROR_BAD_REQUEST],
+      [{ arg: {}}, ERROR_BAD_REQUEST],
+
       // Numbers larger than MAX_SAFE_INTEGER - should cause ERROR_BAD_REQUEST
-      [{ arg: 2343546576878989879789 }, INVALID_DATE],
-      [{ arg: -2343546576878989879789 }, INVALID_DATE],
+      [{ arg: 2343546576878989879789 }, ERROR_BAD_REQUEST],
+      [{ arg: -2343546576878989879789 }, ERROR_BAD_REQUEST],
       // Scientific notation - should cause ERROR_BAD_REQUEST
-      [{ arg: 1.234e+30 }, INVALID_DATE],
-      [{ arg: -1.234e+30 }, INVALID_DATE],
+      [{ arg: 1.234e+30 }, ERROR_BAD_REQUEST],
+      [{ arg: -1.234e+30 }, ERROR_BAD_REQUEST],
     ]);
   });
 };

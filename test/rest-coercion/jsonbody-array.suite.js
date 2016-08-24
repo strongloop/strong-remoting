@@ -23,13 +23,15 @@ module.exports = function(ctx) {
       [[]], // an empty array is a valid value for required array
       [[true, false]],
       // invalid values - should trigger ERROR_BAD_REQUEST
-      [null, [false]], // should be: ERROR_BAD_REQUEST
+      [null, ERROR_BAD_REQUEST],
     ]);
   });
 
   describe('json body - array of booleans - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'anyname', type: ['boolean'] }, [
+      // no value is provided
+      [null],
       // empty array
       [[]],
 
@@ -39,18 +41,17 @@ module.exports = function(ctx) {
       [[true, false], [true, false]],
 
       // Value is not an array - should return ERROR_BAD_REQUEST
-      [null, [false]],
-      [false, [false]],
-      [true, [true]],
-      [0, [false]],
-      [1, [true]],
-      [2, [true]],
-      [-1, [true]],
-      ['"text"', [true]],
-      [{}, [true]],
+      [false, ERROR_BAD_REQUEST],
+      [true, ERROR_BAD_REQUEST],
+      [0, ERROR_BAD_REQUEST],
+      [1, ERROR_BAD_REQUEST],
+      [2, ERROR_BAD_REQUEST],
+      [-1, ERROR_BAD_REQUEST],
+      ['"text"', ERROR_BAD_REQUEST],
+      [{}, ERROR_BAD_REQUEST],
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
-      [[null], [false]],
+      [[null], ERROR_BAD_REQUEST],
       [['true', 'false'], [true, false]],
       [['0'], [false]],
       [['1'], [true]],
@@ -65,6 +66,8 @@ module.exports = function(ctx) {
   describe('json body - array of numbers - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'anyname', type: ['number'] }, [
+      // no value is provided
+      [null],
       // empty array
       [[]],
 
@@ -82,25 +85,24 @@ module.exports = function(ctx) {
       [[-1.234e+30], [-1.234e+30]],
 
       // Value is not an array - should return ERROR_BAD_REQUEST
-      [null, [0]],
-      [false, [0]],
-      [true, [1]],
-      [0, [0]],
-      ['"0"', [0]],
-      [1, [1]],
-      ['"1"', [1]],
-      [-1, [-1]],
-      ['"-1"', [-1]],
-      [1.2, [1.2]],
-      ['"1.2"', [1.2]],
-      [-1.2, [-1.2]],
-      ['"-1.2"', [-1.2]],
+      [false, ERROR_BAD_REQUEST],
+      [true, ERROR_BAD_REQUEST],
+      [0, ERROR_BAD_REQUEST],
+      ['"0"', ERROR_BAD_REQUEST],
+      [1, ERROR_BAD_REQUEST],
+      ['"1"', ERROR_BAD_REQUEST],
+      [-1, ERROR_BAD_REQUEST],
+      ['"-1"', ERROR_BAD_REQUEST],
+      [1.2, ERROR_BAD_REQUEST],
+      ['"1.2"', ERROR_BAD_REQUEST],
+      [-1.2, ERROR_BAD_REQUEST],
+      ['"-1.2"', ERROR_BAD_REQUEST],
       ['"text"', ERROR_BAD_REQUEST],
       [{}, ERROR_BAD_REQUEST],
       [{ x: true }, ERROR_BAD_REQUEST],
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
-      [[null], [0]],
+      [[null], ERROR_BAD_REQUEST],
       [[true], [1]],
       [['0'], [0]],
       [['1'], [1]],
@@ -115,6 +117,8 @@ module.exports = function(ctx) {
   describe('json body - array of strings - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'anyname', type: ['string'] }, [
+      // no value is provided
+      [null],
       // Empty array
       [[]],
 
@@ -124,19 +128,18 @@ module.exports = function(ctx) {
       [['one', 'two']],
 
       // Value is not an array - should return ERROR_BAD_REQUEST
-      [null, ['null']],
-      [false, ['false']],
-      [true, ['true']],
-      [0, ['0']],
-      [1, ['1']],
-      ['"text"', ['text']],
-      [{}, ['[object Object]']],
+      [false, ERROR_BAD_REQUEST],
+      [true, ERROR_BAD_REQUEST],
+      [0, ERROR_BAD_REQUEST],
+      [1, ERROR_BAD_REQUEST],
+      ['"text"', ERROR_BAD_REQUEST],
+      [{}, ERROR_BAD_REQUEST],
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
-      [[null], ['null']],
+      [[null], ERROR_BAD_REQUEST],
       [[1], ['1']],
       [[true], ['true']],
-      [[{}], ['[object Object]']],
+      [[{}], ['{}']],
       [[[]], ['']],
     ]);
   });
@@ -144,6 +147,8 @@ module.exports = function(ctx) {
   describe('json body - array of dates - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'anyname', type: ['date'] }, [
+      // no value is provided
+      [null],
       // Empty array
       [[]],
 
@@ -160,23 +165,24 @@ module.exports = function(ctx) {
       ]],
 
       // Value is not an array - should return ERROR_BAD_REQUEST
-      [null, [new Date(0)]],
-      [false, [new Date(0)]],
-      [true, [new Date(1)]],
+      [false, ERROR_BAD_REQUEST],
+      [true, ERROR_BAD_REQUEST],
       ['text', ERROR_BAD_REQUEST],
       ['2016-05-19T13:28:51.299Z', ERROR_BAD_REQUEST],
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
-      [[null], [new Date(0)]],
+      [[null], ERROR_BAD_REQUEST],
       [[false], [new Date(0)]],
       [[true], [new Date(1)]],
-      [['text'], [INVALID_DATE]],
+      [['text'], ERROR_BAD_REQUEST],
     ]);
   });
 
   describe('json body - array of any - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'anyname', type: ['any'] }, [
+      // no value is provided
+      [null],
       // Empty array
       [[]],
 
@@ -220,16 +226,15 @@ module.exports = function(ctx) {
       [['text', 10, false]],
 
       // Value is not an array - should return ERROR_BAD_REQUEST
-      [null, [null]],
-      [false, [false]],
-      [true, [true]],
-      [0, [0]],
-      [1, [1]],
-      [-1, [-1]],
-      [1.2, [1.2]],
-      [-1.2, [-1.2]],
-      ['"text"', ['text']],
-      [{}, [{}]],
+      [false, ERROR_BAD_REQUEST],
+      [true, ERROR_BAD_REQUEST],
+      [0, ERROR_BAD_REQUEST],
+      [1, ERROR_BAD_REQUEST],
+      [-1, ERROR_BAD_REQUEST],
+      [1.2, ERROR_BAD_REQUEST],
+      [-1.2, ERROR_BAD_REQUEST],
+      ['"text"', ERROR_BAD_REQUEST],
+      [{}, ERROR_BAD_REQUEST],
     ]);
   });
 };

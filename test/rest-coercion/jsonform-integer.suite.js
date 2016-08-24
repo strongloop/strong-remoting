@@ -23,8 +23,8 @@ module.exports = function(ctx) {
 
       // Empty values should trigger ERROR_BAD_REQUEST
       [EMPTY_BODY, ERROR_BAD_REQUEST],
-      [{ arg: null }, 0], // should be: ERROR_BAD_REQUEST
-      [{ arg: '' }, 0], // should be: ERROR_BAD_REQUEST
+      [{ arg: null }, ERROR_BAD_REQUEST],
+      [{ arg: '' }, ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -33,7 +33,7 @@ module.exports = function(ctx) {
     verifyTestCases({ arg: 'arg', type: 'integer' }, [
       // Empty values
       [EMPTY_BODY, undefined],
-      [{ arg: null }, 0], // should be: null
+      [{ arg: null }, null],
 
       // Valid values
       [{ arg: 0 }, 0],
@@ -52,19 +52,17 @@ module.exports = function(ctx) {
       [{ arg: '0' }, 0],
       [{ arg: '1' }, 1],
       [{ arg: '-1' }, -1],
+      [{ arg: '1.2' }, ERROR_BAD_REQUEST],
+      [{ arg: '-1.2' }, ERROR_BAD_REQUEST],
       [{ arg: '2343546576878989879789' }, ERROR_BAD_REQUEST],
       [{ arg: '-2343546576878989879789' }, ERROR_BAD_REQUEST],
       [{ arg: '1.234e+30' }, ERROR_BAD_REQUEST],
       [{ arg: '-1.234e+30' }, ERROR_BAD_REQUEST],
-      [{ arg: '1.234e+3' }, 1.234e+3],
-      [{ arg: '-1.234e+3' }, -1.234e+3],
 
       // All other non-integer values should trigger ERROR_BAD_REQUEST
       [{ arg: 1.2 }, ERROR_BAD_REQUEST],
       [{ arg: -1.2 }, ERROR_BAD_REQUEST],
-      [{ arg: '1.2' }, ERROR_BAD_REQUEST],
-      [{ arg: '-1.2' }, ERROR_BAD_REQUEST],
-      [{ arg: '' }, 0],
+      [{ arg: '' }, ERROR_BAD_REQUEST],
       [{ arg: false }, 0],
       [{ arg: 'false' }, ERROR_BAD_REQUEST],
       [{ arg: true }, 1],

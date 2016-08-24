@@ -46,10 +46,10 @@ function suite(prefix, ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: 'object' }, [
       // Empty values
-      [EMPTY_QUERY, undefined], // should be: undefined
-      ['arg', ERROR_BAD_REQUEST], // should be undefined
-      ['arg=', ERROR_BAD_REQUEST], // should be undefined
-      ['arg=null', ERROR_BAD_REQUEST], // should be null
+      [EMPTY_QUERY, undefined],
+      ['arg', undefined],
+      ['arg=', undefined],
+      ['arg=null', null],
       ['arg={}', {}],
       ['arg=[]', []],
 

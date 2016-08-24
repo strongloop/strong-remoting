@@ -9,6 +9,7 @@ var expect = require('chai').expect;
 var SharedMethod = require('../lib/shared-method');
 var factory = require('./helpers/shared-objects-factory.js');
 var Promise = global.Promise || require('bluebird');
+var Dynamic = require('../lib/dynamic');
 
 describe('SharedMethod', function() {
   var STUB_CLASS = {};
@@ -141,7 +142,7 @@ describe('SharedMethod', function() {
       method.invoke('ctx', { num: NaN }, function(err) {
         setImmediate(function() {
           expect(err).to.exist;
-          expect(err.message).to.contain('num must be a number');
+          expect(err.message).to.contain('"num" must be a number');
           expect(err.statusCode).to.equal(400);
           done();
         });
@@ -275,7 +276,7 @@ describe('SharedMethod', function() {
       method.invoke('ctx', { obj: 'test' }, function(err) {
         setImmediate(function() {
           expect(err).to.exist;
-          expect(err.message).to.contain('invalid value for argument');
+          expect(err.message).to.contain('Invalid value for argument');
           expect(err.statusCode).to.equal(400);
           done();
         });
@@ -361,17 +362,81 @@ describe('SharedMethod', function() {
         });
       });
     });
-
-    function givenSharedMethod(fn, options) {
-      if (options === undefined && typeof fn === 'object') {
-        options = fn;
-        fn = function() {
-          arguments[arguments.length - 1]();
-        };
-      }
-
-      var mockSharedClass = { fn: fn };
-      return new SharedMethod(fn, 'fn', mockSharedClass, options);
-    }
   });
+
+  describe('accepts coercion', function() {
+
+    it('Doesn\'t coerce null to "null"', function(done) {
+      var method = givenSharedMethod(
+        function(str) {
+          expect(str).to.eql(null);
+          expect(typeof str).to.eql('object');
+          return Promise.resolve();
+        },
+        {
+          accepts: [{ arg: 'str', type: 'string' }]
+        }
+      );
+
+      method.invoke('ctx', { str: null }, function(err, result) {
+        expect(err && err.message).not.to.exist;
+        done();
+      });
+    });
+  });
+
+  describe('arguments with custom type', function() {
+    Dynamic.define('CustomType', function(val) {
+      return JSON.parse(val);
+    });
+
+    it('should coerce dynamic type with string prop into object', function(done) {
+      var data = {stringProp: 'string'};
+      var method = givenSharedMethod(
+        function(input) {
+          expect(input).to.eql(data);
+          return Promise.resolve();
+        },
+        {
+          accepts: [{arg: 'input', type: 'CustomType'}]
+        }
+      );
+
+      method.invoke('ctx', {input: JSON.stringify(data)}, function(err, result) {
+        expect(err && err.message).not.to.exist;
+        done();
+      });
+    });
+
+    it('should coerce dynamic type with int prop into object', function(done) {
+      var data = {intProp: 1};
+      var method = givenSharedMethod(
+        function(input) {
+          expect(input).to.eql(data);
+          return Promise.resolve();
+        },
+        {
+          accepts: [{arg: 'input', type: 'CustomType'}]
+        }
+      );
+
+      method.invoke('ctx', {input: JSON.stringify(data)}, function(err, result) {
+        expect(err && err.message).not.to.exist;
+        done();
+      });
+
+    });
+  });
+
+  function givenSharedMethod(fn, options) {
+    if (options === undefined && typeof fn === 'object') {
+      options = fn;
+      fn = function() {
+        arguments[arguments.length - 1]();
+      };
+    }
+
+    var mockSharedClass = { fn: fn };
+    return new SharedMethod(fn, 'fn', mockSharedClass, options);
+  }
 });

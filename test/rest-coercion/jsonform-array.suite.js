@@ -25,17 +25,17 @@ module.exports = function(ctx) {
       [{ arg: [true, false] }, [true, false]],
 
       // Empty values should trigger ERROR_BAD_REQUEST
-      [EMPTY_BODY, []],
-      [{ arg: null }, [false]],
+      [EMPTY_BODY, ERROR_BAD_REQUEST],
+      [{ arg: null }, ERROR_BAD_REQUEST],
 
       // Invalid values  should trigger ERROR_BAD_REQUEST
-      [{ arg: [null] }, [false]],
-      [{ arg: false }, [false]],
-      [{ arg: true }, [true]],
-      [{ arg: 0 }, [false]],
-      [{ arg: 1 }, [true]],
-      [{ arg: '' }, []],
-      [{ arg: 'text' }, [true]],
+      [{ arg: [null] }, ERROR_BAD_REQUEST],
+      [{ arg: false }, ERROR_BAD_REQUEST],
+      [{ arg: true }, ERROR_BAD_REQUEST],
+      [{ arg: 0 }, ERROR_BAD_REQUEST],
+      [{ arg: 1 }, ERROR_BAD_REQUEST],
+      [{ arg: '' }, ERROR_BAD_REQUEST],
+      [{ arg: 'text' }, ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -43,9 +43,9 @@ module.exports = function(ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: ['boolean'] }, [
       // Empty values
-      [EMPTY_BODY, []], // should be: undefined
+      [EMPTY_BODY, undefined], // should be: undefined
       [{ arg: [] }, []],
-      [{ arg: null }, [false]], // should be: null
+      [{ arg: null }, null], // should be: null
 
       // Valid values
       [{ arg: [false] }, [false]],
@@ -53,17 +53,17 @@ module.exports = function(ctx) {
       [{ arg: [true, false] }, [true, false]],
 
       // Value is not an array - should return ERROR_BAD_REQUEST
-      [{ arg: false }, [false]],
-      [{ arg: true }, [true]],
-      [{ arg: 0 }, [false]],
-      [{ arg: 1 }, [true]],
-      [{ arg: 2 }, [true]],
-      [{ arg: -1 }, [true]],
-      [{ arg: 'text' }, [true]],
-      [{ arg: {}}, [true]],
+      [{ arg: false }, ERROR_BAD_REQUEST],
+      [{ arg: true }, ERROR_BAD_REQUEST],
+      [{ arg: 0 }, ERROR_BAD_REQUEST],
+      [{ arg: 1 }, ERROR_BAD_REQUEST],
+      [{ arg: 2 }, ERROR_BAD_REQUEST],
+      [{ arg: -1 }, ERROR_BAD_REQUEST],
+      [{ arg: 'text' }, ERROR_BAD_REQUEST],
+      [{ arg: {}}, ERROR_BAD_REQUEST],
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
-      [{ arg: [null] }, [false]],
+      [{ arg: [null] }, ERROR_BAD_REQUEST],
       [{ arg: ['true', 'false'] }, [true, false]],
       [{ arg: ['0'] }, [false]],
       [{ arg: ['1'] }, [true]],
@@ -79,9 +79,9 @@ module.exports = function(ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: ['number'] }, [
       // Empty values
-      [EMPTY_BODY, []], // should be: undefined
+      [EMPTY_BODY, undefined],
       [{ arg: [] }, []],
-      [{ arg: null }, [0]], // should be: null
+      [{ arg: null }, null],
 
       // Valid values
       [{ arg: [0] }, [0]],
@@ -97,24 +97,24 @@ module.exports = function(ctx) {
       [{ arg: [-1.234e+30] }, [-1.234e+30]],
 
       // Value is not an array - should return ERROR_BAD_REQUEST
-      [{ arg: false }, [0]],
-      [{ arg: true }, [1]],
-      [{ arg: 0 }, [0]],
-      [{ arg: '0' }, [0]],
-      [{ arg: 1 }, [1]],
-      [{ arg: '1' }, [1]],
-      [{ arg: -1 }, [-1]],
-      [{ arg: '-1' }, [-1]],
-      [{ arg: 1.2 }, [1.2]],
-      [{ arg: '1.2' }, [1.2]],
-      [{ arg: -1.2 }, [-1.2]],
-      [{ arg: '-1.2' }, [-1.2]],
+      [{ arg: false }, ERROR_BAD_REQUEST],
+      [{ arg: true }, ERROR_BAD_REQUEST],
+      [{ arg: 0 }, ERROR_BAD_REQUEST],
+      [{ arg: '0' }, ERROR_BAD_REQUEST],
+      [{ arg: 1 }, ERROR_BAD_REQUEST],
+      [{ arg: '1' }, ERROR_BAD_REQUEST],
+      [{ arg: -1 }, ERROR_BAD_REQUEST],
+      [{ arg: '-1' }, ERROR_BAD_REQUEST],
+      [{ arg: 1.2 }, ERROR_BAD_REQUEST],
+      [{ arg: '1.2' }, ERROR_BAD_REQUEST],
+      [{ arg: -1.2 }, ERROR_BAD_REQUEST],
+      [{ arg: '-1.2' }, ERROR_BAD_REQUEST],
       [{ arg: 'text' }, ERROR_BAD_REQUEST],
       [{ arg: {}}, ERROR_BAD_REQUEST],
       [{ arg: { a: true }}, ERROR_BAD_REQUEST],
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
-      [{ arg: [null] }, [0]],
+      [{ arg: [null] }, ERROR_BAD_REQUEST],
       [{ arg: ['0'] }, [0]],
       [{ arg: ['1'] }, [1]],
       [{ arg: ['-1'] }, [-1]],
@@ -129,27 +129,27 @@ module.exports = function(ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: ['string'] }, [
       // Empty values
-      [EMPTY_BODY, []], // should be: undefined
+      [EMPTY_BODY, undefined],
       [{ arg: [] }, []],
-      [{ arg: null }, ['null']], // should be: null
+      [{ arg: null }, null],
 
       // Valid values
-      [{ arg: 'text' }, ['text']],
+      [{ arg: ['text'] }, ['text']],
       [{ arg: ['one', 'two'] }, ['one', 'two']],
 
       // Value is not an array - should return ERROR_BAD_REQUEST
-      [{ arg: false }, ['false']],
-      [{ arg: true }, ['true']],
-      [{ arg: 0 }, ['0']],
-      [{ arg: 1 }, ['1']],
-      [{ arg: {}}, ['[object Object]']],
+      [{ arg: false }, ERROR_BAD_REQUEST],
+      [{ arg: true }, ERROR_BAD_REQUEST],
+      [{ arg: 0 }, ERROR_BAD_REQUEST],
+      [{ arg: 1 }, ERROR_BAD_REQUEST],
+      [{ arg: {}}, ERROR_BAD_REQUEST],
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
-      [{ arg: [null] }, ['null']],
+      [{ arg: [null] }, ERROR_BAD_REQUEST],
       [{ arg: [0] }, ['0']],
       [{ arg: [1] }, ['1']],
       [{ arg: [true] }, ['true']],
-      [{ arg: [{}] }, ['[object Object]']],
+      [{ arg: [{}] }, ['{}']],
       [{ arg: [[]] }, ['']],
     ]);
   });
@@ -158,9 +158,9 @@ module.exports = function(ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: ['date'] }, [
       // Empty values
-      [EMPTY_BODY, []], // should be: undefined
+      [EMPTY_BODY, undefined],
       [{ arg: [] }, []],
-      [{ arg: null }, [new Date(0)]], // should be: null
+      [{ arg: null }, null],
 
       // Valid values - numbers are treated as timestamps
       [{ arg: [0] }, [new Date(0)]],
@@ -179,15 +179,14 @@ module.exports = function(ctx) {
       ]],
 
       // Value is not an array - should return ERROR_BAD_REQUEST
-      [{ arg: false }, [new Date(0)]],
-      [{ arg: true }, [new Date(1)]],
-      [{ arg: 'text' }, [INVALID_DATE]],
-      [{ arg: '2016-05-19T13:28:51.299Z' },
-        [new Date('2016-05-19T13:28:51.299Z')]],
+      [{ arg: false }, ERROR_BAD_REQUEST],
+      [{ arg: true }, ERROR_BAD_REQUEST],
+      [{ arg: 'text' }, ERROR_BAD_REQUEST],
+      [{ arg: '2016-05-19T13:28:51.299Z' }, ERROR_BAD_REQUEST],
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
-      [{ arg: [null] }, [new Date(0)]],
-      [{ arg: ['text'] }, [INVALID_DATE]],
+      [{ arg: [null] }, ERROR_BAD_REQUEST],
+      [{ arg: ['text'] }, ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -195,9 +194,9 @@ module.exports = function(ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: ['any'] }, [
       // Empty values
-      [EMPTY_BODY, []], // should be: undefined
+      [EMPTY_BODY, undefined],
       [{ arg: [] }, []],
-      [{ arg: null }, [null]], // should be: null
+      [{ arg: null }, null],
 
       // Valid values - booleans
       [{ arg: [true, false] }, [true, false]],
@@ -239,15 +238,15 @@ module.exports = function(ctx) {
       [{ arg: ['text', 10, false] }, ['text', 10, false]],
 
       // Value is not an array - should return ERROR_BAD_REQUEST
-      [{ arg: false }, [false]],
-      [{ arg: true }, [true]],
-      [{ arg: 0 }, [0]],
-      [{ arg: 1 }, [1]],
-      [{ arg: -1 }, [-1]],
-      [{ arg: 1.2 }, [1.2]],
-      [{ arg: -1.2 }, [-1.2]],
-      [{ arg: 'text' }, ['text']],
-      [{ arg: {}}, [{}]],
+      [{ arg: false }, ERROR_BAD_REQUEST],
+      [{ arg: true }, ERROR_BAD_REQUEST],
+      [{ arg: 0 }, ERROR_BAD_REQUEST],
+      [{ arg: 1 }, ERROR_BAD_REQUEST],
+      [{ arg: -1 }, ERROR_BAD_REQUEST],
+      [{ arg: 1.2 }, ERROR_BAD_REQUEST],
+      [{ arg: -1.2 }, ERROR_BAD_REQUEST],
+      [{ arg: 'text' }, ERROR_BAD_REQUEST],
+      [{ arg: {}}, ERROR_BAD_REQUEST],
     ]);
   });
 };
