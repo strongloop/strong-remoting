@@ -31,22 +31,22 @@ function suite(prefix, ctx) {
       // Valid values - nested keys
       ['arg=false', [false]],
       ['arg=true', [true]],
+      ['arg=0', [false]],
+      ['arg=1', [true]],
       ['arg=true&arg=false', [true, false]],
 
       // Empty values should trigger ERROR_BAD_REQUEST
-      [EMPTY_QUERY, []], // should be: ERROR_BAD_REQUEST
-      ['arg', []], // should be: ERROR_BAD_REQUEST
-      ['arg=', []], // should be: ERROR_BAD_REQUEST
+      [EMPTY_QUERY, ERROR_BAD_REQUEST],
+      ['arg', ERROR_BAD_REQUEST],
+      ['arg=', ERROR_BAD_REQUEST],
 
       // Invalid values - array items have wrong type or value is not an array
       // All test cases should trigger ERROR_BAD_REQUEST
-      ['arg=null', [false]],
-      ['arg=undefined', [false]],
-      ['arg=0', [false]],
-      ['arg=1', [true]],
-      ['arg={}', [true]],
-      ['arg=["true"]', [true]],
-      ['arg=[1]', [true]],
+      ['arg=null', ERROR_BAD_REQUEST],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg={}', ERROR_BAD_REQUEST],
+      ['arg=["true"]', ERROR_BAD_REQUEST],
+      ['arg=[1]', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -54,14 +54,16 @@ function suite(prefix, ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: ['boolean'] }, [
       // Empty values
-      [EMPTY_QUERY, []], // should be: undefined
-      ['arg', []], // should be: undefined
-      ['arg=', []], // should be: undefined
-      ['arg=null', [false]], // should be: null
+      [EMPTY_QUERY, undefined],
+      ['arg', undefined],
+      ['arg=', undefined],
+      ['arg=null', null],
 
       // Valid values - repeated keys
       ['arg=false', [false]],
       ['arg=true', [true]],
+      ['arg=0', [false]],
+      ['arg=1', [true]],
       ['arg=true&arg=false', [true, false]],
 
       // Valid values - JSON encoding
@@ -69,22 +71,20 @@ function suite(prefix, ctx) {
       ['arg=[true,false]', [true, false]],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
-      ['arg=undefined', [false]],
-      ['arg=true&arg=text', [true, true]],
-      ['arg=0', [false]],
-      ['arg=1', [true]],
-      ['arg=2', [true]],
-      ['arg=-1', [true]],
-      ['arg=text', [true]],
-      ['arg=[1,2]', [true, true]],
-      ['arg=["text"]', [true]],
-      ['arg=[null]', [false]],
-      ['arg={}', [true]],
-      ['arg={"a":true}', [true]],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg=true&arg=text', ERROR_BAD_REQUEST],
+      ['arg=2', ERROR_BAD_REQUEST],
+      ['arg=-1', ERROR_BAD_REQUEST],
+      ['arg=text', ERROR_BAD_REQUEST],
+      ['arg=[1,2]', ERROR_BAD_REQUEST],
+      ['arg=["text"]', ERROR_BAD_REQUEST],
+      ['arg=[null]', ERROR_BAD_REQUEST],
+      ['arg={}', ERROR_BAD_REQUEST],
+      ['arg={"a":true}', ERROR_BAD_REQUEST],
 
       // Malformed JSON should trigger ERROR_BAD_REQUEST
-      ['arg={malformed}', [true]],
-      ['arg=[malformed]', [true]],
+      ['arg={malformed}', ERROR_BAD_REQUEST],
+      ['arg=[malformed]', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -92,9 +92,10 @@ function suite(prefix, ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: ['number'] }, [
       // Empty values
-      [EMPTY_QUERY, []], // should be: undefined
-      ['arg', []], // should be: undefined
-      ['arg=', []], // should be: undefined
+      [EMPTY_QUERY, undefined],
+      ['arg', undefined],
+      ['arg=', undefined],
+      ['arg=null', null],
 
       // Valid values - repeated keys
       ['arg=0', [0]],
@@ -116,14 +117,13 @@ function suite(prefix, ctx) {
 
       // Invalid values should trigger ERROR_BAD_REQUEST
       ['arg=undefined', ERROR_BAD_REQUEST],
-      ['arg=null', ERROR_BAD_REQUEST],
       ['arg=true', ERROR_BAD_REQUEST],
       ['arg=false', ERROR_BAD_REQUEST],
       ['arg=text', ERROR_BAD_REQUEST],
       ['arg=1&arg=text', ERROR_BAD_REQUEST],
-      ['arg=["1"]', [1]], // notice the item is a string, we should not coerce
+      ['arg=["1"]', ERROR_BAD_REQUEST], // notice the item is a string
       ['arg=[1,"text"]', ERROR_BAD_REQUEST],
-      ['arg=[null]', [0]],
+      ['arg=[null]', ERROR_BAD_REQUEST],
       ['arg={}', ERROR_BAD_REQUEST],
       ['arg={"a":true}', ERROR_BAD_REQUEST],
 
@@ -137,13 +137,13 @@ function suite(prefix, ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: ['string'] }, [
       // Empty values
-      [EMPTY_QUERY, []], // should be: undefined
-      ['arg', []], // should be: undefined
-      ['arg=', []], // should be: undefined
+      [EMPTY_QUERY, undefined],
+      ['arg', undefined],
+      ['arg=', undefined],
+      ['arg=null', null],
 
       // Valid values - repeated keys
       ['arg=undefined', ['undefined']],
-      ['arg=null', ['null']],
       ['arg=0', ['0']],
       ['arg=1', ['1']],
       ['arg=false', ['false']],
@@ -156,18 +156,21 @@ function suite(prefix, ctx) {
 
       // Valid values - JSON encoding
       ['arg=[]', []],
-      ['arg=[1,2]', ['1', '2']],
+      ['arg=["1","2"]', ['1', '2']],
 
-      // Invalid values should trigger ERROR_BAD_REQUEST
+      // Valid values - array arguments don't recognize object value
+      // and treat them as single-item string
       ['arg={}', ['{}']],
       ['arg={"a":true}', ['{"a":true}']],
-      ['arg=[1]', ['1']],
-      ['arg=[true]', ['true']],
-      ['arg=[null]', ['null']],
+      ['arg={malformed}', ['{malformed}']],
+      // Invalid values should trigger ERROR_BAD_REQUEST
+      ['arg=[1]', ERROR_BAD_REQUEST],
+      ['arg=[1,2]', ERROR_BAD_REQUEST],
+      ['arg=[true]', ERROR_BAD_REQUEST],
+      ['arg=[null]', ERROR_BAD_REQUEST],
 
       // Malformed JSON should trigger ERROR_BAD_REQUEST
-      ['arg={malformed}', ['{malformed}']],
-      ['arg=[malformed]', ['[malformed]']],
+      ['arg=[malformed]', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -175,14 +178,14 @@ function suite(prefix, ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: ['date'] }, [
       // Empty values
-      [EMPTY_QUERY, []], // should be: undefined
-      ['arg', []], // should be: undefined
-      ['arg=', []], // should be: undefined
+      [EMPTY_QUERY, undefined],
+      ['arg', undefined],
+      ['arg=', undefined],
+      ['arg=null', null],
 
       // Valid values - repeated keys
       ['arg=0', [new Date('0')]], // 1999-12-31T23:00:00.000Z in CEST
       ['arg=1', [new Date('1')]], // 2000-12-31T23:00:00.000Z
-      ['arg=text', [INVALID_DATE]], // should be: ERROR_BAD_REQUEST
       ['arg=2016-05-19T13:28:51.299Z',
         [new Date('2016-05-19T13:28:51.299Z')]],
       ['arg=2016-05-19T13:28:51.299Z&arg=2016-05-20T08:27:28.539Z', [
@@ -203,20 +206,20 @@ function suite(prefix, ctx) {
       ]],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
-      ['arg=undefined', [INVALID_DATE]], // should be: ERROR_BAD_REQUEST
-      ['arg=null', [INVALID_DATE]], // should be: ERROR_BAD_REQUEST
-      ['arg=false', [INVALID_DATE]], // should be: ERROR_BAD_REQUEST
-      ['arg=true', [INVALID_DATE]], // should be: ERROR_BAD_REQUEST
-      ['arg={}', [INVALID_DATE]], // should be: ERROR_BAD_REQUEST
-      ['arg={"a":true}', [INVALID_DATE]],
-      ['arg=[null]', [new Date(0)]],
-      ['arg=[false]', [new Date(0)]],
-      ['arg=[true]', [new Date(1)]],
-      ['arg=["text"]', [INVALID_DATE]],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg=false', ERROR_BAD_REQUEST],
+      ['arg=true', ERROR_BAD_REQUEST],
+      ['arg=text', ERROR_BAD_REQUEST],
+      ['arg={}', ERROR_BAD_REQUEST],
+      ['arg={"a":true}', ERROR_BAD_REQUEST],
+      ['arg=[null]', ERROR_BAD_REQUEST],
+      ['arg=[false]', ERROR_BAD_REQUEST],
+      ['arg=[true]', ERROR_BAD_REQUEST],
+      ['arg=["text"]', ERROR_BAD_REQUEST],
 
       // Malformed JSON should trigger ERROR_BAD_REQUEST
-      ['arg={malformed}', [INVALID_DATE]], // should be: ERROR_BAD_REQUEST
-      ['arg=[malformed]', [INVALID_DATE]], // should be: ERROR_BAD_REQUEST
+      ['arg={malformed}', ERROR_BAD_REQUEST],
+      ['arg=[malformed]', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -224,25 +227,24 @@ function suite(prefix, ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: ['any'] }, [
       // Empty values
-      [EMPTY_QUERY, []], // should be: undefined
-      ['arg', []], // should be: undefined
-      ['arg=', []], // should be: undefined
-      ['arg=null', [null]], // should be: null (?)
+      [EMPTY_QUERY, undefined],
+      ['arg', undefined],
+      ['arg=', undefined],
+      ['arg=null', null],
 
       // Valid values - repeated keys
       ['arg=undefined', ['undefined']],
       ['arg=false', [false]],
       ['arg=true', [true]],
-      ['arg=0', ['0']], // should be 0 (number)
+      ['arg=0', [0]],
       ['arg=1', [1]],
-      ['arg=-1', ['-1']], // should be -1 (number)
+      ['arg=-1', [-1]],
       ['arg=1.2', [1.2]],
-      ['arg=-1.2', ['-1.2']], // should be -1.2 (number)
+      ['arg=-1.2', [-1.2]],
       ['arg=text', ['text']],
-      ['arg=text&arg=10&arg=false', ['text', '10', 'false']], // should be coerced
+      ['arg=text&arg=10&arg=false', ['text', 10, false]],
       // Numbers larger than MAX_SAFE_INTEGER
-      ['arg=2343546576878989879789', [2.34354657687899e+21]],
-      // this should have been recognized as number
+      ['arg=2343546576878989879789', ['2343546576878989879789']],
       ['arg=-2343546576878989879789', ['-2343546576878989879789']],
       // Scientific notation - should it be recognized as a number?
       ['arg=1.234e%2B30&arg=-1.234e%2B30', ['1.234e+30', '-1.234e+30']],
@@ -251,13 +253,14 @@ function suite(prefix, ctx) {
       ['arg=[]', []],
       ['arg=["text",10,false]', ['text', 10, false]],
 
-      // Invalid values should trigger ERROR_BAD_REQUEST
-      ['arg={}', ['{}']],
-      ['arg={"foo":"bar"}', ['{"foo":"bar"}']],
+      // Valid values - items are objects
+      ['arg={}', [{}]],
+      ['arg={"foo":"bar"}', [{ 'foo': 'bar' }]],
+      // Item is not a valid JSON object - it will be treated as a string
+      ['arg={malformed}', ['{malformed}']],
 
       // Malformed JSON should trigger ERROR_BAD_REQUEST
-      ['arg={malformed}', ['{malformed}']],
-      ['arg=[malformed]', ['[malformed]']],
+      ['arg=[malformed]', ERROR_BAD_REQUEST],
     ]);
   });
 }

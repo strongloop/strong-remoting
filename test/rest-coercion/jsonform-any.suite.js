@@ -20,11 +20,11 @@ module.exports = function(ctx) {
       [{ arg: 1234 }, 1234],
       [{ arg: 'text' }, 'text'],
       [{ arg: 'undefined' }, 'undefined'],
+      [{ arg: 'null' }, 'null'],
       // Invalid (empty) values should trigger ERROR_BAD_REQUEST
       [EMPTY_BODY, ERROR_BAD_REQUEST],
-      [{ arg: '' }, ''],
-      [{ arg: null }, null],
-      [{ arg: 'null' }, null],
+      [{ arg: '' }, ERROR_BAD_REQUEST],
+      [{ arg: null }, ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -56,20 +56,19 @@ module.exports = function(ctx) {
 
       // Verify that deep coercion is not triggered
       // and types specified in JSON are preserved
-      [{ arg: 'null' }, null], // should be string 'null'
-      [{ arg: 'false' }, false], // should be string 'false'
-      [{ arg: 'true' }, true], // should be string 'true'
+      [{ arg: 'null' }, 'null'],
+      [{ arg: 'false' }, 'false'],
+      [{ arg: 'true' }, 'true'],
       [{ arg: '0' }, '0'],
-      [{ arg: '1' }, 1], // should be string '1'
+      [{ arg: '1' }, '1'],
       [{ arg: '-1' }, '-1'],
-      [{ arg: '1.2' }, 1.2], // should be string '1.2'
-      [{ arg: '-1.2' }, '-1.2'], // should be -1.2 (number)
+      [{ arg: '1.2' }, '1.2'],
+      [{ arg: '-1.2' }, '-1.2'],
       [{ arg: '[]' }, '[]'],
       [{ arg: '{}' }, '{}'],
 
       // Numberic strings larger than MAX_SAFE_INTEGER
-      // the following should be string '2343546576878989879789'
-      [{ arg: '2343546576878989879789' }, 2.34354657687899e+21],
+      [{ arg: '2343546576878989879789' }, '2343546576878989879789'],
       [{ arg: '-2343546576878989879789' }, '-2343546576878989879789'],
 
       // Strings mimicking scientific notation

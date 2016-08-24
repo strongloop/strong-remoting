@@ -23,16 +23,16 @@ function suite(prefix, ctx) {
       // Valid values
       ['arg=false', false],
       ['arg=true', true],
+      ['arg=0', false],
 
       // Empty values should trigger ERROR_BAD_REQUEST
-      [EMPTY_QUERY, false],
-      ['arg', false],
-      ['arg=', false],
+      [EMPTY_QUERY, ERROR_BAD_REQUEST],
+      ['arg', ERROR_BAD_REQUEST],
+      ['arg=', ERROR_BAD_REQUEST],
 
       // Empty-like values should trigger ERROR_BAD_REQUEST too
-      ['arg=undefined', false],
-      ['arg=null', false],
-      ['arg=0', false],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg=null', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -40,29 +40,30 @@ function suite(prefix, ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'arg', type: 'boolean' }, [
       // Empty values
-      [EMPTY_QUERY, false], // should be: undefined
-      ['arg', false], // should be: undefined
-      ['arg=', false], // should be: undefined
+      [EMPTY_QUERY, undefined],
+      ['arg', undefined],
+      ['arg=', undefined],
 
       // Valid values
       ['arg=false', false],
       ['arg=true', true],
+      ['arg=0', false],
+      ['arg=1', true],
       // values are case insensitive
-      ['arg=FalsE', true], // should be false
+      ['arg=FalsE', false],
       ['arg=TruE', true],
-      ['arg=FALSE', true], // should be false
+      ['arg=FALSE', false],
       ['arg=TRUE', true],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
-      ['arg=undefined', false],
-      ['arg=null', false],
-      ['arg=0', false],
-      ['arg=1', true],
-      ['arg=text', true],
-      ['arg=[]', true],
-      ['arg=[1,2]', true],
-      ['arg={}', true],
-      ['arg={"a":true}', true],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg=null', ERROR_BAD_REQUEST],
+      ['arg=2', ERROR_BAD_REQUEST],
+      ['arg=text', ERROR_BAD_REQUEST],
+      ['arg=[]', ERROR_BAD_REQUEST],
+      ['arg=[1,2]', ERROR_BAD_REQUEST],
+      ['arg={}', ERROR_BAD_REQUEST],
+      ['arg={"a":true}', ERROR_BAD_REQUEST],
     ]);
   });
 }

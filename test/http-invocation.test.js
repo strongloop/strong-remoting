@@ -6,9 +6,9 @@
 var assert = require('assert');
 var HttpInvocation = require('../lib/http-invocation');
 var SharedMethod = require('../lib/shared-method');
-var Dynamic = require('../lib/dynamic');
 var extend = require('util')._extend;
 var expect = require('chai').expect;
+var TypeRegistry = require('../lib/type-registry');
 
 describe('HttpInvocation', function() {
   describe('namedArgs', function() {
@@ -16,7 +16,7 @@ describe('HttpInvocation', function() {
       var method = givenSharedStaticMethod({
         accepts: accepts,
       });
-      var inv = new HttpInvocation(method, null, inputArgs);
+      var inv = givenInvocation(method, { args: inputArgs });
       expect(inv.namedArgs).to.deep.equal(expectedNamedArgs);
     }
 
@@ -78,18 +78,10 @@ describe('HttpInvocation', function() {
       });
     });
   });
-  function setupReturnTypes(returns, converterName, converter, res, cb) {
-    var method = givenSharedStaticMethod({ returns: returns });
-    var inv = new HttpInvocation(method);
-    var body = res.body || {};
-
-    Dynamic.define(converterName, converter);
-    inv.transformResponse(res, body, cb);
-  }
 
   describe('transformResponse', function() {
     it('should return a single instance of TestClass', function(done) {
-      setupReturnTypes({
+      transformReturnType({
         arg: 'data',
         type: 'bar',
         root: true,
@@ -98,7 +90,9 @@ describe('HttpInvocation', function() {
       }, {
         body: { foo: 'bar' },
       }, function(err, inst) {
-        expect(err).to.be.null;
+        if (err) return done(err);
+        if (inst.error) return done(inst.error);
+
         expect(inst).to.be.instanceOf(TestClass);
         expect(inst.foo).to.equal('bar');
         done();
@@ -110,7 +104,7 @@ describe('HttpInvocation', function() {
     });
 
     it('should return an array of TestClass instances', function(done) {
-      setupReturnTypes({
+      transformReturnType({
         arg: 'data',
         type: ['bar'],
         root: true,
@@ -122,7 +116,9 @@ describe('HttpInvocation', function() {
           { foo: 'grok' },
         ],
       }, function(err, insts) {
-        expect(err).to.be.null;
+        if (err) return done(err);
+        if (insts.error) return done(insts.error);
+
         expect(insts).to.be.an('array');
         expect(insts[0]).to.be.instanceOf(TestClass);
         expect(insts[1]).to.be.instanceOf(TestClass);
@@ -138,7 +134,7 @@ describe('HttpInvocation', function() {
 
     it('should forward all error properties', function(done) {
       var method = givenSharedStaticMethod({});
-      var inv = new HttpInvocation(method);
+      var inv = givenInvocation(method);
       var res = {
         statusCode: 555,
         body: {
@@ -169,7 +165,7 @@ describe('HttpInvocation', function() {
 
     it('should forward statusCode and non-object error response', function(done) {
       var method = givenSharedStaticMethod({});
-      var inv = new HttpInvocation(method);
+      var inv = givenInvocation(method);
       var res = {
         statusCode: 555,
         body: 'error body',
@@ -184,6 +180,18 @@ describe('HttpInvocation', function() {
         done();
       });
     });
+
+    function transformReturnType(returns, typeName, typeFactoryFn, res, cb) {
+      var method = givenSharedStaticMethod({ returns: returns });
+
+      var typeRegistry = new TypeRegistry();
+      typeRegistry.registerObjectType(typeName, typeFactoryFn);
+
+      var inv = givenInvocation(method, { typeRegistry: typeRegistry });
+      var body = res.body || {};
+
+      inv.transformResponse(res, body, cb);
+    }
   });
 });
 
@@ -198,4 +206,14 @@ function givenSharedStaticMethod(fn, config) {
   config = extend({ shared: true }, config);
   extend(testClass.testMethod, config);
   return SharedMethod.fromFunction(fn, 'testStaticMethodName', null, true);
+}
+
+function givenInvocation(method, params) {
+  params = params || {};
+  return new HttpInvocation(method,
+      params.ctorArgs,
+      params.args,
+      params.baseUrl,
+      params.auth,
+      params.typeRegistry || new TypeRegistry());
 }
