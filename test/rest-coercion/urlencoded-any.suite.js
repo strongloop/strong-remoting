@@ -26,9 +26,9 @@ function suite(prefix, ctx) {
 
       // Empty values should trigger ERROR_BAD_REQUEST
       [EMPTY_QUERY, ERROR_BAD_REQUEST],
-      ['arg', ''], // should be: ERROR_BAD_REQUEST
-      ['arg=', ''], // should be: ERROR_BAD_REQUEST
-      ['arg=null', null], // should be: ERROR_BAD_REQUEST
+      ['arg', ERROR_BAD_REQUEST],
+      ['arg=', ERROR_BAD_REQUEST],
+      ['arg=null', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -37,19 +37,19 @@ function suite(prefix, ctx) {
     verifyTestCases({ arg: 'arg', type: 'any' }, [
       // Empty values
       [EMPTY_QUERY, undefined],
-      ['arg', ''], // should be: undefined
-      ['arg=', ''], // should be: undefined
+      ['arg', undefined],
+      ['arg=', undefined],
       ['arg=null', null], // should be: 'null'
 
       // Valid values (coerced)
       ['arg=undefined', 'undefined'], // 'undefined' is treated as a string
       ['arg=false', false],
       ['arg=true', true],
-      ['arg=0', '0'], // should be 0 (number)
+      ['arg=0', 0],
       ['arg=1', 1],
-      ['arg=-1', '-1'], // should be -1 (number)
+      ['arg=-1', -1],
       ['arg=1.2', 1.2],
-      ['arg=-1.2', '-1.2'], // should be -1.2 (number)
+      ['arg=-1.2', -1.2], // should be -1.2 (number)
       ['arg=text', 'text'],
       ['arg=[]', '[]'], // should be an empty array
       ['arg={}', '{}'], // should be an empty object
@@ -58,9 +58,8 @@ function suite(prefix, ctx) {
       ['arg=[1]', '[1]'], // should be parsed as an array [1]
       ['arg=["1"]', '["1"]'], // should be parsed as an array ['1']
 
-      // Numbers larger than MAX_SAFE_INTEGER
-      ['arg=2343546576878989879789', 2.34354657687899e+21],
-      // This should have been recognized as number
+      // Numbers larger than MAX_SAFE_INTEGER are treated as strings
+      ['arg=2343546576878989879789', '2343546576878989879789'],
       ['arg=-2343546576878989879789', '-2343546576878989879789'],
       // Scientific notation should be recognized as a number
       ['arg=1.234e%2B30', '1.234e+30'],

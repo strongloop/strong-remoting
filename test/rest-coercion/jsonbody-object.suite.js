@@ -31,7 +31,7 @@ module.exports = function(ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'anyname', type: 'object' }, [
       // Empty values
-      [null, ERROR_BAD_REQUEST], // should be: null
+      [null, null],
 
       // Valid values, arrays are objects too
       [[]],

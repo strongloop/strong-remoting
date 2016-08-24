@@ -54,8 +54,11 @@ describe('strong-remoting-rest', function() {
     if (process.env.NODE_ENV === 'production') {
       process.env.NODE_ENV = 'test';
     }
-    objects = RemoteObjects.create({json: {limit: '1kb'},
-      errorHandler: {disableStackTrace: false}});
+    objects = RemoteObjects.create({
+      json: {limit: '1kb'},
+      errorHandler: {disableStackTrace: false},
+      types: {warnOnUnknownType: false},
+    });
     remotes = objects.exports;
 
     // connect to the app
@@ -586,7 +589,7 @@ describe('strong-remoting-rest', function() {
           accepts: [
             { arg: 'b', type: 'number' },
             { arg: 'a', type: 'number', http: function(ctx) {
-              return ctx.req.query.a;
+              return +ctx.req.query.a;
             } }
           ],
           returns: { arg: 'n', type: 'number' },
@@ -892,7 +895,7 @@ describe('strong-remoting-rest', function() {
         .expect(400, done);
     });
 
-    it('should coerce boolean strings - true', function(done) {
+    it('should not coerce nested boolean strings - true', function(done) {
       remotes.foo = {
         bar: function(a, fn) {
           fn(null, a);
@@ -908,10 +911,10 @@ describe('strong-remoting-rest', function() {
       fn.returns = {root: true};
 
       json('get', '/foo/bar?a[foo]=true')
-        .expect({foo: true}, done);
+        .expect({foo: 'true'}, done);
     });
 
-    it('should coerce boolean strings - false', function(done) {
+    it('should not coerce nested boolean strings - false', function(done) {
       remotes.foo = {
         bar: function(a, fn) {
           fn(null, a);
@@ -927,7 +930,7 @@ describe('strong-remoting-rest', function() {
       fn.returns = {root: true};
 
       json('get', '/foo/bar?a[foo]=false')
-        .expect({foo: false}, done);
+        .expect({foo: 'false'}, done);
     });
 
     it('should coerce number strings', function(done) {
@@ -1073,7 +1076,7 @@ describe('strong-remoting-rest', function() {
       ];
       fn.returns = {root: true};
 
-      json('get', '/foo/bar?a=["1","2","3","4","5"]')
+      json('get', '/foo/bar?a=[1,2,3,4,5]')
         .expect(200, function(err, res) {
           assert.equal(res.body, 15);
           done();
@@ -1217,7 +1220,7 @@ describe('strong-remoting-rest', function() {
         });
 
       json('post', method.url + '?a=')
-        .expect({ data: [] }, done);
+        .expect({ /* data is undefined */ }, done);
     });
 
     it('should still support JSON arrays with arrayItemDelimiters', function(done) {
@@ -1229,7 +1232,7 @@ describe('strong-remoting-rest', function() {
           returns: { arg: 'data', type: 'object' }
         });
 
-      json('post', method.url + '?a=["1","2","3"]')
+      json('post', method.url + '?a=[1,2,3]')
         .expect({ data: [1, 2, 3] }, done);
     });
 
@@ -2784,7 +2787,7 @@ describe('strong-remoting-rest', function() {
               { arg: 'b', type: 'number' }
             ],
             returns: [
-              { arg: 'id', type: 'string' },
+              { arg: 'id', type: 'any' },
               { arg: 'a', type: 'number' },
               { arg: 'b', type: 'number' }
             ]

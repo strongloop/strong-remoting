@@ -19,6 +19,7 @@
     "debug": "^2.2.0",
     "depd": "^1.1.0",
     "eventemitter2": "^2.1.0",
+    "escape-string-regexp": "^1.0.5",
     "express": "4.x",
     "inflection": "^1.7.1",
     "jayson": "^1.2.0",
