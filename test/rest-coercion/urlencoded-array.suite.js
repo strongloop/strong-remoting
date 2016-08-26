@@ -41,12 +41,12 @@ function suite(prefix, ctx) {
       // Invalid values - array items have wrong type or value is not an array
       // All test cases should trigger ERROR_BAD_REQUEST
       ['arg=null', ERROR_BAD_REQUEST],
-      ['arg=undefined', [false]],
-      ['arg=0', [false]],
-      ['arg=1', [true]],
-      ['arg={}', [true]],
-      ['arg=["true"]', [true]],
-      ['arg=[1]', [true]],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg=0', ERROR_BAD_REQUEST],
+      ['arg=1', ERROR_BAD_REQUEST],
+      ['arg={}', ERROR_BAD_REQUEST],
+      ['arg=["true"]', ERROR_BAD_REQUEST],
+      ['arg=[1]', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -69,24 +69,22 @@ function suite(prefix, ctx) {
       ['arg=[true,false]', [true, false]],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
-      // TODO(bajtos) compare this with urlencoded-boolean.suite and
-      // ensure both "boolean" and "[boolean]" are handled consistently
-      ['arg=undefined', [false]],
-      ['arg=true&arg=text', [true, true]],
-      ['arg=0', [false]],
-      ['arg=1', [true]],
-      ['arg=2', [true]],
-      ['arg=-1', [true]],
-      ['arg=text', [true]],
-      ['arg=[1,2]', [true, true]],
-      ['arg=["text"]', [true]],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg=true&arg=text', ERROR_BAD_REQUEST],
+      ['arg=0', ERROR_BAD_REQUEST],
+      ['arg=1', ERROR_BAD_REQUEST],
+      ['arg=2', ERROR_BAD_REQUEST],
+      ['arg=-1', ERROR_BAD_REQUEST],
+      ['arg=text', ERROR_BAD_REQUEST],
+      ['arg=[1,2]', ERROR_BAD_REQUEST],
+      ['arg=["text"]', ERROR_BAD_REQUEST],
       ['arg=[null]', ERROR_BAD_REQUEST],
-      ['arg={}', [true]],
-      ['arg={"a":true}', [true]],
+      ['arg={}', ERROR_BAD_REQUEST],
+      ['arg={"a":true}', ERROR_BAD_REQUEST],
 
       // Malformed JSON should trigger ERROR_BAD_REQUEST
-      ['arg={malformed}', [true]],
-      ['arg=[malformed]', [true]],
+      ['arg={malformed}', ERROR_BAD_REQUEST],
+      ['arg=[malformed]', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -123,7 +121,7 @@ function suite(prefix, ctx) {
       ['arg=false', ERROR_BAD_REQUEST],
       ['arg=text', ERROR_BAD_REQUEST],
       ['arg=1&arg=text', ERROR_BAD_REQUEST],
-      ['arg=["1"]', [1]], // notice the item is a string, we should not coerce
+      ['arg=["1"]', ERROR_BAD_REQUEST], // notice the item is a string
       ['arg=[1,"text"]', ERROR_BAD_REQUEST],
       ['arg=[null]', ERROR_BAD_REQUEST],
       ['arg={}', ERROR_BAD_REQUEST],
@@ -158,18 +156,21 @@ function suite(prefix, ctx) {
 
       // Valid values - JSON encoding
       ['arg=[]', []],
-      ['arg=[1,2]', ['1', '2']],
+      ['arg=["1","2"]', ['1', '2']],
 
-      // Invalid values should trigger ERROR_BAD_REQUEST
+      // Valid values - array arguments don't recognize object value
+      // and treat them as single-item string
       ['arg={}', ['{}']],
       ['arg={"a":true}', ['{"a":true}']],
-      ['arg=[1]', ['1']],
-      ['arg=[true]', ['true']],
-      ['arg=[null]', ['null']],
+      ['arg={malformed}', ['{malformed}']],
+      // Invalid values should trigger ERROR_BAD_REQUEST
+      ['arg=[1]', ERROR_BAD_REQUEST],
+      ['arg=[1,2]', ERROR_BAD_REQUEST],
+      ['arg=[true]', ERROR_BAD_REQUEST],
+      ['arg=[null]', ERROR_BAD_REQUEST],
 
       // Malformed JSON should trigger ERROR_BAD_REQUEST
-      ['arg={malformed}', ['{malformed}']],
-      ['arg=[malformed]', ['[malformed]']],
+      ['arg=[malformed]', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -212,8 +213,8 @@ function suite(prefix, ctx) {
       ['arg={}', ERROR_BAD_REQUEST],
       ['arg={"a":true}', ERROR_BAD_REQUEST],
       ['arg=[null]', ERROR_BAD_REQUEST],
-      ['arg=[false]', [new Date(0)]],
-      ['arg=[true]', [new Date(1)]],
+      ['arg=[false]', ERROR_BAD_REQUEST],
+      ['arg=[true]', ERROR_BAD_REQUEST],
       ['arg=["text"]', ERROR_BAD_REQUEST],
 
       // Malformed JSON should trigger ERROR_BAD_REQUEST
@@ -252,13 +253,14 @@ function suite(prefix, ctx) {
       ['arg=[]', []],
       ['arg=["text",10,false]', ['text', 10, false]],
 
-      // Invalid values should trigger ERROR_BAD_REQUEST
+      // Valid values - array arguments don't recognize object value
+      // and treat them as single-item string
       ['arg={}', ['{}']],
       ['arg={"foo":"bar"}', ['{"foo":"bar"}']],
+      ['arg={malformed}', ['{malformed}']],
 
       // Malformed JSON should trigger ERROR_BAD_REQUEST
-      ['arg={malformed}', ['{malformed}']],
-      ['arg=[malformed]', ['[malformed]']],
+      ['arg=[malformed]', ERROR_BAD_REQUEST],
     ]);
   });
 }

@@ -64,14 +64,14 @@ module.exports = function(ctx) {
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
       [{ arg: [null] }, ERROR_BAD_REQUEST],
-      [{ arg: ['true', 'false'] }, [true, false]],
-      [{ arg: ['0'] }, [false]],
-      [{ arg: ['1'] }, [true]],
-      [{ arg: ['2'] }, [true]],
-      [{ arg: ['-1'] }, [true]],
-      [{ arg: ['text'] }, [true]],
-      [{ arg: [{}] }, [true]],
-      [{ arg: [[]] }, [true]],
+      [{ arg: ['true', 'false'] }, ERROR_BAD_REQUEST],
+      [{ arg: ['0'] }, ERROR_BAD_REQUEST],
+      [{ arg: ['1'] }, ERROR_BAD_REQUEST],
+      [{ arg: ['2'] }, ERROR_BAD_REQUEST],
+      [{ arg: ['-1'] }, ERROR_BAD_REQUEST],
+      [{ arg: ['text'] }, ERROR_BAD_REQUEST],
+      [{ arg: [{}] }, ERROR_BAD_REQUEST],
+      [{ arg: [[]] }, ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -115,11 +115,11 @@ module.exports = function(ctx) {
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
       [{ arg: [null] }, ERROR_BAD_REQUEST],
-      [{ arg: ['0'] }, [0]],
-      [{ arg: ['1'] }, [1]],
-      [{ arg: ['-1'] }, [-1]],
-      [{ arg: ['1.2'] }, [1.2]],
-      [{ arg: ['-1.2'] }, [-1.2]],
+      [{ arg: ['0'] }, ERROR_BAD_REQUEST],
+      [{ arg: ['1'] }, ERROR_BAD_REQUEST],
+      [{ arg: ['-1'] }, ERROR_BAD_REQUEST],
+      [{ arg: ['1.2'] }, ERROR_BAD_REQUEST],
+      [{ arg: ['-1.2'] }, ERROR_BAD_REQUEST],
       [{ arg: ['text'] }, ERROR_BAD_REQUEST],
       [{ arg: [1, 'text'] }, ERROR_BAD_REQUEST],
     ]);
@@ -146,11 +146,11 @@ module.exports = function(ctx) {
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
       [{ arg: [null] }, ERROR_BAD_REQUEST],
-      [{ arg: [0] }, ['0']],
-      [{ arg: [1] }, ['1']],
-      [{ arg: [true] }, ['true']],
-      [{ arg: [{}] }, ['{}']],
-      [{ arg: [[]] }, ['']],
+      [{ arg: [0] }, ERROR_BAD_REQUEST],
+      [{ arg: [1] }, ERROR_BAD_REQUEST],
+      [{ arg: [true] }, ERROR_BAD_REQUEST],
+      [{ arg: [{}] }, ERROR_BAD_REQUEST],
+      [{ arg: [[]] }, ERROR_BAD_REQUEST],
     ]);
   });
 

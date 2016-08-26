@@ -52,14 +52,14 @@ module.exports = function(ctx) {
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
       [[null], ERROR_BAD_REQUEST],
-      [['true', 'false'], [true, false]],
-      [['0'], [false]],
-      [['1'], [true]],
-      [['2'], [true]],
-      [['-1'], [true]],
-      [['text'], [true]],
-      [[{}], [true]],
-      [[[]], [true]],
+      [['true', 'false'], ERROR_BAD_REQUEST],
+      [['0'], ERROR_BAD_REQUEST],
+      [['1'], ERROR_BAD_REQUEST],
+      [['2'], ERROR_BAD_REQUEST],
+      [['-1'], ERROR_BAD_REQUEST],
+      [['text'], ERROR_BAD_REQUEST],
+      [[{}], ERROR_BAD_REQUEST],
+      [[[]], ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -103,12 +103,12 @@ module.exports = function(ctx) {
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
       [[null], ERROR_BAD_REQUEST],
-      [[true], [1]],
-      [['0'], [0]],
-      [['1'], [1]],
-      [['-1'], [-1]],
-      [['1.2'], [1.2]],
-      [['-1.2'], [-1.2]],
+      [[true], ERROR_BAD_REQUEST],
+      [['0'], ERROR_BAD_REQUEST],
+      [['1'], ERROR_BAD_REQUEST],
+      [['-1'], ERROR_BAD_REQUEST],
+      [['1.2'], ERROR_BAD_REQUEST],
+      [['-1.2'], ERROR_BAD_REQUEST],
       [['text'], ERROR_BAD_REQUEST],
       [[1, 'text'], ERROR_BAD_REQUEST],
     ]);
@@ -137,10 +137,10 @@ module.exports = function(ctx) {
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
       [[null], ERROR_BAD_REQUEST],
-      [[1], ['1']],
-      [[true], ['true']],
-      [[{}], ['{}']],
-      [[[]], ['']],
+      [[1], ERROR_BAD_REQUEST],
+      [[true], ERROR_BAD_REQUEST],
+      [[{}], ERROR_BAD_REQUEST],
+      [[[]], ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -172,8 +172,8 @@ module.exports = function(ctx) {
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
       [[null], ERROR_BAD_REQUEST],
-      [[false], [new Date(0)]],
-      [[true], [new Date(1)]],
+      [[false], ERROR_BAD_REQUEST],
+      [[true], ERROR_BAD_REQUEST],
       [['text'], ERROR_BAD_REQUEST],
     ]);
   });

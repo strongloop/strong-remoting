@@ -57,7 +57,7 @@ module.exports = function createUrlEncodedContext(ctx, target) {
 
       var niceInput = queryString === EMPTY_QUERY ?
         TARGET_QUERY_STRING ? 'empty query' : 'empty form' :
-        queryString;
+        '?' + queryString;
       var niceExpectation = ctx.prettyExpectation(expectedValue);
       var testName = format('coerces %s to %s', niceInput, niceExpectation);
 

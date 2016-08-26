@@ -36,7 +36,6 @@ module.exports = function(ctx) {
     verifyTestCases({ arg: 'arg', type: 'date' }, [
       // Empty cases
       [EMPTY_BODY, undefined],
-      [{ arg: null }, null],
 
       // Valid values - ISO format
       [{ arg: '2016-05-19T13:28:51.299Z' }, new Date('2016-05-19T13:28:51.299Z')],
@@ -59,11 +58,12 @@ module.exports = function(ctx) {
       [{ arg: '-1.2' }, new Date('-1.2')],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
+      [{ arg: null }, ERROR_BAD_REQUEST],
       [{ arg: '' }, ERROR_BAD_REQUEST],
       [{ arg: 'null' }, ERROR_BAD_REQUEST],
-      [{ arg: false }, new Date(0)],
+      [{ arg: false }, ERROR_BAD_REQUEST],
       [{ arg: 'false' }, ERROR_BAD_REQUEST],
-      [{ arg: true }, new Date(1)],
+      [{ arg: true }, ERROR_BAD_REQUEST],
       [{ arg: 'true' }, ERROR_BAD_REQUEST],
       [{ arg: 'text' }, ERROR_BAD_REQUEST],
       [{ arg: [] }, ERROR_BAD_REQUEST],

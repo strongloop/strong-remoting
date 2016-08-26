@@ -30,9 +30,9 @@ function suite(prefix, ctx) {
       ['arg=', ERROR_BAD_REQUEST],
 
       // Empty-like values should trigger ERROR_BAD_REQUEST too
-      ['arg=undefined', false],
-      ['arg=null', false],
-      ['arg=0', false],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg=null', ERROR_BAD_REQUEST],
+      ['arg=0', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -48,21 +48,22 @@ function suite(prefix, ctx) {
       ['arg=false', false],
       ['arg=true', true],
       // values are case insensitive
-      ['arg=FalsE', true], // should be false
+      ['arg=FalsE', false],
       ['arg=TruE', true],
-      ['arg=FALSE', true], // should be false
+      ['arg=FALSE', false],
       ['arg=TRUE', true],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
-      ['arg=undefined', false],
-      ['arg=null', false],
-      ['arg=0', false],
-      ['arg=1', true],
-      ['arg=text', true],
-      ['arg=[]', true],
-      ['arg=[1,2]', true],
-      ['arg={}', true],
-      ['arg={"a":true}', true],
+      ['arg=undefined', ERROR_BAD_REQUEST],
+      ['arg=null', ERROR_BAD_REQUEST],
+      ['arg=0', ERROR_BAD_REQUEST],
+      ['arg=1', ERROR_BAD_REQUEST],
+      ['arg=2', ERROR_BAD_REQUEST],
+      ['arg=text', ERROR_BAD_REQUEST],
+      ['arg=[]', ERROR_BAD_REQUEST],
+      ['arg=[1,2]', ERROR_BAD_REQUEST],
+      ['arg={}', ERROR_BAD_REQUEST],
+      ['arg={"a":true}', ERROR_BAD_REQUEST],
     ]);
   });
 }

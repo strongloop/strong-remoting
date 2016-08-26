@@ -43,7 +43,6 @@ function suite(prefix, ctx) {
       [EMPTY_QUERY, undefined],
       ['arg', undefined],
       ['arg=', undefined],
-      ['arg=null', null],
 
       // Valid values - ISO format
       ['arg=2016-05-19T13:28:51.299Z', new Date('2016-05-19T13:28:51.299Z')],
@@ -67,6 +66,7 @@ function suite(prefix, ctx) {
       ['arg=-1.2', new Date('-1.2')], // 2001-01-01T23:00:00.000Z
 
       // Invalid values should trigger ERROR_BAD_REQUEST
+      ['arg=null', ERROR_BAD_REQUEST],
       ['arg=undefined', ERROR_BAD_REQUEST],
       ['arg=false', ERROR_BAD_REQUEST],
       ['arg=true', ERROR_BAD_REQUEST],

@@ -32,26 +32,26 @@ module.exports = function(ctx) {
     verifyTestCases({ arg: 'arg', type: 'boolean' }, [
       // Empty values
       [EMPTY_BODY, undefined],
-      [{ arg: null }, null],
 
       // Valid values
       [{ arg: false }, false],
       [{ arg: true }, true],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
+      [{ arg: null }, ERROR_BAD_REQUEST],
       [{ arg: '' }, ERROR_BAD_REQUEST],
-      [{ arg: 'null' }, false],
-      [{ arg: 'false' }, false],
-      [{ arg: 'true' }, true],
-      [{ arg: 0 }, false],
-      [{ arg: '0' }, false],
-      [{ arg: 1 }, true],
-      [{ arg: '1' }, true],
-      [{ arg: 'text' }, true],
-      [{ arg: [] }, true],
-      [{ arg: [1, 2] }, true],
-      [{ arg: {}}, true],
-      [{ arg: { a: true }}, true],
+      [{ arg: 'null' }, ERROR_BAD_REQUEST],
+      [{ arg: 'false' }, ERROR_BAD_REQUEST],
+      [{ arg: 'true' }, ERROR_BAD_REQUEST],
+      [{ arg: 0 }, ERROR_BAD_REQUEST],
+      [{ arg: '0' }, ERROR_BAD_REQUEST],
+      [{ arg: 1 }, ERROR_BAD_REQUEST],
+      [{ arg: '1' }, ERROR_BAD_REQUEST],
+      [{ arg: 'text' }, ERROR_BAD_REQUEST],
+      [{ arg: [] }, ERROR_BAD_REQUEST],
+      [{ arg: [1, 2] }, ERROR_BAD_REQUEST],
+      [{ arg: {}}, ERROR_BAD_REQUEST],
+      [{ arg: { a: true }}, ERROR_BAD_REQUEST],
     ]);
   });
 };

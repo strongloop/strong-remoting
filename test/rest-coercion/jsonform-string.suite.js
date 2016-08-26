@@ -33,7 +33,6 @@ module.exports = function(ctx) {
       // Empty values
       [EMPTY_BODY, undefined],
       [{ arg: '' }, ''],
-      [{ arg: null }, null], // should be: null
 
       // Valid values
       [{ arg: 'text' }, 'text'],
@@ -51,15 +50,16 @@ module.exports = function(ctx) {
       [{ arg: 'true' }, 'true'],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
-      [{ arg: false }, 'false'],
-      [{ arg: true }, 'true'],
-      [{ arg: 0 }, '0'],
-      [{ arg: 1 }, '1'],
-      [{ arg: -1 }, '-1'],
-      [{ arg: 1.2 }, '1.2'],
-      [{ arg: -1.2 }, '-1.2'],
-      [{ arg: [] }, ''],
-      [{ arg: {}}, '{}'],
+      [{ arg: null }, ERROR_BAD_REQUEST],
+      [{ arg: false }, ERROR_BAD_REQUEST],
+      [{ arg: true }, ERROR_BAD_REQUEST],
+      [{ arg: 0 }, ERROR_BAD_REQUEST],
+      [{ arg: 1 }, ERROR_BAD_REQUEST],
+      [{ arg: -1 }, ERROR_BAD_REQUEST],
+      [{ arg: 1.2 }, ERROR_BAD_REQUEST],
+      [{ arg: -1.2 }, ERROR_BAD_REQUEST],
+      [{ arg: [] }, ERROR_BAD_REQUEST],
+      [{ arg: {}}, ERROR_BAD_REQUEST],
     ]);
   });
 };
