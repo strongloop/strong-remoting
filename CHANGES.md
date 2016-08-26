@@ -1,3 +1,13 @@
+2016-08-26, Version 3.0.0-alpha.5
+=================================
+
+ * Update dependencies (Miroslav Bajtoš)
+
+ * Remove the usage of deprecated methods (Amir Jafarian)
+
+ * Revert globalization of assert() messages (Miroslav Bajtoš)
+
+
 2016-08-11, Version 3.0.0-alpha.4
 =================================
 
