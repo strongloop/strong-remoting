@@ -360,6 +360,33 @@ describe('SharedMethod', function() {
       });
     });
 
+    it('passes along remotingOptions', function (done) {
+      var method = givenSharedMethod(
+        function (arg, opts, cb) {
+          return cb({
+            'num': arg
+          }, opts);
+        }, {
+          accepts: {
+            arg: 'num',
+            type: 'integer'
+          },
+        });
+
+      method.invoke('ctx', {
+        num: '12.0'
+      }, {
+        key: 'value'
+      }, function (result, opts) {
+        setImmediate(function () {
+          expect(opts)
+            .to.equal({
+              key: 'value'
+            });
+          done();
+        });
+      });
+    });
     function givenSharedMethod(fn, options) {
       if (options === undefined && typeof fn === 'object') {
         options = fn;
