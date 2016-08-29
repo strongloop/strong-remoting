@@ -586,7 +586,7 @@ describe('strong-remoting-rest', function() {
           accepts: [
             { arg: 'b', type: 'number' },
             { arg: 'a', type: 'number', http: function(ctx) {
-              return ctx.req.query.a;
+              return +ctx.req.query.a;
             } }
           ],
           returns: { arg: 'n', type: 'number' },
@@ -1073,7 +1073,7 @@ describe('strong-remoting-rest', function() {
       ];
       fn.returns = {root: true};
 
-      json('get', '/foo/bar?a=["1","2","3","4","5"]')
+      json('get', '/foo/bar?a=[1,2,3,4,5]')
         .expect(200, function(err, res) {
           assert.equal(res.body, 15);
           done();
@@ -1229,7 +1229,7 @@ describe('strong-remoting-rest', function() {
           returns: { arg: 'data', type: 'object' }
         });
 
-      json('post', method.url + '?a=["1","2","3"]')
+      json('post', method.url + '?a=[1,2,3]')
         .expect({ data: [1, 2, 3] }, done);
     });
 
