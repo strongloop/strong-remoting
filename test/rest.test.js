@@ -54,8 +54,11 @@ describe('strong-remoting-rest', function() {
     if (process.env.NODE_ENV === 'production') {
       process.env.NODE_ENV = 'test';
     }
-    objects = RemoteObjects.create({json: {limit: '1kb'},
-      errorHandler: {disableStackTrace: false}});
+    objects = RemoteObjects.create({
+      json: {limit: '1kb'},
+      errorHandler: {disableStackTrace: false},
+      types: {warnOnUnknownType: false},
+    });
     remotes = objects.exports;
 
     // connect to the app
@@ -2784,7 +2787,7 @@ describe('strong-remoting-rest', function() {
               { arg: 'b', type: 'number' }
             ],
             returns: [
-              { arg: 'id', type: 'string' },
+              { arg: 'id', type: 'any' },
               { arg: 'a', type: 'number' },
               { arg: 'b', type: 'number' }
             ]
