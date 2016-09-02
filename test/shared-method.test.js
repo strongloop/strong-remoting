@@ -131,6 +131,30 @@ describe('SharedMethod', function() {
   });
 
   describe('sharedMethod.invoke', function() {
+    it('returns default value on custom remote method when parameter is not passed', function(done){
+      var defaultValue = 100;
+      var method = givenSharedMethod(
+        function(num, next) { 
+          return new Promise(function(resolve, reject) {
+            if(typeof num === 'number'){
+              return resolve({num: num});
+            }
+            return reject(new Error('Parameter is not a number'));
+          });
+        },
+        {
+          accepts: [{ arg: 'num', type: 'number', default:defaultValue }],
+          returns: {root:true, type:'object'}
+      });
+      
+      method.invoke('ctx', {}, function(err, result){
+        setImmediate(function(){
+          expect(result).to.exist;
+          expect(result.num).to.equal(defaultValue);
+          done();
+        });
+      });
+    });
     it('returns 400 when number argument is `NaN`', function(done) {
       var method = givenSharedMethod({
         accepts: { arg: 'num', type: 'number' },
