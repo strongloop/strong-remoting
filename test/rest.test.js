@@ -362,8 +362,8 @@ describe('strong-remoting-rest', function() {
         .set('Origin', url)
         .send({person: 'ABC'})
         .end(function(err, res) {
-          assert(res.headers['Access-Control-Allow-Origin'] === undefined);
-          assert(res.headers['Access-Control-Allow-Credentials'] === undefined);
+          assert(res.get('Access-Control-Allow-Origin') === undefined);
+          assert(res.get('Access-Control-Allow-Credentials') === undefined);
           done();
         });
     });
