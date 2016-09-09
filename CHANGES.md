@@ -1,3 +1,11 @@
+2016-09-09, Version 3.0.0-alpha.6
+=================================
+
+ * Rework coercion of input arguments (Miroslav Bajtoš)
+
+ * Fix tests to use res.get instead of res.headers (Miroslav Bajtoš)
+
+
 2016-08-26, Version 3.0.0-alpha.5
 =================================
 
