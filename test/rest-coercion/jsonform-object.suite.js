@@ -35,7 +35,7 @@ module.exports = function(ctx) {
     verifyTestCases({ arg: 'arg', type: 'object' }, [
       // Empty values
       [EMPTY_BODY, undefined],
-      [{ arg: null }, ERROR_BAD_REQUEST], // should be null
+      [{ arg: null }, null],
 
       // Valid values
       [{ arg: { x: null }}, { x: null }],

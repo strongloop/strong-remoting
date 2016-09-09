@@ -27,8 +27,8 @@ function suite(prefix, ctx) {
 
       // Empty values should trigger ERROR_BAD_REQUEST
       [EMPTY_QUERY, ERROR_BAD_REQUEST],
-      ['arg', 0],
-      ['arg=', 0],
+      ['arg', ERROR_BAD_REQUEST],
+      ['arg=', ERROR_BAD_REQUEST],
 
       // Empty-like values should trigger ERROR_BAD_REQUEST too
       ['arg=undefined', ERROR_BAD_REQUEST],
@@ -41,8 +41,8 @@ function suite(prefix, ctx) {
     verifyTestCases({ arg: 'arg', type: 'integer' }, [
       // Empty values
       [EMPTY_QUERY, undefined],
-      ['arg', 0], // should be: undefined
-      ['arg=', 0], // should be: undefined
+      ['arg', undefined],
+      ['arg=', undefined],
 
       // Valid values
       ['arg=0', 0],

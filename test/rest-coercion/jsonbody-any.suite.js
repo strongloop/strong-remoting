@@ -15,7 +15,7 @@ module.exports = function(ctx) {
   describe('json body - any - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'anyname', type: 'any', required: true }, [
-      [null, null], // should be: ERROR_BAD_REQUEST
+      [null, ERROR_BAD_REQUEST],
       // Both empty array and empty object are valid values for "any"
       [[]],
       [{}],
