@@ -127,6 +127,12 @@ function suite(prefix, ctx) {
       ['arg={}', ERROR_BAD_REQUEST],
       ['arg={"a":true}', ERROR_BAD_REQUEST],
 
+      // Numbers starting with a leading zero are parsed,
+      // because we know the expected type is a number.
+      // See https://github.com/strongloop/strong-remoting/issues/143
+      ['arg=0668', [668]],
+      ['arg=0.42', [0.42]],
+
       // Malformed JSON should trigger ERROR_BAD_REQUEST
       ['arg={malformed}', ERROR_BAD_REQUEST],
       ['arg=[malformed]', ERROR_BAD_REQUEST],
@@ -163,6 +169,12 @@ function suite(prefix, ctx) {
       ['arg={}', ['{}']],
       ['arg={"a":true}', ['{"a":true}']],
       ['arg={malformed}', ['{malformed}']],
+
+      // Numbers starting with a leading zero are treated as strings
+      // See https://github.com/strongloop/strong-remoting/issues/143
+      ['arg=0668', ['0668']],
+      ['arg=0.42', ['0.42']],
+
       // Invalid values should trigger ERROR_BAD_REQUEST
       ['arg=[1]', ERROR_BAD_REQUEST],
       ['arg=[1,2]', ERROR_BAD_REQUEST],
@@ -248,6 +260,12 @@ function suite(prefix, ctx) {
       ['arg=-2343546576878989879789', ['-2343546576878989879789']],
       // Scientific notation - should it be recognized as a number?
       ['arg=1.234e%2B30&arg=-1.234e%2B30', ['1.234e+30', '-1.234e+30']],
+
+      // Integers starting with a leading zero are treated as strings
+      // See https://github.com/strongloop/strong-remoting/issues/143
+      ['arg=0668', ['0668']],
+      // However, floats are correctly parsed
+      ['arg=0.42', [0.42]],
 
       // Valid values - JSON encoding
       ['arg=[]', []],
