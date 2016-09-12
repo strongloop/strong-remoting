@@ -19,14 +19,15 @@ module.exports = function(ctx) {
       // Valid values
       [{ arg: {}}, {}],
       [{ arg: { foo: 'bar' }}, { foo: 'bar' }],
-      // Arrays are objects too
-      [{ arg: [] }, []],
-      [{ arg: [1, 2] }, [1, 2]],
 
       // Empty values should trigger ERROR_BAD_REQUEST
       [EMPTY_BODY, ERROR_BAD_REQUEST],
       [{ arg: null }, ERROR_BAD_REQUEST],
       [{ arg: '' }, ERROR_BAD_REQUEST],
+
+      // Arrays are not allowed
+      [{ arg: [] }, ERROR_BAD_REQUEST],
+      [{ arg: [1, 2] }, ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -42,11 +43,6 @@ module.exports = function(ctx) {
       [{ arg: {}}, {}],
       [{ arg: { x: 'value' }}, { x: 'value' }],
       [{ arg: { x: 1 }}, { x: 1 }],
-
-      // Arrays are objects too
-      [{ arg: [] }, []],
-      [{ arg: ['text'] }, ['text']],
-      [{ arg: [1, 2] }, [1, 2]],
 
       // Verify that deep coercion is not triggered
       // and types specified in JSON are preserved
@@ -67,6 +63,11 @@ module.exports = function(ctx) {
       [{ arg: 0 }, ERROR_BAD_REQUEST],
       [{ arg: 1 }, ERROR_BAD_REQUEST],
       [{ arg: -1 }, ERROR_BAD_REQUEST],
+
+      // Arrays are not allowed
+      [{ arg: [] }, ERROR_BAD_REQUEST],
+      [{ arg: ['text'] }, ERROR_BAD_REQUEST],
+      [{ arg: [1, 2] }, ERROR_BAD_REQUEST],
     ]);
   });
 };
