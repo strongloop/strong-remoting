@@ -67,6 +67,12 @@ function suite(prefix, ctx) {
       ['arg=[1,2]', ERROR_BAD_REQUEST],
       ['arg={}', ERROR_BAD_REQUEST],
       ['arg={"a":true}', ERROR_BAD_REQUEST],
+
+      // Numbers starting with a leading zero are parsed,
+      // because we know the expected type is a number.
+      // See https://github.com/strongloop/strong-remoting/issues/143
+      ['arg=0668', 668],
+      ['arg=0.42', 0.42],
     ]);
   });
 }
