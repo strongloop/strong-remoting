@@ -196,8 +196,8 @@ function suite(prefix, ctx) {
       ['arg=null', null],
 
       // Valid values - repeated keys
-      ['arg=0', [new Date('0')]], // 1999-12-31T23:00:00.000Z in CEST
-      ['arg=1', [new Date('1')]], // 2000-12-31T23:00:00.000Z
+      ['arg=0', [new Date('1970-01-01T00:00:00.000Z')]],
+      ['arg=1', [new Date('1970-01-01T00:00:00.001Z')]],
       ['arg=2016-05-19T13:28:51.299Z',
         [new Date('2016-05-19T13:28:51.299Z')]],
       ['arg=2016-05-19T13:28:51.299Z&arg=2016-05-20T08:27:28.539Z', [
