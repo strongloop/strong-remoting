@@ -2277,6 +2277,26 @@ describe('strong-remoting-rest', function() {
       });
   });
 
+  it('detects json type with charset definition', function(done) {
+    var method = givenSharedStaticMethod(
+      function(arg, cb) { cb(null, arg); },
+      {
+        accepts: { arg: 'arg', type: 'any', http: { source: 'form' }},
+        returns: { arg: 'arg', type: 'any' },
+      });
+
+    request(app).post(method.url)
+      .set('Content-Type', 'application/json;charset=UTF-8')
+      .send({ arg: '123' })
+      .expect(200)
+      .end(function(err, res) {
+        if (err) return done(err);
+        // JSON request was detected, sloppy coercion was not triggered
+        expect(res.body.arg).to.equal('123');
+        done();
+      });
+  });
+
   it('rejects multi-item array passed to a number argument', function(done) {
     var method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
