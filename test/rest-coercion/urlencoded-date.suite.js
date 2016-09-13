@@ -50,18 +50,15 @@ function suite(prefix, ctx) {
       ['arg=Thu+May+19+2016+15:28:51+GMT+0200+(CEST)',
         new Date('2016-05-19T15:28:51.000Z')],
 
-      // NOTE(bajtos) should we convert the numeric values into a number
-      // before passing it to the Date constructor?
-      // That way ?arg=0 would produce '1970-01-01T00:00:00.000Z', which is
+      // Integer values are converted to a number before passing it to
+      // the Date constructor
+      // That way ?arg=0 produces '1970-01-01T00:00:00.000Z', which is
       // arguably more expected then some date around 1999/2000/2001
-      // Also note that with the current implementation, the parsed
-      // value depends on the timezone of the server, therefore
-      // we cannot specify exact date values here in the test
-      // and have to use the same Date input as in the HTTP request :(
-      // See also https://github.com/strongloop/strong-remoting/issues/238
-      ['arg=0', new Date('0')], // 1999-12-31T23:00:00.000Z in CEST
-      ['arg=1', new Date('1')], // 2000-12-31T23:00:00.000Z
-      ['arg=-1', new Date('-1')], // 2000-12-31T23:00:00.000Z
+      ['arg=0', new Date('1970-01-01T00:00:00.000Z')],
+      ['arg=1', new Date('1970-01-01T00:00:00.001Z')],
+      ['arg=-1', new Date('1969-12-31T23:59:59.999Z')],
+
+      // Non-integer numbers are treated as strings.
       ['arg=1.2', new Date('1.2')], // 2001-01-01T23:00:00.000Z
       ['arg=-1.2', new Date('-1.2')], // 2001-01-01T23:00:00.000Z
 
