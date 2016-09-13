@@ -268,6 +268,31 @@ describe('SharedMethod', function() {
       });
     });
 
+    describe('data type: Date', function() {
+      it('converts return values to GMT timezone', function(done) {
+        var method = givenSharedMethod(
+          function(cb) {
+            cb(null, new Date(0));
+          },
+          {
+            returns: { arg: 'value', type: 'date' },
+          });
+
+        method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
+          setImmediate(function() {
+            if (err) return done(err);
+            expect(result).to.eql({
+              value: {
+                $type: 'date',
+                $data: '1970-01-01T00:00:00.000Z',
+              },
+            });
+            done();
+          });
+        });
+      });
+    });
+
     it('returns 400 and doesn\'t crash with unparsable object', function(done) {
       var method = givenSharedMethod({
         accepts: [{ arg: 'obj', type: 'object' }],
