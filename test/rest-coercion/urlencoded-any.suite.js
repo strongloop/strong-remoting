@@ -62,6 +62,11 @@ function suite(prefix, ctx) {
       // Numbers larger than MAX_SAFE_INTEGER are treated as strings
       ['arg=2343546576878989879789', '2343546576878989879789'],
       ['arg=-2343546576878989879789', '-2343546576878989879789'],
+      // Numbers starting with a leading zero are treated as strings
+      // See https://github.com/strongloop/strong-remoting/issues/143
+      ['arg=0668', '0668'],
+      // However, floats are correctly parsed
+      ['arg=0.42', 0.42],
       // Scientific notation should be recognized as a number
       ['arg=1.234e%2B30', '1.234e+30'],
       ['arg=-1.234e%2B30', '-1.234e+30'],
