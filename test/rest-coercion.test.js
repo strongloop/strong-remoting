@@ -58,6 +58,7 @@ describe('Coercion in RestAdapter', function() {
   function setupRemoteObjects() {
     ctx.remoteObjects = RemoteObjects.create({
       errorHandler: { debug: true, log: false },
+      cors: false,
     });
   }
 

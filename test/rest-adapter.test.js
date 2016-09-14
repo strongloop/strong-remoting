@@ -19,7 +19,7 @@ describe('RestAdapter', function() {
   var remotes;
 
   beforeEach(function() {
-    remotes = RemoteObjects.create();
+    remotes = RemoteObjects.create({cors: false});
   });
 
   describe('getClasses()', function() {
@@ -383,7 +383,7 @@ describe('RestAdapter', function() {
     var remotes, req, res;
 
     beforeEach(function() {
-      remotes = RemoteObjects.create();
+      remotes = RemoteObjects.create({cors: false});
       req = false;
       res = false;
 

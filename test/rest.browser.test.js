@@ -30,7 +30,7 @@ describe('strong-remoting-rest', function() {
 
   // setup
   beforeEach(function() {
-    objects = RemoteObjects.create();
+    objects = RemoteObjects.create({cors: false});
     remotes = objects.exports;
 
     // connect to the app

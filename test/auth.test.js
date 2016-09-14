@@ -14,7 +14,7 @@ var User = require('./e2e/fixtures/user');
 
 describe('support for HTTP Authentication', function() {
   var server;
-  var remotes = RemoteObjects.create();
+  var remotes = RemoteObjects.create({cors: false});
   remotes.exports.User = User;
 
   before(function setupServer(done) {

@@ -19,7 +19,7 @@ describe('strong-remoting', function() {
   var objects;
 
   beforeEach(function() {
-    objects = RemoteObjects.create();
+    objects = RemoteObjects.create({cors: false});
     remotes = objects.exports;
     app = express();
     app.disable('x-powered-by');
@@ -69,7 +69,7 @@ describe('strong-remoting', function() {
 
 describe('a function returning a ReadableStream', function() {
   var Readable = require('stream').Readable;
-  var remotes = RemoteObjects.create();
+  var remotes = RemoteObjects.create({cors: false});
   var streamClass;
   var server;
   var app;

@@ -18,7 +18,7 @@ describe('strong-remoting-jsonrpc', function() {
   // setup
   beforeEach(function() {
     if (server) server.close();
-    objects = RemoteObjects.create({json: {limit: '1kb'}});
+    objects = RemoteObjects.create({json: {limit: '1kb'}, cors: false});
     remotes = objects.exports;
     app = express();
   });
