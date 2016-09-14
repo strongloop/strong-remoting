@@ -326,8 +326,11 @@ describe('strong-remoting-rest', function() {
         .set('Origin', 'http://localhost:3001')
         .send({ person: 'ABC' })
         .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
-        .expect('Access-Control-Allow-Credentials', 'true')
-        .expect(200, done);
+        .expect(200)
+        .end(function(err, res) {
+          assert(res.get('Access-Control-Allow-Credentials') === undefined);
+          done();
+        });
     });
 
     it('should skip cors if origin is the same as the request url', function(done) {
@@ -352,8 +355,11 @@ describe('strong-remoting-rest', function() {
         .set('Origin', 'http://localhost:3001')
         .send()
         .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
-        .expect('Access-Control-Allow-Credentials', 'true')
-        .expect(204, done);
+        .expect(204)
+        .end(function(err, res) {
+          assert(res.get('Access-Control-Allow-Credentials') === undefined);
+          done();
+        });
     });
 
     it('should support cors when errors happen', function(done) {
@@ -363,8 +369,11 @@ describe('strong-remoting-rest', function() {
         .set('Origin', 'http://localhost:3001')
         .send({ person: 'error' })
         .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
-        .expect('Access-Control-Allow-Credentials', 'true')
-        .expect(400, done);
+        .expect(400)
+        .end(function(err, res) {
+          assert(res.get('Access-Control-Allow-Credentials') === undefined);
+          done();
+        });
     });
 
     it('should support cors when parsing errors happen', function(done) {
@@ -374,8 +383,11 @@ describe('strong-remoting-rest', function() {
         .set('Origin', 'http://localhost:3001')
         .send('ABC') // invalid json
         .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
-        .expect('Access-Control-Allow-Credentials', 'true')
-        .expect(400, done);
+        .expect(400)
+        .end(function(err, res) {
+          assert(res.get('Access-Control-Allow-Credentials') === undefined);
+          done();
+        });
     });
 
     it('OPTIONS requests should skip cors if config is false', function(done) {
