@@ -16,11 +16,11 @@ var EMPTY_QUERY = '';
 module.exports = function createUrlEncodedContext(ctx, target) {
   var TARGET_QUERY_STRING = target === 'qs';
 
-  return extend({
+  return extend(Object.create(ctx), {
     /** Send empty data, i.e. empty request body or no query string */
     EMPTY_QUERY: EMPTY_QUERY,
     verifyTestCases: verifyTestCases,
-  }, ctx);
+  });
 
   /**
    * Verify a set of test-cases for a given argument specification

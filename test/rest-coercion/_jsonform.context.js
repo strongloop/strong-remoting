@@ -14,11 +14,11 @@ var extend = util._extend;
 var EMPTY_BODY = {};
 
 module.exports = function createJsonBodyContext(ctx) {
-  return extend({
+  return extend(Object.create(ctx), {
     /** Send a request with an empty body (that is still valid JSON) */
     EMPTY_BODY: EMPTY_BODY,
     verifyTestCases: verifyTestCases,
-  }, ctx);
+  });
 
   /**
    * Verify a set of test-cases for a given argument specification

@@ -12,9 +12,9 @@ var format = util.format;
 var extend = util._extend;
 
 module.exports = function createJsonBodyContext(ctx) {
-  return extend({
+  return extend(Object.create(ctx), {
     verifyTestCases: verifyTestCases,
-  }, ctx);
+  });
 
   /**
    * Verify a set of test-cases for a given argument specification

@@ -16,7 +16,7 @@ var RemoteObjects = require('..');
 
 describe('Coercion in RestAdapter', function() {
   var ctx = {
-    remoteObject: null,
+    remoteObjects: null,
     request: null,
     ERROR_BAD_REQUEST: new Error(400),
     prettyExpectation: prettyExpectation,
@@ -107,9 +107,23 @@ describe('Coercion in RestAdapter', function() {
       { value: actualValue } :
       { error: res.statusCode };
 
+    var actualCtor = actual.value && typeof actual.value === 'object' &&
+        actual.value.constructor;
+    if (actualCtor && actualCtor !== Object && actualCtor.name) {
+      actual = {};
+      actual[actualCtor.name] = actualValue;
+    }
+
     var expected = expectedResult instanceof Error ?
       { error: +expectedResult.message } :
       { value: expectedResult };
+
+    var expectedCtor = expected.value && typeof expected.value === 'object' &&
+        expected.value.constructor;
+    if (expectedCtor && expectedCtor !== Object && expectedCtor.name) {
+      expected = {};
+      expected[expectedCtor.name] = expectedResult;
+    }
 
     var suiteName = ctx.runtime.currentSuiteName;
     var input = ctx.runtime.currentInput;

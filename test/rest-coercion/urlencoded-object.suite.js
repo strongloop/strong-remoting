@@ -23,9 +23,6 @@ function suite(prefix, ctx) {
       // Valid values - JSON encoding
       ['arg={}', {}],
       ['arg={"foo":"bar"}', { foo: 'bar' }],
-      // arrays are objects too
-      ['arg=[]', []],
-      ['arg=[1,2]', [1, 2]],
 
       // Valid values - nested keys
       ['arg[key]=undefined', { key: 'undefined' }],
@@ -39,6 +36,10 @@ function suite(prefix, ctx) {
       // Empty-like values should trigger ERROR_BAD_REQUEST too
       ['arg=null', ERROR_BAD_REQUEST],
       ['arg=undefined', ERROR_BAD_REQUEST],
+
+      // Arrays are not allowed
+      ['arg=[]', ERROR_BAD_REQUEST],
+      ['arg=[1,2]', ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -51,7 +52,6 @@ function suite(prefix, ctx) {
       ['arg=', undefined],
       ['arg=null', null],
       ['arg={}', {}],
-      ['arg=[]', []],
 
       // Valid values - nested keys
       // Nested values are NOT coerced (no deep coercion)
@@ -92,7 +92,6 @@ function suite(prefix, ctx) {
       ['arg={"key":-1}', { key: -1 }],
       ['arg={"key":1.2}', { key: 1.2 }],
       ['arg={"key":-1.2}', { key: -1.2 }],
-      ['arg=["text"]', ['text']],
       // Nested values are NOT coerced (no deep coercion)
       ['arg={"key":"false"}', { key: 'false' }],
       ['arg={"key":"true"}', { key: 'true' }],
@@ -102,9 +101,11 @@ function suite(prefix, ctx) {
       ['arg={"key":"1.2"}', { key: '1.2' }],
       ['arg={"key":"-1.2"}', { key: '-1.2' }],
 
-      // arrays are objects too
-      ['arg=[1,2]', [1, 2]],
-      ['arg=[1,"text"]', [1, 'text']],
+      // Arrays are not allowed
+      ['arg=[]', ERROR_BAD_REQUEST],
+      ['arg=[1,2]', ERROR_BAD_REQUEST],
+      ['arg=[1,"text"]', ERROR_BAD_REQUEST],
+      ['arg=["text"]', ERROR_BAD_REQUEST],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
       ['arg=undefined', ERROR_BAD_REQUEST],

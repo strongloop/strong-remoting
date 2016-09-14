@@ -6,19 +6,21 @@
 'use strict';
 
 var jsonFormContext = require('./_jsonform.context');
+var customClassContext = require('./_custom-class.context.js');
 
 module.exports = function(ctx) {
-  ctx = jsonFormContext(ctx);
+  ctx = customClassContext(jsonFormContext(ctx));
   var EMPTY_BODY = ctx.EMPTY_BODY;
   var ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
+  var CustomClass = ctx.CustomClass;
   var verifyTestCases = ctx.verifyTestCases;
 
-  describe('json form - object - required', function() {
+  describe('json form - CustomClass - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'object', required: true }, [
+    verifyTestCases({ arg: 'arg', type: 'CustomClass', required: true }, [
       // Valid values
-      [{ arg: {}}, {}],
-      [{ arg: { foo: 'bar' }}, { foo: 'bar' }],
+      [{ arg: {}}, CustomClass({})],
+      [{ arg: { foo: 'bar' }}, CustomClass({ foo: 'bar' })],
 
       // Empty values should trigger ERROR_BAD_REQUEST
       [EMPTY_BODY, ERROR_BAD_REQUEST],
@@ -31,30 +33,31 @@ module.exports = function(ctx) {
     ]);
   });
 
-  describe('json form - object - optional', function() {
+  describe('json form - CustomClass - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'object' }, [
+    verifyTestCases({ arg: 'arg', type: 'CustomClass' }, [
       // Empty values
       [EMPTY_BODY, undefined],
       [{ arg: null }, null],
 
       // Valid values
-      [{ arg: { x: null }}, { x: null }],
-      [{ arg: {}}, {}],
-      [{ arg: { x: 'value' }}, { x: 'value' }],
-      [{ arg: { x: 1 }}, { x: 1 }],
+      [{ arg: { name: null }}, CustomClass({ name: null })],
+      [{ arg: {}}, CustomClass({})],
+      [{ arg: { name: 'value' }}, CustomClass({ name: 'value' })],
+      [{ arg: { name: 1 }}, CustomClass({ name: 1 })],
+
 
       // Verify that deep coercion is not triggered
       // and types specified in JSON are preserved
-      [{ arg: { x: '1' }}, { x: '1' }],
-      [{ arg: { x: -1 }}, { x: -1 }],
-      [{ arg: { x: '-1' }}, { x: '-1' }],
-      [{ arg: { x: 1.2 }}, { x: 1.2 }],
-      [{ arg: { x: '1.2' }}, { x: '1.2' }],
-      [{ arg: { x: -1.2 }}, { x: -1.2 }],
-      [{ arg: { x: '-1.2' }}, { x: '-1.2' }],
-      [{ arg: { x: 'true' }}, { x: 'true' }],
-      [{ arg: { x: 'false' }}, { x: 'false' }],
+      [{ arg: { name: '1' }}, CustomClass({ name: '1' })],
+      [{ arg: { name: -1 }}, CustomClass({ name: -1 })],
+      [{ arg: { name: '-1' }}, CustomClass({ name: '-1' })],
+      [{ arg: { name: 1.2 }}, CustomClass({ name: 1.2 })],
+      [{ arg: { name: '1.2' }}, CustomClass({ name: '1.2' })],
+      [{ arg: { name: -1.2 }}, CustomClass({ name: -1.2 })],
+      [{ arg: { name: '-1.2' }}, CustomClass({ name: '-1.2' })],
+      [{ arg: { name: 'true' }}, CustomClass({ name: 'true' })],
+      [{ arg: { name: 'false' }}, CustomClass({ name: 'false' })],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
       [{ arg: '' }, ERROR_BAD_REQUEST],
@@ -68,6 +71,9 @@ module.exports = function(ctx) {
       [{ arg: [] }, ERROR_BAD_REQUEST],
       [{ arg: ['text'] }, ERROR_BAD_REQUEST],
       [{ arg: [1, 2] }, ERROR_BAD_REQUEST],
+
+      // Verify that errors thrown by the factory function are handled
+      [{ arg: { invalid: true }}, ERROR_BAD_REQUEST],
     ]);
   });
 };

@@ -16,14 +16,16 @@ module.exports = function(ctx) {
     // See verifyTestCases' jsdoc for details about the format of test cases.
     verifyTestCases({ arg: 'anyname', type: 'object', required: true }, [
       // Valid values, arrays are objects too
-      [[]], // an empty array is a valid value
       [{}], // an empty object is a valid value too
       [{ x: '' }],
       [{ x: null }],
-      [[1, 2]],
 
       // Invalid values trigger ERROR_BAD_REQUEST
       [null, ERROR_BAD_REQUEST],
+
+      // Arrays are not allowed
+      [[], ERROR_BAD_REQUEST],
+      [[1, 2], ERROR_BAD_REQUEST],
     ]);
   });
 
@@ -33,8 +35,7 @@ module.exports = function(ctx) {
       // Empty values
       [null, null],
 
-      // Valid values, arrays are objects too
-      [[]],
+      // Valid values
       [{}],
 
       // Verify that deep coercion is not triggered
@@ -68,6 +69,10 @@ module.exports = function(ctx) {
       [{ x: '2016-05-19T13:28:51.299Z' }],
       [{ x: '2016-05-19' }],
       [{ x: 'Thu May 19 2016 15:28:51 GMT 0200 (CEST)' }],
+
+      // Arrays are not allowed
+      [[], ERROR_BAD_REQUEST],
+      [[1, 2], ERROR_BAD_REQUEST],
     ]);
   });
 };
