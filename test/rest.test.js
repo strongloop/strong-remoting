@@ -299,7 +299,7 @@ describe('strong-remoting-rest', function() {
     });
   });
 
-  describe('cors', function() {
+  describe('CORS', function() {
     var method;
     beforeEach(function() {
       method = givenSharedStaticMethod(
@@ -319,67 +319,22 @@ describe('strong-remoting-rest', function() {
       );
     });
 
-    it('should support cors', function(done) {
+    it('should reject cross-origin requests', function(done) {
       request(app).post(method.url)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Origin', 'http://localhost:3001')
         .send({ person: 'ABC' })
-        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
-        .expect('Access-Control-Allow-Credentials', 'true')
-        .expect(200, done);
-    });
-
-    it('should skip cors if origin is the same as the request url', function(done) {
-      var server = request(app).post(method.url);
-      var url = server.url.replace('/testClass/testMethod', '');
-      server
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/json')
-        .set('Origin', url)
-        .send({ person: 'ABC' })
-        .end(function(err, res) {
-          assert(res.get('Access-Control-Allow-Origin') === undefined);
-          assert(res.get('Access-Control-Allow-Credentials') === undefined);
+        .expect(200, function(err, res) {
+          expect(Object.keys(res.headers)).to.not.include.members([
+            'access-control-allow-origin',
+            'access-control-allow-credentials',
+          ]);
           done();
         });
     });
 
-    it('should support cors preflight', function(done) {
-      request(app).options(method.url)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/json')
-        .set('Origin', 'http://localhost:3001')
-        .send()
-        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
-        .expect('Access-Control-Allow-Credentials', 'true')
-        .expect(204, done);
-    });
-
-    it('should support cors when errors happen', function(done) {
-      request(app).post(method.url)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/json')
-        .set('Origin', 'http://localhost:3001')
-        .send({ person: 'error' })
-        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
-        .expect('Access-Control-Allow-Credentials', 'true')
-        .expect(400, done);
-    });
-
-    it('should support cors when parsing errors happen', function(done) {
-      request(app).post(method.url)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/json')
-        .set('Origin', 'http://localhost:3001')
-        .send('ABC') // invalid json
-        .expect('Access-Control-Allow-Origin', 'http://localhost:3001')
-        .expect('Access-Control-Allow-Credentials', 'true')
-        .expect(400, done);
-    });
-
-    it('OPTIONS requests should skip cors if config is false', function(done) {
-      objects.options.cors = false;
+    it('should reject preflight (OPTIONS) requests', function(done) {
       request(app).options(method.url)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
@@ -387,21 +342,11 @@ describe('strong-remoting-rest', function() {
         .send()
         // http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.2
         .expect(200, function(err, res) {
-          expect(res.get('Access-Control-Allow-Origin')).to.not.exist;
-          done(err, res);
-        });
-    });
-
-    it('should skip cors headers if config is false', function(done) {
-      objects.options.cors = false;
-      request(app).post(method.url)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/json')
-        .set('Origin', 'http://localhost:3001')
-        .send({ person: 'ABC' })
-        .expect(200, function(err, res) {
-          expect(res.get('Access-Control-Allow-Origin')).to.not.exist;
-          done(err, res);
+          expect(Object.keys(res.headers)).to.not.include.members([
+            'access-control-allow-origin',
+            'access-control-allow-credentials',
+          ]);
+          done();
         });
     });
   });
