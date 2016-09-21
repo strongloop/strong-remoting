@@ -11,5 +11,4 @@
 node_modules/
 /coverage/
 dist
-intl/*
-!intl/en/
+
