@@ -1,3 +1,31 @@
+2016-09-22, Version 3.0.0
+=========================
+
+ * Add globalization strings (Amir Jafarian)
+
+ * Don't convert arg values returned by http function (Miroslav Bajtoš)
+
+ * Remove built-in CORS middleware (Miroslav Bajtoš)
+
+ * Fix API docs for HttpInvocation (Miroslav Bajtoš)
+
+ * Fix API docs in lib/remote-objects (Miroslav Bajtoš)
+
+ * Add missing links to 3.0-RELEASE-NOTES (Miroslav Bajtoš)
+
+ * Detect JSON content-type with parameters (Miroslav Bajtoš)
+
+ * Add rest-coercion tests for custom object types (Miroslav Bajtoš)
+
+ * Reject array/date values for object arguments (Miroslav Bajtoš)
+
+ * Fix rest-coercion of timestamp strings (Miroslav Bajtoš)
+
+ * Fix Date serialization (Miroslav Bajtoš)
+
+ * Add rest-coercion tests for zero-prefixed numbers (Miroslav Bajtoš)
+
+
 2016-09-09, Version 3.0.0-alpha.6
 =================================
 
