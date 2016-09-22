@@ -13,7 +13,7 @@ describe('phase handlers', function() {
 
   beforeEach(function setupServer(done) {
     var app = express();
-    remotes = RemoteObjects.create();
+    remotes = RemoteObjects.create({cors: false});
     remotes.exports.User = User;
     app.use(function(req, res, next) {
       // always build a new handler to pick new methods added by tests
@@ -23,7 +23,7 @@ describe('phase handlers', function() {
   });
 
   beforeEach(function setupClient() {
-    clientRemotes = RemoteObjects.create();
+    clientRemotes = RemoteObjects.create({cors: false});
     clientRemotes.exports.User = User;
     var url = 'http://127.0.0.1:' + server.address().port;
     clientRemotes.connect(url, 'rest');

@@ -16,7 +16,7 @@ describe('authorization hook', function() {
 
   before(function setupServer(done) {
     var app = express();
-    remotes = RemoteObjects.create();
+    remotes = RemoteObjects.create({cors: false});
     remotes.exports.User = User;
     app.use(remotes.handler('rest'));
     server = app.listen(0, '127.0.0.1', done);

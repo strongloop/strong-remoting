@@ -10,7 +10,7 @@ var RemoteObjects = require('../');
 describe('types', function() {
   var remotes;
   beforeEach(function() {
-    remotes = RemoteObjects.create();
+    remotes = RemoteObjects.create({cors: false});
   });
   describe('remotes.defineType(name, fn)', function() {
     it('should define a new type converter', function() {

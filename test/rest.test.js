@@ -54,8 +54,11 @@ describe('strong-remoting-rest', function() {
     if (process.env.NODE_ENV === 'production') {
       process.env.NODE_ENV = 'test';
     }
-    objects = RemoteObjects.create({json: {limit: '1kb'},
-      errorHandler: {disableStackTrace: false}});
+    objects = RemoteObjects.create({
+      json: {limit: '1kb'},
+      errorHandler: {disableStackTrace: false},
+      cors: false,
+    });
     remotes = objects.exports;
 
     // connect to the app
@@ -325,6 +328,9 @@ describe('strong-remoting-rest', function() {
   describe('cors', function() {
     var method;
     beforeEach(function() {
+      delete objects.options.cors; // use the default setting
+      process.once('deprecation', function() { /* ignore */ });
+
       method = givenSharedStaticMethod(
         function greet(person, cb) {
           if (person === 'error') {
