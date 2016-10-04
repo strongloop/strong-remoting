@@ -1,3 +1,21 @@
+2016-10-04, Version 2.32.0
+==========================
+
+ * Fix support for hooks returning a Promise (Miroslav Bajtoš)
+
+ * Update translation files - round#2 (Candy)
+
+ * Add translation files (Amir Jafarian)
+
+ * Deprecate built-in CORS middleware (Miroslav Bajtoš)
+
+ * Don't convert arg values returned by http function (Miroslav Bajtoš)
+
+ * Add rest-coercion tests for zero-prefixed numbers (Miroslav Bajtoš)
+
+ * Fix tests to use res.get instead of res.headers (Miroslav Bajtoš)
+
+
 2016-09-05, Version 2.31.0
 ==========================
 
