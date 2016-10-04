@@ -2036,13 +2036,21 @@ describe('strong-remoting-rest', function() {
 
     it('should resolve promise returned by a hook', function(done) {
       var method = givenSharedPrototypeMethod();
+      var hooksCalled = [];
       objects.before('**', function(ctx) {
-        return new Promise(function(resolve, reject) {
-          resolve('value-to-ignore');
-        });
+        hooksCalled.push('first');
+        return Promise.resolve();
+      });
+      objects.before('**', function(ctx) {
+        hooksCalled.push('second');
+        return Promise.resolve();
       });
 
-      json(method.url).expect(204).end(done);
+      json(method.url).expect(204, function(err, res) {
+        if (err) return done(err);
+        expect(hooksCalled).to.eql(['first', 'second']);
+        return done();
+      });
     });
 
     it('should handle rejected promise returned by a hook', function(done) {
