@@ -1,3 +1,11 @@
+2016-10-05, Version 3.0.1
+=========================
+
+ * Fix support for hooks returning a Promise (Miroslav Bajtoš)
+
+ * Update translation files - round#2 (Candy)
+
+
 2016-09-22, Version 3.0.0
 =========================
 
