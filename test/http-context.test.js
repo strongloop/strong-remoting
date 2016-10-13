@@ -86,6 +86,10 @@ describe('HttpContext', function() {
         return JSON.parse(val);
       });
 
+      Dynamic.define('File', function(val) {
+        return JSON.parse(val);
+      });
+
       it('should coerce dynamic type with string prop into object', givenMethodExpectArg({
         type: 'CustomType',
         input: JSON.stringify({ stringProp: 'string' }),
@@ -96,6 +100,12 @@ describe('HttpContext', function() {
         type: 'CustomType',
         input: JSON.stringify({ intProp: 1 }),
         expectedValue: { intProp: 1 }
+      }));
+
+      it('should not coerce File type into file response', givenMethodExpectArg({
+        type: 'File',
+        input: JSON.stringify({ stringProp: 'string' }),
+        expectedValue: { stringProp: 'string' }
       }));
     });
   });
