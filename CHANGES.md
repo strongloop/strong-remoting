@@ -1,3 +1,9 @@
+2016-10-14, Version 2.32.2
+==========================
+
+ * Distinguish between "file" and "File" result types (Fabien Franzen)
+
+
 2016-10-13, Version 2.32.1
 ==========================
 
