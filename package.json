@@ -46,7 +46,7 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-jscs": "^3.0.1",
     "grunt-karma": "^2.0.0",
-    "http-auth": "^2.2.5",
+    "http-auth": "2.4.11",
     "karma": "^1.2.0",
     "karma-browserify": "^5.1.0",
     "karma-chrome-launcher": "^1.0.1",
