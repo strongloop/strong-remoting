@@ -70,4 +70,32 @@ module.exports = function(ctx) {
       [{ arg: [1, 2] }, ERROR_BAD_REQUEST],
     ]);
   });
+
+  describe('json form - object - allowArray: true', function() {
+    verifyTestCases({ arg: 'arg', type: 'object', allowArray: true }, [
+      // normal objects is valid
+      [{ arg: { x: null }}, { x: null }],
+      [{ arg: {}}, {}],
+      [{ arg: { x: 'value' }}, { x: 'value' }],
+      [{ arg: { x: 1 }}, { x: 1 }],
+
+      // array of objects also valid
+      [{ arg: [{}] }, [{}]],
+      [{ arg: [{ x: 1 }, {}] }, [{ x: 1 }, {}]],
+      [{ arg: [{ x: null }] }, [{ x: null }]],
+
+       // Invalid values should trigger ERROR_BAD_REQUEST
+      [{ arg: '' }, ERROR_BAD_REQUEST],
+      [{ arg: false }, ERROR_BAD_REQUEST],
+      [{ arg: true }, ERROR_BAD_REQUEST],
+      [{ arg: 0 }, ERROR_BAD_REQUEST],
+      [{ arg: 1 }, ERROR_BAD_REQUEST],
+      [{ arg: -1 }, ERROR_BAD_REQUEST],
+
+      // array of non-objects are invalid
+      [{ arg: [{}, [{}]] }, ERROR_BAD_REQUEST],
+      [{ arg: [{}, 3.1415] }, ERROR_BAD_REQUEST],
+      [{ arg: [{}, 'non-object'] }, ERROR_BAD_REQUEST],
+    ]);
+  });
 };
