@@ -1,3 +1,11 @@
+2016-10-20, Version 2.32.3
+==========================
+
+ * lockdown dependency for http-auth (David Cheung)
+
+ * Stop changing read-only Number property (Kogulan Baskaran)
+
+
 2016-10-14, Version 2.32.2
 ==========================
 
