@@ -1,3 +1,17 @@
+2016-10-26, Version 3.0.2
+=========================
+
+ * allowArray flag for remoteObject `accept` (David Cheung)
+
+ * Adding options to typeConverters functions (David Cheung)
+
+ * lockdown dependency for http-auth (David Cheung)
+
+ * Update ja translation file (Candy)
+
+ * Remove 3.0 RELEASE-NOTES (Miroslav Bajtoš)
+
+
 2016-10-05, Version 3.0.1
 =========================
 
