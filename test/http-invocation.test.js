@@ -193,6 +193,133 @@ describe('HttpInvocation', function() {
       inv.transformResponse(res, body, cb);
     }
   });
+
+  describe('createRequest', function() {
+    it('creates a simple request', function() {
+      var inv = givenInvocationForEndpoint(null, []);
+      var expectedReq = { method: 'GET',
+        url: 'http://base/testModel/testMethod',
+        protocol: 'http:',
+        json: true,
+      };
+      expect(inv.createRequest()).to.eql(expectedReq);
+    });
+
+    it('makes primitive type arguments as query params', function() {
+      var accepts = [
+        { arg: 'a', type: 'number' },
+        { arg: 'b', type: 'string' },
+      ];
+      var aValue = 2;
+      var bValue = 'foo';
+      var inv = givenInvocationForEndpoint(accepts, [aValue, bValue]);
+      var expectedReq = { method: 'GET',
+        url: 'http://base/testModel/testMethod?a=2&b=foo',
+        protocol: 'http:',
+        json: true,
+      };
+      expect(inv.createRequest()).to.eql(expectedReq);
+    });
+
+    it('makes an array argument as a query param', function() {
+      var accepts = [
+        { arg: 'a', type: 'object' },
+      ];
+      var aValue = [1, 2, 3];
+      var inv = givenInvocationForEndpoint(accepts, [aValue]);
+      var expectedReq = { method: 'GET',
+        url: 'http://base/testModel/testMethod?a=' + encodeURIComponent('[1,2,3]'),
+        protocol: 'http:',
+        json: true,
+      };
+      expect(inv.createRequest()).to.eql(expectedReq);
+    });
+
+    it('keeps an empty array as a query param', function() {
+      var accepts = [
+        { arg: 'a', type: 'object' },
+      ];
+      var aValue = [];
+      var inv = givenInvocationForEndpoint(accepts, [aValue]);
+      var expectedReq = { method: 'GET',
+        url: 'http://base/testModel/testMethod?a=' + encodeURIComponent('[]'),
+        protocol: 'http:',
+        json: true,
+      };
+      expect(inv.createRequest()).to.eql(expectedReq);
+    });
+
+    it('keeps an empty array as a body param for a POST request', function() {
+      var accepts = [
+        { arg: 'a', type: 'object' },
+      ];
+      var aValue = [];
+      var inv = givenInvocationForEndpoint(accepts, [aValue], 'POST');
+      var expectedReq = { method: 'POST',
+        url: 'http://base/testModel/testMethod',
+        protocol: 'http:',
+        json: true,
+        body: {
+          a: [],
+        },
+      };
+      expect(inv.createRequest()).to.eql(expectedReq);
+    });
+
+    it('handles a loopback filter as a query param', function() {
+      var accepts = [
+        { arg: 'filter', type: 'object' },
+      ];
+      var filter = {
+        where: {
+          id: {
+            inq: [1, 2],
+          },
+          typeId: {
+            inq: [],
+          },
+        },
+        include: ['related'],
+      };
+      var inv = givenInvocationForEndpoint(accepts, [filter]);
+      var expectedFilter =
+        '{"where":{"id":{"inq":[1,2]},"typeId":{"inq":[]}},"include":["related"]}';
+      var expectedReq = { method: 'GET',
+        url: 'http://base/testModel/testMethod?filter=' +
+          encodeURIComponent(expectedFilter),
+        protocol: 'http:',
+        json: true,
+      };
+      expect(inv.createRequest()).to.eql(expectedReq);
+    });
+  });
+
+  it('handles a loopback filter as a body param for a POST request', function() {
+    var accepts = [
+      { arg: 'filter', type: 'object' },
+    ];
+    var filter = {
+      where: {
+        id: {
+          inq: [1, 2],
+        },
+        typeId: {
+          inq: [],
+        },
+      },
+      include: ['related'],
+    };
+    var inv = givenInvocationForEndpoint(accepts, [filter], 'POST');
+    var expectedReq = { method: 'POST',
+      url: 'http://base/testModel/testMethod',
+      protocol: 'http:',
+      json: true,
+      body: {
+        filter: filter,
+      },
+    };
+    expect(inv.createRequest()).to.eql(expectedReq);
+  });
 });
 
 function givenSharedStaticMethod(fn, config) {
@@ -216,4 +343,22 @@ function givenInvocation(method, params) {
       params.baseUrl,
       params.auth,
       params.typeRegistry || new TypeRegistry());
+}
+
+function givenInvocationForEndpoint(accepts, args, verb) {
+  var method = givenSharedStaticMethod({
+    accepts: accepts,
+  });
+  method.getEndpoints = function() {
+    return [createEndpoint({ verb: verb || 'GET' })];
+  };
+  return givenInvocation(method, { ctorArgs: [], args: args, baseUrl: 'http://base' });
+}
+
+function createEndpoint(config) {
+  config = config || {};
+  return {
+    verb: config.verb || 'GET',
+    fullPath: config.fullPath || '/testModel/testMethod',
+  };
 }
