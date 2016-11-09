@@ -5,6 +5,7 @@
 
 'use strict';
 
+var GeoPoint = require('loopback-datatype-geopoint');
 var jsonBodyContext = require('./_jsonbody.context');
 
 var INVALID_DATE = new Date(NaN);
@@ -175,6 +176,46 @@ module.exports = function(ctx) {
       [[false], ERROR_BAD_REQUEST],
       [[true], ERROR_BAD_REQUEST],
       [['text'], ERROR_BAD_REQUEST],
+    ]);
+  });
+
+  describe('json body - array of geopoints - optional', function() {
+    // See verifyTestCases' jsdoc for details about the format of test cases.
+    verifyTestCases({ arg: 'anyname', type: ['geopoint'] }, [
+      // no value is provided
+      [null],
+      // Empty array
+      [[]],
+
+      // Valid values - {lat, lng} objects
+      [[{ lat: 2.3, lng: 3.2 }], [new GeoPoint(2.3, 3.2)]],
+      [[{ lat: 2.3, lng: 3.2 }, { lat: 3.3, lng: 3.5 }], [
+        new GeoPoint(2.3, 3.2),
+        new GeoPoint(3.3, 3.5),
+      ]],
+      // Valid values - [lat,lng] array
+      [[[2.3, 3.2]], [new GeoPoint(2.3, 3.2)]],
+      [[[2.3, 3.2], [3.3, 2.2]], [
+        new GeoPoint(2.3, 3.2),
+        new GeoPoint(3.3, 2.2),
+      ]],
+
+      // Value is not an array - should return ERROR_BAD_REQUEST
+      [false, ERROR_BAD_REQUEST],
+      [true, ERROR_BAD_REQUEST],
+      [0, ERROR_BAD_REQUEST],
+      ['"0"', ERROR_BAD_REQUEST],
+      ['"text"', ERROR_BAD_REQUEST],
+      [{}, ERROR_BAD_REQUEST],
+      [{ x: true }, ERROR_BAD_REQUEST],
+
+      // Array items have wrong type - should return ERROR_BAD_REQUEST
+      [[null], ERROR_BAD_REQUEST],
+      [[true], ERROR_BAD_REQUEST],
+      [['0'], ERROR_BAD_REQUEST],
+      [['1'], ERROR_BAD_REQUEST],
+      [['text'], ERROR_BAD_REQUEST],
+      [[1, 'text'], ERROR_BAD_REQUEST],
     ]);
   });
 
