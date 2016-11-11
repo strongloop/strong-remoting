@@ -1,3 +1,4 @@
+# This is a modification to test CI (strong-remoting)
 # Overview
 Objects (and, therefore, data) in Node applications commonly need to be accessible by other Node processes, browsers, and even mobile clients.   Strong remoting:
 
