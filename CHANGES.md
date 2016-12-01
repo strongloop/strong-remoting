@@ -1,3 +1,25 @@
+2016-12-01, Version 3.1.0
+=========================
+
+ * Implement disabling methods by alias (Rémi Bèges)
+
+ * Add coercion support for geopoint datatype (gunjpan)
+
+ * Update README.md (Rand McKinney)
+
+ * Add Node v7 to Travis CI platforms (Miroslav Bajtoš)
+
+ * Upgrade http-auth to latest (Node v4+ only) (Miroslav Bajtoš)
+
+ * Drop support for Node v0.10 and v0.12 (Miroslav Bajtoš)
+
+ * Update README with correct doc links, etc (Amir Jafarian)
+
+ * Refuse to override builtin file type (Miroslav Bajtoš)
+
+ * Stringify query params which are objects as JSON (Horia Radu)
+
+
 2016-10-26, Version 3.0.2
 =========================
 
