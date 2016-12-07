@@ -210,6 +210,26 @@ describe('strong-remoting-rest', function() {
         .end(done);
     });
 
+    // this is to verify scenarios such as file download
+    // where it sets content-type to image/jpeg, but file is 404 and
+    // response error body in strong-remoting(2.x) default error handler is always object
+    // see: https://github.com/strongloop/loopback-component-storage/pull/179
+    it('should use `content-type: application/json` for default errorHandler',
+    function(done) {
+      var method = givenSharedStaticMethod(function(cb) {
+        var err = new Error('an error');
+        cb(err);
+      });
+      objects.before(method.name, function(ctx, next) {
+        ctx.res.set('content-type', 'image/png');
+        next();
+      });
+
+      request(app).get(method.url)
+        .expect(500)
+        .expect('content-type', 'application/json; charset=utf-8', done);
+    });
+
     it('should turn off error handler', function(done) {
       objects.options.rest = { handleErrors: false };
       app.use(function(err, req, res, next) {
