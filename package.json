@@ -8,6 +8,9 @@
     "REST"
   ],
   "version": "2.32.3",
+  "publishConfig": {
+    "tag": "lts"
+  },
   "scripts": {
     "pretest": "grunt jscs jshint",
     "test": "mocha"
