@@ -15,7 +15,7 @@ var products = remotes.exports.products = {
 
 // share the find method
 products.find.shared = true;
-products.find.returns = { arg: 'products', root: true, type: 'array' };
+products.find.returns = {arg: 'products', root: true, type: 'array'};
 
 // expose it over http
 require('http')

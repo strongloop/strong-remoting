@@ -16,16 +16,16 @@ module.exports = function(ctx) {
 
   describe('json body - CustomClass - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: 'CustomClass', required: true }, [
+    verifyTestCases({arg: 'anyname', type: 'CustomClass', required: true}, [
       // An empty object is a valid value
       [{}],
 
-      [{ name: '' }],
-      [{ name: 'a-test-name' }],
+      [{name: ''}],
+      [{name: 'a-test-name'}],
 
       // Invalid values trigger ERROR_BAD_REQUEST
       [null, ERROR_BAD_REQUEST],
-      [{ invalid: true }, ERROR_BAD_REQUEST],
+      [{invalid: true}, ERROR_BAD_REQUEST],
 
       // Array values are not allowed
       [[], ERROR_BAD_REQUEST],
@@ -35,54 +35,54 @@ module.exports = function(ctx) {
 
   describe('json body - CustomClass - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: 'CustomClass' }, [
+    verifyTestCases({arg: 'anyname', type: 'CustomClass'}, [
       // Empty values
       [null, null],
 
       // Valid values
       [{}],
-      [{ name: 'a-test-name' }],
+      [{name: 'a-test-name'}],
 
       // Verify that deep coercion is not triggered
       // and types specified in JSON are preserved
 
-      [{ name: '' }],
-      [{ name: null }],
-      [{ name: {}}],
-      [{ name: { key: null }}],
-      [{ name: 1 }],
-      [{ name: '1' }],
-      [{ name: -1 }],
-      [{ name: '-1' }],
-      [{ name: 1.2 }],
-      [{ name: '1.2' }],
-      [{ name: -1.2 }],
-      [{ name: '-1.2' }],
-      [{ name: ['tenamet'] }],
-      [{ name: [1, 2] }],
+      [{name: ''}],
+      [{name: null}],
+      [{name: {}}],
+      [{name: {key: null}}],
+      [{name: 1}],
+      [{name: '1'}],
+      [{name: -1}],
+      [{name: '-1'}],
+      [{name: 1.2}],
+      [{name: '1.2'}],
+      [{name: -1.2}],
+      [{name: '-1.2'}],
+      [{name: ['tenamet']}],
+      [{name: [1, 2]}],
 
       // Invalid values - arrays are rejected
       [[], ERROR_BAD_REQUEST],
       [[1, 2], ERROR_BAD_REQUEST],
 
       // Verify that errors thrown by the factory function are handled
-      [{ invalid: true }, ERROR_BAD_REQUEST],
+      [{invalid: true}, ERROR_BAD_REQUEST],
     ]);
   });
 
   describe('json body - CustomClass - allowArray: true', function() {
-    verifyTestCases({ arg: 'anyname', type: 'CustomClass', allowArray: true }, [
+    verifyTestCases({arg: 'anyname', type: 'CustomClass', allowArray: true}, [
       // normal objects is valid
-      [{ x: '' }],
-      [{ x: null }],
-      [{ x: {}}],
-      [{ x: { key: null }}],
+      [{x: ''}],
+      [{x: null}],
+      [{x: {}}],
+      [{x: {key: null}}],
 
       // array of objects also valid
       [[{}]],
-      [[{ x: '' }]],
-      [[{ x: null }]],
-      [[{ x: 1 }, { y: 'string' }]],
+      [[{x: ''}]],
+      [[{x: null}]],
+      [[{x: 1}, {y: 'string'}]],
 
       // array of non-objects are invalid
       [[{}, [{}]], ERROR_BAD_REQUEST],

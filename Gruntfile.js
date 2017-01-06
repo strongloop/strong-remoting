@@ -3,7 +3,9 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
-/*global module:false*/
+'use strict';
+
+/* global module:false */
 module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({

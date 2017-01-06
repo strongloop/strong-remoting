@@ -16,10 +16,10 @@ Dog.sharedCtor = function(name, fn) {
 };
 
 // define the args for the shared constructor
-Dog.sharedCtor.accepts = { arg: 'name', type: 'string', http: { source: 'path' }};
+Dog.sharedCtor.accepts = {arg: 'name', type: 'string', http: {source: 'path'}};
 
 // change the default routing
-Dog.sharedCtor.http = { path: '/:name' };
+Dog.sharedCtor.http = {path: '/:name'};
 
 // define a regular instance method
 Dog.prototype.speak = function(fn) {
@@ -27,7 +27,7 @@ Dog.prototype.speak = function(fn) {
 };
 
 // mark it as shared
-Dog.prototype.speak.returns = { arg: 'result', type: 'string', root: true };
+Dog.prototype.speak.returns = {arg: 'result', type: 'string', root: true};
 Dog.prototype.speak.shared = true;
 
 // create a set of shared classes

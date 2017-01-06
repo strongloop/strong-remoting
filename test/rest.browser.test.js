@@ -3,6 +3,8 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 var assert = require('assert');
 var extend = require('util')._extend;
 var inherits = require('util').inherits;
@@ -42,8 +44,8 @@ describe('strong-remoting-rest', function() {
             cb(null, msg);
           },
           {
-            accepts: { arg: 'person', type: 'string' },
-            returns: { arg: 'msg', type: 'string' },
+            accepts: {arg: 'person', type: 'string'},
+            returns: {arg: 'msg', type: 'string'},
           }
         );
 
@@ -61,11 +63,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: { source: 'path' }},
+              {arg: 'b', type: 'number'},
+              {arg: 'a', type: 'number', http: {source: 'path'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/:a' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/:a'},
           }
         );
 
@@ -82,11 +84,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: { source: 'query' }},
+              {arg: 'b', type: 'number'},
+              {arg: 'a', type: 'number', http: {source: 'query'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/'},
           }
         );
 
@@ -103,11 +105,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: { source: 'header' }},
+              {arg: 'b', type: 'number'},
+              {arg: 'a', type: 'number', http: {source: 'header'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/'},
           }
         );
 
@@ -127,7 +129,7 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' },
+              {arg: 'b', type: 'number'},
             ],
           }
         );
@@ -145,10 +147,10 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
@@ -169,16 +171,16 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
-        var data = { date: { $type: 'date', $data: new Date() }};
+        var data = {date: {$type: 'date', $data: new Date()}};
         objects.invoke(method.name, [data], function(err, resData) {
-          expect(resData).to.deep.equal({ date: data.date.$data.toISOString() });
+          expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
           done();
         });
       });
@@ -190,11 +192,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number', http: { source: 'form' }},
-              { arg: 'a', type: 'number', http: { source: 'form' }},
+              {arg: 'b', type: 'number', http: {source: 'form'}},
+              {arg: 'a', type: 'number', http: {source: 'form'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/'},
           }
         );
 
@@ -211,11 +213,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number', http: { source: 'formData' }},
-              { arg: 'a', type: 'number', http: { source: 'formData' }},
+              {arg: 'b', type: 'number', http: {source: 'formData'}},
+              {arg: 'a', type: 'number', http: {source: 'formData'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/'},
           }
         );
 
@@ -232,12 +234,12 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'number' },
-              { arg: 'b', type: 'number' },
+              {arg: 'a', type: 'number'},
+              {arg: 'b', type: 'number'},
             ],
             returns: [
-              { arg: 'a', type: 'number' },
-              { arg: 'b', type: 'number' },
+              {arg: 'a', type: 'number'},
+              {arg: 'b', type: 'number'},
             ],
           }
         );
@@ -257,14 +259,14 @@ describe('strong-remoting-rest', function() {
             },
             {
               accepts: [
-                { arg: 'num', type: 'number', required: true },
-                { arg: 'bool', type: 'boolean', required: true },
+                {arg: 'num', type: 'number', required: true},
+                {arg: 'bool', type: 'boolean', required: true},
               ],
               returns: [
-                { arg: 'num', type: 'number' },
-                { arg: 'bool', type: 'boolean' },
+                {arg: 'num', type: 'number'},
+                {arg: 'bool', type: 'boolean'},
               ],
-              http: { path: '/' },
+              http: {path: '/'},
             }
           );
 
@@ -285,12 +287,12 @@ describe('strong-remoting-rest', function() {
             },
             {
               accepts: [
-                { arg: 'str', type: 'string', required: true },
+                {arg: 'str', type: 'string', required: true},
               ],
               returns: [
-                { arg: 'str', type: 'string' },
+                {arg: 'str', type: 'string'},
               ],
-              http: { path: '/' },
+              http: {path: '/'},
             }
           );
 
@@ -308,16 +310,16 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'num', type: 'number', required: true },
-              { arg: 'str', type: 'string', required: true },
-              { arg: 'bool', type: 'boolean', required: true },
+              {arg: 'num', type: 'number', required: true},
+              {arg: 'str', type: 'string', required: true},
+              {arg: 'bool', type: 'boolean', required: true},
             ],
             returns: [
-              { arg: 'num', type: 'number' },
-              { arg: 'str', type: 'string' },
-              { arg: 'bool', type: 'boolean' },
+              {arg: 'num', type: 'number'},
+              {arg: 'str', type: 'string'},
+              {arg: 'bool', type: 'boolean'},
             ],
-            http: { path: '/' },
+            http: {path: '/'},
           }
         );
 
@@ -329,7 +331,7 @@ describe('strong-remoting-rest', function() {
 
       describe('uncaught errors', function() {
         beforeEach(function() {
-          var optsErrorHandler = { errorHandler: { debug: true, log: false }};
+          var optsErrorHandler = {errorHandler: {debug: true, log: false}};
           extend(objects.options, optsErrorHandler);
         });
         it('should return 500 if an error object is thrown', function(done) {
@@ -357,8 +359,8 @@ describe('strong-remoting-rest', function() {
     }
     fn = fn || function(cb) { cb(); };
 
-    remotes.testClass = { testMethod: fn };
-    config = extend({ shared: true }, config);
+    remotes.testClass = {testMethod: fn};
+    config = extend({shared: true}, config);
     extend(remotes.testClass.testMethod, config);
     return {
       name: 'testClass.testMethod',
@@ -376,7 +378,7 @@ describe('strong-remoting-rest', function() {
     fn = fn || function(cb) { cb(); };
     remotes.testClass = factory.createSharedClass();
     remotes.testClass.prototype.testMethod = fn;
-    config = extend({ shared: true }, config);
+    config = extend({shared: true}, config);
     extend(remotes.testClass.prototype.testMethod, config);
     return {
       name: 'testClass.prototype.testMethod',

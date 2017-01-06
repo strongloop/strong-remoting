@@ -3,6 +3,8 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 var assert = require('assert');
 var extend = require('util')._extend;
 var inherits = require('util').inherits;
@@ -38,7 +40,7 @@ describe('strong-remoting-rest', function() {
     appSupportingJsonOnly.use(function(req, res, next) {
       // create the handler for each request
       var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
-      var opts = { supportedTypes: supportedTypes };
+      var opts = {supportedTypes: supportedTypes};
       objects.handler(adapterName, opts).apply(objects, arguments);
     });
     server = appSupportingJsonOnly.listen(done);
@@ -47,9 +49,9 @@ describe('strong-remoting-rest', function() {
   // setup
   beforeEach(function() {
     objects = RemoteObjects.create({
-      json: { limit: '1kb' },
-      errorHandler: { debug: true, log: false },
-      types: { warnOnUnknownType: false },
+      json: {limit: '1kb'},
+      errorHandler: {debug: true, log: false},
+      types: {warnOnUnknownType: false},
     });
     remotes = objects.exports;
 
@@ -89,8 +91,8 @@ describe('strong-remoting-rest', function() {
           cb(null, msg);
         },
         {
-          accepts: { arg: 'person', type: 'string', http: { source: 'body' }},
-          returns: { arg: 'msg', type: 'string' },
+          accepts: {arg: 'person', type: 'string', http: {source: 'body'}},
+          returns: {arg: 'msg', type: 'string'},
         }
       );
 
@@ -125,7 +127,7 @@ describe('strong-remoting-rest', function() {
       request(app).get(method.url)
         .expect('Content-Type', /json/)
         .expect(500)
-        .end(expectErrorResponseContaining({ message: 'foobar' }, function(err) {
+        .end(expectErrorResponseContaining({message: 'foobar'}, function(err) {
           expect(called).to.eql(true);
           done(err);
         }));
@@ -142,11 +144,11 @@ describe('strong-remoting-rest', function() {
         .expect('Content-Type', /json/)
         .expect(500)
         .end(expectErrorResponseContaining(
-          { message: 'Internal Server Error' }, ['stack'], done));
+          {message: 'Internal Server Error'}, ['stack'], done));
     });
 
     it('should turn off url-not-found handler', function(done) {
-      objects.options.rest = { handleUnknownPaths: false };
+      objects.options.rest = {handleUnknownPaths: false};
       app.use(function(req, res, next) {
         res.status(404).send('custom-not-found');
       });
@@ -160,7 +162,7 @@ describe('strong-remoting-rest', function() {
     it('should turn off method-not-found handler', function(done) {
       var method = givenSharedStaticMethod();
 
-      objects.options.rest = { handleUnknownPaths: false };
+      objects.options.rest = {handleUnknownPaths: false};
       app.use(function(req, res, next) {
         res.send(404, 'custom-not-found');
       });
@@ -185,7 +187,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should turn off error handler', function(done) {
-      objects.options.rest = { handleErrors: false };
+      objects.options.rest = {handleErrors: false};
       app.use(function(err, req, res, next) {
         res.send('custom-error-handler-called');
       });
@@ -198,14 +200,14 @@ describe('strong-remoting-rest', function() {
 
     it('should configure custom REST content types', function(done) {
       var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
-      objects.options.rest = { supportedTypes: supportedTypes };
+      objects.options.rest = {supportedTypes: supportedTypes};
 
       var method = givenSharedStaticMethod(
         function(cb) {
-          cb(null, { key: 'value' });
+          cb(null, {key: 'value'});
         },
         {
-          returns: { arg: 'result', type: 'object' },
+          returns: {arg: 'result', type: 'object'},
         }
       );
 
@@ -227,8 +229,8 @@ describe('strong-remoting-rest', function() {
       delete objects.options.rest;
 
       var method = givenSharedStaticMethod(
-        function(cb) { cb(null, { key: 'value' }); },
-        { returns: { arg: 'result', type: 'object' }}
+        function(cb) { cb(null, {key: 'value'}); },
+        {returns: {arg: 'result', type: 'object'}}
       );
 
       request(app).get(method.url)
@@ -239,19 +241,19 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should enable XML types via `options.rest.xml`', function(done) {
-      objects.options.rest = { xml: true };
+      objects.options.rest = {xml: true};
 
       var method = givenSharedStaticMethod(
-        function(value, cb) { cb(null, { key: value }); },
+        function(value, cb) { cb(null, {key: value}); },
         {
-          accepts: { arg: 'value', type: 'string' },
-          returns: { arg: 'result', type: 'object' },
+          accepts: {arg: 'value', type: 'string'},
+          returns: {arg: 'result', type: 'object'},
         });
 
       request(app).post(method.url)
         .set('Accept', ACCEPT_XML_OR_ANY)
         .set('Content-Type', 'application/json')
-        .send({ value: 'some-value' })
+        .send({value: 'some-value'})
         .expect(200)
         .expect('Content-Type', /xml/)
         .end(function(err, res) {
@@ -265,11 +267,11 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should enable XML via `options.rest.supportedTypes`', function(done) {
-      objects.options.rest = { supportedTypes: ['application/xml'] };
+      objects.options.rest = {supportedTypes: ['application/xml']};
 
       var method = givenSharedStaticMethod(
         function(cb) { cb(null, 'value'); },
-        { returns: { arg: 'result', type: 'object' }}
+        {returns: {arg: 'result', type: 'object'}}
       );
 
       request(app).post(method.url)
@@ -280,11 +282,11 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should treat application/vnd.api+json accept header correctly', function(done) {
-      objects.options.rest = { supportedTypes: ['application/vnd.api+json'] };
+      objects.options.rest = {supportedTypes: ['application/vnd.api+json']};
 
       var method = givenSharedStaticMethod(
-        function(cb) { cb(null, { value: 'value' }); },
-        { returns: { arg: 'result', type: 'object' }}
+        function(cb) { cb(null, {value: 'value'}); },
+        {returns: {arg: 'result', type: 'object'}}
       );
 
       request(app).get(method.url)
@@ -293,7 +295,7 @@ describe('strong-remoting-rest', function() {
         .expect('Content-Type', /application\/vnd\.api\+json/)
         .end(function(err, res) {
           if (err) return done(err);
-          expect(res.body).to.deep.equal({ result: { value: 'value' }});
+          expect(res.body).to.deep.equal({result: {value: 'value'}});
           done();
         });
     });
@@ -313,8 +315,8 @@ describe('strong-remoting-rest', function() {
           }
         },
         {
-          accepts: { arg: 'person', type: 'string' },
-          returns: { arg: 'msg', type: 'string' },
+          accepts: {arg: 'person', type: 'string'},
+          returns: {arg: 'msg', type: 'string'},
         }
       );
     });
@@ -324,7 +326,7 @@ describe('strong-remoting-rest', function() {
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('Origin', 'http://localhost:3001')
-        .send({ person: 'ABC' })
+        .send({person: 'ABC'})
         .expect(200, function(err, res) {
           expect(Object.keys(res.headers)).to.not.include.members([
             'access-control-allow-origin',
@@ -365,13 +367,13 @@ describe('strong-remoting-rest', function() {
           cb(null, msg);
         },
         {
-          accepts: { arg: 'person', type: 'string' },
-          returns: { arg: 'msg', type: 'string' },
+          accepts: {arg: 'person', type: 'string'},
+          returns: {arg: 'msg', type: 'string'},
         }
       );
 
       json(method.url + '?person=hello')
-        .expect(200, { msg: 'hello' }, done);
+        .expect(200, {msg: 'hello'}, done);
     });
 
     it('should honor Accept: header', function(done) {
@@ -380,8 +382,8 @@ describe('strong-remoting-rest', function() {
           cb(null, msg);
         },
         {
-          accepts: { arg: 'person', type: 'string' },
-          returns: { arg: 'msg', type: 'string' },
+          accepts: {arg: 'person', type: 'string'},
+          returns: {arg: 'msg', type: 'string'},
         }
       );
 
@@ -396,8 +398,8 @@ describe('strong-remoting-rest', function() {
           cb(null, [msg]);
         },
         {
-          accepts: { arg: 'person', type: ['string'] },
-          returns: { arg: 'msg', type: 'string' },
+          accepts: {arg: 'person', type: ['string']},
+          returns: {arg: 'msg', type: 'string'},
         }
       );
 
@@ -412,8 +414,8 @@ describe('strong-remoting-rest', function() {
           cb(null, [msg]);
         },
         {
-          accepts: { arg: 'person', type: ['string'] },
-          returns: { arg: 'msg', type: ['string'], root: true },
+          accepts: {arg: 'person', type: ['string']},
+          returns: {arg: 'msg', type: ['string'], root: true},
         }
       );
 
@@ -429,16 +431,16 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'b', type: 'number' },
-            { arg: 'a', type: 'number', http: { source: 'path' }},
+            {arg: 'b', type: 'number'},
+            {arg: 'a', type: 'number', http: {source: 'path'}},
           ],
-          returns: { arg: 'n', type: 'number' },
-          http: { path: '/:a' },
+          returns: {arg: 'n', type: 'number'},
+          http: {path: '/:a'},
         }
       );
 
       json(method.classUrl + '/1?b=2')
-        .expect({ n: 3 }, done);
+        .expect({n: 3}, done);
     });
 
     it('should allow arguments in the query', function(done) {
@@ -448,16 +450,16 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'b', type: 'number' },
-            { arg: 'a', type: 'number', http: { source: 'query' }},
+            {arg: 'b', type: 'number'},
+            {arg: 'a', type: 'number', http: {source: 'query'}},
           ],
-          returns: { arg: 'n', type: 'number' },
-          http: { path: '/' },
+          returns: {arg: 'n', type: 'number'},
+          http: {path: '/'},
         }
       );
 
       json(method.classUrl + '/?a=1&b=2')
-        .expect({ n: 3 }, done);
+        .expect({n: 3}, done);
     });
 
     it('should allow string[] arg in the query', function(done) {
@@ -467,16 +469,16 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'a', type: 'string' },
-            { arg: 'b', type: ['string'], http: { source: 'query' }},
+            {arg: 'a', type: 'string'},
+            {arg: 'b', type: ['string'], http: {source: 'query'}},
           ],
-          returns: { arg: 'n', type: 'string' },
-          http: { path: '/' },
+          returns: {arg: 'n', type: 'string'},
+          http: {path: '/'},
         }
       );
 
       json(method.classUrl + '/?a=z&b[0]=x&b[1]=y')
-        .expect({ n: 'xyz' }, done);
+        .expect({n: 'xyz'}, done);
     });
 
     it('should allow string[] arg in the query with stringified value',
@@ -487,16 +489,16 @@ describe('strong-remoting-rest', function() {
         },
           {
             accepts: [
-            { arg: 'a', type: 'string' },
-            { arg: 'b', type: ['string'], http: { source: 'query' }},
+            {arg: 'a', type: 'string'},
+            {arg: 'b', type: ['string'], http: {source: 'query'}},
             ],
-            returns: { arg: 'n', type: 'string' },
-            http: { path: '/' },
+            returns: {arg: 'n', type: 'string'},
+            http: {path: '/'},
           }
       );
 
         json(method.classUrl + '/?a=z&b=["x", "y"]')
-        .expect({ n: 'xyz' }, done);
+        .expect({n: 'xyz'}, done);
       });
 
     it('should allow custom argument functions', function(done) {
@@ -506,18 +508,18 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'b', type: 'number' },
-            { arg: 'a', type: 'number', http: function(ctx) {
+            {arg: 'b', type: 'number'},
+            {arg: 'a', type: 'number', http: function(ctx) {
               return +ctx.req.query.a;
-            } },
+            }},
           ],
-          returns: { arg: 'n', type: 'number' },
-          http: { path: '/' },
+          returns: {arg: 'n', type: 'number'},
+          http: {path: '/'},
         }
       );
 
       json(method.classUrl + '/?a=1&b=2')
-        .expect({ n: 3 }, done);
+        .expect({n: 3}, done);
     });
 
     it('should pass undefined if the argument is not supplied', function(done) {
@@ -530,7 +532,7 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'b', type: 'number' },
+            {arg: 'b', type: 'number'},
           ],
         }
       );
@@ -548,10 +550,10 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'a', type: 'object', http: { source: 'body' }},
+            {arg: 'a', type: 'object', http: {source: 'body'}},
           ],
-          returns: { arg: 'data', type: 'object', root: true },
-          http: { path: '/' },
+          returns: {arg: 'data', type: 'object', root: true},
+          http: {path: '/'},
         }
       );
 
@@ -561,7 +563,7 @@ describe('strong-remoting-rest', function() {
         .send('{"x": 1, "y": "Y"}')
         .expect('Content-Type', /json/)
         .expect(200, function(err, res) {
-          expect(res.body).to.deep.equal({ 'x': 1, 'y': 'Y' });
+          expect(res.body).to.deep.equal({'x': 1, 'y': 'Y'});
           done(err, res);
         });
     });
@@ -573,21 +575,21 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'a', type: 'object', http: { source: 'body' }},
+            {arg: 'a', type: 'object', http: {source: 'body'}},
           ],
-          returns: { arg: 'data', type: 'object', root: true },
-          http: { path: '/' },
+          returns: {arg: 'data', type: 'object', root: true},
+          http: {path: '/'},
         }
       );
 
-      var data = { date: { $type: 'date', $data: new Date() }};
+      var data = {date: {$type: 'date', $data: new Date()}};
       request(app).post(method.classUrl)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .send(data)
         .expect('Content-Type', /json/)
         .expect(200, function(err, res) {
-          expect(res.body).to.deep.equal({ date: data.date.$data.toISOString() });
+          expect(res.body).to.deep.equal({date: data.date.$data.toISOString()});
           done(err, res);
         });
     });
@@ -599,11 +601,11 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'b', type: 'number', http: { source: 'form' }},
-            { arg: 'a', type: 'number', http: { source: 'form' }},
+            {arg: 'b', type: 'number', http: {source: 'form'}},
+            {arg: 'a', type: 'number', http: {source: 'form'}},
           ],
-          returns: { arg: 'n', type: 'number' },
-          http: { path: '/' },
+          returns: {arg: 'n', type: 'number'},
+          http: {path: '/'},
         }
       );
 
@@ -612,7 +614,7 @@ describe('strong-remoting-rest', function() {
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .send('a=1&b=2')
         .expect('Content-Type', /json/)
-        .expect({ n: 3 }, done);
+        .expect({n: 3}, done);
     });
 
     it('should allow arguments in the header', function(done) {
@@ -622,11 +624,11 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'b', type: 'number', http: { source: 'header' }},
-            { arg: 'a', type: 'number', http: { source: 'header' }},
+            {arg: 'b', type: 'number', http: {source: 'header'}},
+            {arg: 'a', type: 'number', http: {source: 'header'}},
           ],
-          returns: { arg: 'n', type: 'number' },
-          http: { verb: 'get', path: '/' },
+          returns: {arg: 'n', type: 'number'},
+          http: {verb: 'get', path: '/'},
         }
       );
 
@@ -637,7 +639,7 @@ describe('strong-remoting-rest', function() {
         .set('b', 2)
         .send()
         .expect('Content-Type', /json/)
-        .expect({ n: 3 }, done);
+        .expect({n: 3}, done);
     });
 
     it('should allow arguments in the header without http source',
@@ -648,11 +650,11 @@ describe('strong-remoting-rest', function() {
         },
           {
             accepts: [
-            { arg: 'b', type: 'number' },
-            { arg: 'a', type: 'number' },
+            {arg: 'b', type: 'number'},
+            {arg: 'a', type: 'number'},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { verb: 'get', path: '/' },
+            returns: {arg: 'n', type: 'number'},
+            http: {verb: 'get', path: '/'},
           }
       );
 
@@ -663,7 +665,7 @@ describe('strong-remoting-rest', function() {
         .set('b', 2)
         .send()
         .expect('Content-Type', /json/)
-        .expect({ n: 3 }, done);
+        .expect({n: 3}, done);
       });
 
     it('should allow arguments from http req and res', function(done) {
@@ -673,10 +675,10 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'req', type: 'object', http: { source: 'req' }},
-            { arg: 'res', type: 'object', http: { source: 'res' }},
+            {arg: 'req', type: 'object', http: {source: 'req'}},
+            {arg: 'res', type: 'object', http: {source: 'res'}},
           ],
-          http: { path: '/' },
+          http: {path: '/'},
         }
       );
 
@@ -686,7 +688,7 @@ describe('strong-remoting-rest', function() {
         .send('{"x": 1, "y": "Y"}')
         .expect('Content-Type', /json/)
         .expect(200, function(err, res) {
-          expect(res.body).to.deep.equal({ 'x': 1, 'y': 'Y' });
+          expect(res.body).to.deep.equal({'x': 1, 'y': 'Y'});
           done(err, res);
         });
     });
@@ -698,9 +700,9 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'ctx', type: 'object', http: { source: 'context' }},
+            {arg: 'ctx', type: 'object', http: {source: 'context'}},
           ],
-          http: { path: '/' },
+          http: {path: '/'},
         }
       );
 
@@ -710,7 +712,7 @@ describe('strong-remoting-rest', function() {
         .send('{"x": 1, "y": "Y"}')
         .expect('Content-Type', /json/)
         .expect(200, function(err, res) {
-          expect(res.body).to.deep.equal({ 'x': 1, 'y': 'Y' });
+          expect(res.body).to.deep.equal({'x': 1, 'y': 'Y'});
           done(err, res);
         });
     });
@@ -768,18 +770,18 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'a', type: 'number' },
-            { arg: 'b', type: 'number' },
+            {arg: 'a', type: 'number'},
+            {arg: 'b', type: 'number'},
           ],
           returns: [
-            { arg: 'a', type: 'number' },
-            { arg: 'b', type: 'number' },
+            {arg: 'a', type: 'number'},
+            {arg: 'b', type: 'number'},
           ],
         }
       );
 
       json(method.url + '?a=1&b=2')
-        .expect({ a: 1, b: 2 }, done);
+        .expect({a: 1, b: 2}, done);
     });
 
     it('should remove any X-Powered-By header to LoopBack', function(done) {
@@ -806,9 +808,9 @@ describe('strong-remoting-rest', function() {
 
       fn.shared = true;
       fn.accepts = [
-        { arg: 'a', type: 'object' },
+        {arg: 'a', type: 'object'},
       ];
-      fn.returns = { root: true };
+      fn.returns = {root: true};
 
       json('get', '/foo/bar?a=foo')
         .expect(400, done);
@@ -825,12 +827,12 @@ describe('strong-remoting-rest', function() {
 
       fn.shared = true;
       fn.accepts = [
-        { arg: 'a', type: 'object' },
+        {arg: 'a', type: 'object'},
       ];
-      fn.returns = { root: true };
+      fn.returns = {root: true};
 
       json('get', '/foo/bar?a[foo]=true')
-        .expect({ foo: 'true' }, done);
+        .expect({foo: 'true'}, done);
     });
 
     it('should not coerce nested boolean strings - false', function(done) {
@@ -844,12 +846,12 @@ describe('strong-remoting-rest', function() {
 
       fn.shared = true;
       fn.accepts = [
-        { arg: 'a', type: 'object' },
+        {arg: 'a', type: 'object'},
       ];
-      fn.returns = { root: true };
+      fn.returns = {root: true};
 
       json('get', '/foo/bar?a[foo]=false')
-        .expect({ foo: 'false' }, done);
+        .expect({foo: 'false'}, done);
     });
 
     it('should coerce number strings', function(done) {
@@ -863,10 +865,10 @@ describe('strong-remoting-rest', function() {
 
       fn.shared = true;
       fn.accepts = [
-        { arg: 'a', type: 'number' },
-        { arg: 'b', type: 'number' },
+        {arg: 'a', type: 'number'},
+        {arg: 'b', type: 'number'},
       ];
-      fn.returns = { root: true };
+      fn.returns = {root: true};
 
       json('get', '/foo/bar?a=42&b=0.42')
         .expect(200, function(err, res) {
@@ -886,11 +888,11 @@ describe('strong-remoting-rest', function() {
 
       fn.shared = true;
       fn.accepts = [
-        { arg: 'a', type: 'any' },
-        { arg: 'b', type: 'any' },
-        { arg: 'c', type: 'any' },
+        {arg: 'a', type: 'any'},
+        {arg: 'b', type: 'any'},
+        {arg: 'c', type: 'any'},
       ];
-      fn.returns = { root: true };
+      fn.returns = {root: true};
 
       json('get', '/foo/bar?a=42&b=0.42&c=true')
         .expect(200, function(err, res) {
@@ -910,10 +912,10 @@ describe('strong-remoting-rest', function() {
 
         fn.shared = true;
         fn.accepts = [
-          { arg: 'a', type: 'integer' },
-          { arg: 'b', type: 'integer' },
+          {arg: 'a', type: 'integer'},
+          {arg: 'b', type: 'integer'},
         ];
-        fn.returns = { root: true };
+        fn.returns = {root: true};
 
         json('get', '/foo/bar?a=53&b=2')
           .expect(200, function(err, res) {
@@ -925,17 +927,17 @@ describe('strong-remoting-rest', function() {
       it('supports target type [integer]', function(done) {
         var method = givenSharedStaticMethod(
           function(arg, cb) {
-            cb(null, { value: arg });
+            cb(null, {value: arg});
           },
           {
-            accepts: { arg: 'arg', type: ['integer'] },
-            returns: { arg: 'data', type: ['integer'], root: true },
-            http: { method: 'POST' },
+            accepts: {arg: 'arg', type: ['integer']},
+            returns: {arg: 'data', type: ['integer'], root: true},
+            http: {method: 'POST'},
           });
 
         request(app).post(method.url)
-          .send({ arg: [1, 2] })
-          .expect(200, { value: [1, 2] })
+          .send({arg: [1, 2]})
+          .expect(200, {value: [1, 2]})
           .end(done);
       });
 
@@ -945,18 +947,17 @@ describe('strong-remoting-rest', function() {
             cb(null, [arg[0], arg[1]]);
           },
           {
-            accepts: { arg: 'arg', type: ['number'] },
-            returns: { arg: 'data', type: ['integer'] },
-            http: { method: 'POST' },
+            accepts: {arg: 'arg', type: ['number']},
+            returns: {arg: 'data', type: ['integer']},
+            http: {method: 'POST'},
           });
 
         request(app).post(method.url)
-          .send({ arg: [1, 2] })
-          .expect(200, { data: [1, 2] })
+          .send({arg: [1, 2]})
+          .expect(200, {data: [1, 2]})
           .end(done);
       });
     });
-
 
     it('should pass an array argument even when non-array passed', function(done) {
       remotes.foo = {
@@ -969,9 +970,9 @@ describe('strong-remoting-rest', function() {
 
       fn.shared = true;
       fn.accepts = [
-        { arg: 'a', type: ['number'] },
+        {arg: 'a', type: ['number']},
       ];
-      fn.returns = { root: true };
+      fn.returns = {root: true};
 
       json('get',
         '/foo/bar?a=1234')
@@ -992,9 +993,9 @@ describe('strong-remoting-rest', function() {
 
       fn.shared = true;
       fn.accepts = [
-        { arg: 'a', type: ['number'] },
+        {arg: 'a', type: ['number']},
       ];
-      fn.returns = { root: true };
+      fn.returns = {root: true};
 
       json('get', '/foo/bar?a=[1,2,3,4,5]')
         .expect(200, function(err, res) {
@@ -1005,76 +1006,76 @@ describe('strong-remoting-rest', function() {
 
     it('should not flatten arrays for target type "any"', function(done) {
       var method = givenSharedStaticMethod(
-        function(arg, cb) { cb(null, { value: arg }); },
+        function(arg, cb) { cb(null, {value: arg}); },
         {
-          accepts: { arg: 'arg', type: 'any' },
-          returns: { arg: 'data', type: 'any', root: true },
-          http: { method: 'POST' },
+          accepts: {arg: 'arg', type: 'any'},
+          returns: {arg: 'data', type: 'any', root: true},
+          http: {method: 'POST'},
         });
 
       request(app).post(method.url)
-        .send({ arg: ['single'] })
-        .expect(200, { value: ['single'] })
+        .send({arg: ['single']})
+        .expect(200, {value: ['single']})
         .end(done);
     });
 
     it('should support taget type [any]', function(done) {
       var method = givenSharedStaticMethod(
-        function(arg, cb) { cb(null, { value: arg }); },
+        function(arg, cb) { cb(null, {value: arg}); },
         {
-          accepts: { arg: 'arg', type: ['any'] },
-          returns: { arg: 'data', type: ['any'], root: true },
-          http: { method: 'POST' },
+          accepts: {arg: 'arg', type: ['any']},
+          returns: {arg: 'data', type: ['any'], root: true},
+          http: {method: 'POST'},
         });
 
       request(app).post(method.url)
-        .send({ arg: ['single'] })
-        .expect(200, { value: ['single'] })
+        .send({arg: ['single']})
+        .expect(200, {value: ['single']})
         .end(done);
     });
 
     it('should support taget type `array` - of string', function(done) {
       var method = givenSharedStaticMethod(
-        function(arg, cb) { cb(null, { value: arg }); },
+        function(arg, cb) { cb(null, {value: arg}); },
         {
-          accepts: { arg: 'arg', type: 'array' },
-          returns: { arg: 'data', type: 'array', root: true },
-          http: { method: 'POST' },
+          accepts: {arg: 'arg', type: 'array'},
+          returns: {arg: 'data', type: 'array', root: true},
+          http: {method: 'POST'},
         });
 
       request(app).post(method.url)
-        .send({ arg: ['single'] })
-        .expect(200, { value: ['single'] })
+        .send({arg: ['single']})
+        .expect(200, {value: ['single']})
         .end(done);
     });
 
     it('should support taget type `array` - of number', function(done) {
       var method = givenSharedStaticMethod(
-        function(arg, cb) { cb(null, { value: arg }); },
+        function(arg, cb) { cb(null, {value: arg}); },
         {
-          accepts: { arg: 'arg', type: 'array' },
-          returns: { arg: 'data', type: 'array', root: true },
-          http: { method: 'POST' },
+          accepts: {arg: 'arg', type: 'array'},
+          returns: {arg: 'data', type: 'array', root: true},
+          http: {method: 'POST'},
         });
 
       request(app).post(method.url)
-        .send({ arg: [1] })
-        .expect(200, { value: [1] })
+        .send({arg: [1]})
+        .expect(200, {value: [1]})
         .end(done);
     });
 
     it('should support taget type `array` - of object', function(done) {
       var method = givenSharedStaticMethod(
-        function(arg, cb) { cb(null, { value: arg }); },
+        function(arg, cb) { cb(null, {value: arg}); },
         {
-          accepts: { arg: 'arg', type: 'array' },
-          returns: { arg: 'data', type: 'array', root: true },
-          http: { method: 'POST' },
+          accepts: {arg: 'arg', type: 'array'},
+          returns: {arg: 'data', type: 'array', root: true},
+          http: {method: 'POST'},
         });
 
       request(app).post(method.url)
-        .send({ arg: [{ foo: 'bar' }] })
-        .expect(200, { value: [{ foo: 'bar' }] })
+        .send({arg: [{foo: 'bar'}]})
+        .expect(200, {value: [{foo: 'bar'}]})
         .end(done);
     });
 
@@ -1089,39 +1090,39 @@ describe('strong-remoting-rest', function() {
 
       fn.shared = true;
       fn.accepts = [
-        { arg: 'a', type: 'number' },
-        { arg: 'b', type: 'number' },
+        {arg: 'a', type: 'number'},
+        {arg: 'b', type: 'number'},
       ];
 
       fn.returns = [
-        { arg: 'a', type: 'number' },
-        { arg: 'b', type: 'number' },
+        {arg: 'a', type: 'number'},
+        {arg: 'b', type: 'number'},
       ];
 
       json('post', '/foo/bar?a=1&b=2').set('Content-Length', 0)
-        .expect({ a: 1, b: 2 }, done);
+        .expect({a: 1, b: 2}, done);
     });
 
     it('should split array string when configured', function(done) {
-      objects.options.rest = { arrayItemDelimiters: [',', '|'] };
+      objects.options.rest = {arrayItemDelimiters: [',', '|']};
       var method = givenSharedStaticMethod(
         function(a, cb) { cb(null, a); },
         {
-          accepts: { arg: 'a', type: ['number'] },
-          returns: { arg: 'data', type: 'object' },
+          accepts: {arg: 'a', type: ['number']},
+          returns: {arg: 'data', type: 'object'},
         });
 
       json('post', method.url + '?a=1,2|3')
-        .expect({ data: [1, 2, 3] }, done);
+        .expect({data: [1, 2, 3]}, done);
     });
 
     it('should not create empty string array with empty string arg', function(done) {
-      objects.options.rest = { arrayItemDelimiters: [',', '|'] };
+      objects.options.rest = {arrayItemDelimiters: [',', '|']};
       var method = givenSharedStaticMethod(
         function(a, cb) { cb(null, a); },
         {
-          accepts: { arg: 'a', type: ['number'] },
-          returns: { arg: 'data', type: 'object' },
+          accepts: {arg: 'a', type: ['number']},
+          returns: {arg: 'data', type: 'object'},
         });
 
       json('post', method.url + '?a=')
@@ -1129,16 +1130,16 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should still support JSON arrays with arrayItemDelimiters', function(done) {
-      objects.options.rest = { arrayItemDelimiters: [',', '|'] };
+      objects.options.rest = {arrayItemDelimiters: [',', '|']};
       var method = givenSharedStaticMethod(
         function(a, cb) { cb(null, a); },
         {
-          accepts: { arg: 'a', type: ['number'] },
-          returns: { arg: 'data', type: 'object' },
+          accepts: {arg: 'a', type: ['number']},
+          returns: {arg: 'data', type: 'object'},
         });
 
       json('post', method.url + '?a=[1,2,3]')
-        .expect({ data: [1, 2, 3] }, done);
+        .expect({data: [1, 2, 3]}, done);
     });
 
     it('should call rest hooks', function(done) {
@@ -1175,10 +1176,10 @@ describe('strong-remoting-rest', function() {
     it('should respect supported types', function(done) {
       var method = givenSharedStaticMethod(
         function(cb) {
-          cb(null, { key: 'value' });
+          cb(null, {key: 'value'});
         },
         {
-          returns: { arg: 'result', type: 'object' },
+          returns: {arg: 'result', type: 'object'},
         }
       );
       request(appSupportingJsonOnly).get(method.url)
@@ -1198,10 +1199,10 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
@@ -1223,8 +1224,8 @@ describe('strong-remoting-rest', function() {
             cb(null, [1, 2, 3]);
           },
           {
-            returns: { arg: 'data', type: ['number'], root: true },
-            http: { path: '/', verb: 'get' },
+            returns: {arg: 'data', type: ['number'], root: true},
+            http: {path: '/', verb: 'get'},
           }
         );
 
@@ -1255,10 +1256,10 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
@@ -1284,14 +1285,14 @@ describe('strong-remoting-rest', function() {
                 bar: a.x,
               };
             };
-            cb(null, [a, { c: 1 }]);
+            cb(null, [a, {c: 1}]);
           },
             {
               accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
               ],
-              returns: { arg: 'data', type: 'object', root: true },
-              http: { path: '/' },
+              returns: {arg: 'data', type: 'object', root: true},
+              http: {path: '/'},
             }
         );
 
@@ -1312,14 +1313,14 @@ describe('strong-remoting-rest', function() {
       it('should allow customized xml root element', function(done) {
         var method = givenSharedStaticMethod(
           function bar(cb) {
-            cb(null, { a: 1, b: 2 });
+            cb(null, {a: 1, b: 2});
           },
           {
             returns: {
               arg: 'data', type: 'object', root: true,
-              xml: { wrapperElement: 'foo' },
+              xml: {wrapperElement: 'foo'},
             },
-            http: { path: '/' },
+            http: {path: '/'},
           }
         );
         request(app).get(method.classUrl)
@@ -1341,14 +1342,14 @@ describe('strong-remoting-rest', function() {
       it('should allow xml declaration to be disabled', function(done) {
         var method = givenSharedStaticMethod(
           function bar(cb) {
-            cb(null, { a: 1, b: 2 });
+            cb(null, {a: 1, b: 2});
           },
           {
             returns: {
               arg: 'data', type: 'object', root: true,
-              xml: { declaration: false },
+              xml: {declaration: false},
             },
-            http: { path: '/' },
+            http: {path: '/'},
           }
         );
         request(app).get(method.classUrl)
@@ -1375,9 +1376,9 @@ describe('strong-remoting-rest', function() {
           {
             returns: {
               root: true,
-              xml: { wrapperElement: 'text' },
+              xml: {wrapperElement: 'text'},
             },
-            http: { path: '/' },
+            http: {path: '/'},
           }
         );
         request(app).get(method.classUrl)
@@ -1398,23 +1399,22 @@ describe('strong-remoting-rest', function() {
         var method = givenSharedStaticMethod(
           function bar(cb) {
             var stringA = 'foo\xC1\xE1\u0102\u03A9asd><=$~!@#$%^&*()-_=+/.,;\'"[]{}?';
-            cb(null, { a: stringA });
+            cb(null, {a: stringA});
           },
           {
             returns: {
               arg: 'data', type: 'object', root: true,
-              xml: { wrapperElement: false },
+              xml: {wrapperElement: false},
             },
-            http: { path: '/' },
+            http: {path: '/'},
           }
         );
         request(app).get(method.classUrl)
           .set('Accept', 'application/xml')
           .set('Content-Type', 'application/json')
           .send()
-          .expect('Content-Type', /xml/)
+          .expect('Content-Type', /xml.*charset=utf-8/)
           .expect(200, function(err, res) {
-            expect(res).to.be.utf8;
             expect(res.text).to.equal(
             '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n' +
             '<response>\n  ' +
@@ -1436,10 +1436,10 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
@@ -1464,10 +1464,10 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
@@ -1490,10 +1490,10 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
@@ -1503,7 +1503,7 @@ describe('strong-remoting-rest', function() {
           .send('{"x": 1, "y": "Y"}')
           .expect('Content-Type', /json/)
           .expect(200, function(err, res) {
-            expect(res.body).to.deep.equal({ x: 1, y: 'Y' });
+            expect(res.body).to.deep.equal({x: 1, y: 'Y'});
             done(err, res);
           });
       });
@@ -1522,7 +1522,7 @@ describe('strong-remoting-rest', function() {
 
         json('get', '/shouldThrow/bar?a=1&b=2')
           .expect(500)
-          .end(expectErrorResponseContaining({ message: 'an error' }, done));
+          .end(expectErrorResponseContaining({message: 'an error'}, done));
       });
 
       it('should return 500 if an array of errors is thrown', function(done) {
@@ -1540,7 +1540,7 @@ describe('strong-remoting-rest', function() {
           .expect(500)
           .end(function(err, res) {
             if (err) return done(err);
-            expectedDetail = res.body.error;
+            var expectedDetail = res.body.error;
             delete expectedDetail.statusCode;
 
             request(app).get(method(errArray).url)
@@ -1569,7 +1569,7 @@ describe('strong-remoting-rest', function() {
 
         json('get', '/shouldThrow/bar?a=1&b=2')
           .expect(500)
-          .end(expectErrorResponseContaining({ message: 'an error' }, done));
+          .end(expectErrorResponseContaining({message: 'an error'}, done));
       });
 
       it('should return 500 for unhandled errors thrown from before hooks',
@@ -1587,7 +1587,7 @@ describe('strong-remoting-rest', function() {
           request(app).get(method.url)
             .set('Accept', 'application/json')
             .expect(500)
-            .end(expectErrorResponseContaining({ message: 'test error' }, done));
+            .end(expectErrorResponseContaining({message: 'test error'}, done));
         });
     });
 
@@ -1603,7 +1603,7 @@ describe('strong-remoting-rest', function() {
       request(app).get(method.url)
         .expect('Content-Type', /json/)
         .expect(500)
-        .end(expectErrorResponseContaining({ message: 'test-error' }, done));
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
 
     it('should return 500 when "before" returns an error', function(done) {
@@ -1614,7 +1614,7 @@ describe('strong-remoting-rest', function() {
 
       json(method.url)
         .expect(500)
-        .end(expectErrorResponseContaining({ message: 'test-error' }, done));
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
 
     it('should return 500 when "after" returns an error', function(done) {
@@ -1625,7 +1625,7 @@ describe('strong-remoting-rest', function() {
 
       json(method.url)
         .expect(500)
-        .end(expectErrorResponseContaining({ message: 'test-error' }, done));
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
 
     it('should return 400 when a required arg is missing', function(done) {
@@ -1635,7 +1635,7 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'a', type: 'number', required: true },
+            {arg: 'a', type: 'number', required: true},
           ],
         }
       );
@@ -1666,7 +1666,7 @@ describe('strong-remoting-rest', function() {
 
         json('get', '/shouldThrow/bar?a=1&b=2')
           .expect(500)
-          .end(expectErrorResponseContaining({ message: 'an error' }, done));
+          .end(expectErrorResponseContaining({message: 'an error'}, done));
       });
 
       it('should return 500 if an error string is thrown', function(done) {
@@ -1681,7 +1681,7 @@ describe('strong-remoting-rest', function() {
 
         json('get', '/shouldThrow/bar?a=1&b=2')
           .expect(500)
-          .end(expectErrorResponseContaining({ message: 'an error' }, done));
+          .end(expectErrorResponseContaining({message: 'an error'}, done));
       });
     });
 
@@ -1697,7 +1697,7 @@ describe('strong-remoting-rest', function() {
       request(app).get(method.url)
         .expect('Content-Type', /json/)
         .expect(500)
-        .end(expectErrorResponseContaining({ message: 'test-error' }, done));
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
   });
 
@@ -1708,13 +1708,13 @@ describe('strong-remoting-rest', function() {
           cb(null, this.id + ':' + msg);
         },
         {
-          accepts: { arg: 'person', type: 'string' },
-          returns: { arg: 'msg', type: 'string' },
+          accepts: {arg: 'person', type: 'string'},
+          returns: {arg: 'msg', type: 'string'},
         }
       );
 
       json(method.getUrlForId('world') + '?person=hello')
-        .expect(200, { msg: 'world:hello' }, done);
+        .expect(200, {msg: 'world:hello'}, done);
     });
 
     it('should have the correct scope', function(done) {
@@ -1724,13 +1724,13 @@ describe('strong-remoting-rest', function() {
           cb(null, this.id + ':' + msg);
         },
         {
-          accepts: { arg: 'person', type: 'string' },
-          returns: { arg: 'msg', type: 'string' },
+          accepts: {arg: 'person', type: 'string'},
+          returns: {arg: 'msg', type: 'string'},
         }
       );
 
       json(method.getUrlForId('world') + '?person=hello')
-        .expect(200, { msg: 'world:hello' }, done);
+        .expect(200, {msg: 'world:hello'}, done);
     });
 
     it('should allow arguments in the path', function(done) {
@@ -1740,16 +1740,16 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'b', type: 'number' },
-            { arg: 'a', type: 'number', http: { source: 'path' }},
+            {arg: 'b', type: 'number'},
+            {arg: 'a', type: 'number', http: {source: 'path'}},
           ],
-          returns: { arg: 'n', type: 'number' },
-          http: { path: '/:a' },
+          returns: {arg: 'n', type: 'number'},
+          http: {path: '/:a'},
         }
       );
 
       json(method.getClassUrlForId('sum') + '/1?b=2')
-        .expect({ n: 'sum:3' }, done);
+        .expect({n: 'sum:3'}, done);
     });
 
     it('should allow jsonp requests', function(done) {
@@ -1759,11 +1759,11 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'a', type: 'number', http: { source: 'path' }},
+            {arg: 'a', type: 'number', http: {source: 'path'}},
           ],
-          returns: { arg: 'n', type: 'number', root: true },
+          returns: {arg: 'n', type: 'number', root: true},
           errors: [],
-          http: { path: '/:a' },
+          http: {path: '/:a'},
         }
       );
 
@@ -1780,10 +1780,10 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'a', type: 'number', http: { source: 'path' }},
+            {arg: 'a', type: 'number', http: {source: 'path'}},
           ],
-          returns: { arg: 'n', type: 'number', root: true },
-          http: { path: '/:a' },
+          returns: {arg: 'n', type: 'number', root: true},
+          http: {path: '/:a'},
         }
       );
 
@@ -1800,21 +1800,21 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'b', type: 'number' },
-            { arg: 'a', type: 'number', http: { source: 'query' }},
+            {arg: 'b', type: 'number'},
+            {arg: 'a', type: 'number', http: {source: 'query'}},
           ],
-          returns: { arg: 'n', type: 'number' },
-          http: { path: '/' },
+          returns: {arg: 'n', type: 'number'},
+          http: {path: '/'},
         }
       );
 
       json(method.getClassUrlForId('sum') + '/?b=2&a=1')
-        .expect({ n: 'sum:3' }, done);
+        .expect({n: 'sum:3'}, done);
     });
 
     it('should support methods on `/` path', function(done) {
       var method = givenSharedPrototypeMethod({
-        http: { path: '/', verb: 'get' },
+        http: {path: '/', verb: 'get'},
       });
 
       json('get', method.getClassUrlForId(0))
@@ -1838,28 +1838,28 @@ describe('strong-remoting-rest', function() {
         },
         {
           accepts: [
-            { arg: 'a', type: 'number' },
-            { arg: 'b', type: 'number' },
+            {arg: 'a', type: 'number'},
+            {arg: 'b', type: 'number'},
           ],
           returns: [
-            { arg: 'id', type: 'any' },
-            { arg: 'a', type: 'number' },
-            { arg: 'b', type: 'number' },
+            {arg: 'id', type: 'any'},
+            {arg: 'a', type: 'number'},
+            {arg: 'b', type: 'number'},
           ],
         }
       );
 
       json(method.getUrlForId('an-id') + '?a=1&b=2')
-        .expect({ id: 'an-id', a: 1, b: 2 }, done);
+        .expect({id: 'an-id', a: 1, b: 2}, done);
     });
 
     it('should respect supported types', function(done) {
       var method = givenSharedPrototypeMethod(
         function(cb) {
-          cb(null, { key: 'value' });
+          cb(null, {key: 'value'});
         },
         {
-          returns: { arg: 'result', type: 'object' },
+          returns: {arg: 'result', type: 'object'},
         }
       );
       request(appSupportingJsonOnly).get(method.url)
@@ -1878,7 +1878,7 @@ describe('strong-remoting-rest', function() {
 
       json(method.url)
         .expect(500)
-        .end(expectErrorResponseContaining({ message: 'test-error' }, done));
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
 
     it('should return 500 when "before" returns an error', function(done) {
@@ -1889,7 +1889,7 @@ describe('strong-remoting-rest', function() {
 
       json(method.url)
         .expect(500)
-        .end(expectErrorResponseContaining({ message: 'test-error' }, done));
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
 
     it('should return 500 when "after" returns an error', function(done) {
@@ -1900,7 +1900,7 @@ describe('strong-remoting-rest', function() {
 
       json(method.url)
         .expect(500)
-        .end(expectErrorResponseContaining({ message: 'test-error' }, done));
+        .end(expectErrorResponseContaining({message: 'test-error'}, done));
     });
 
     it('should resolve promise returned by a hook', function(done) {
@@ -1988,7 +1988,7 @@ describe('strong-remoting-rest', function() {
             cb();
           },
           {
-            http: { status: 201 },
+            http: {status: 201},
           }
         );
         json(method.url)
@@ -2000,7 +2000,7 @@ describe('strong-remoting-rest', function() {
             cb(new Error('test error'));
           },
           {
-            http: { status: 201, errorStatus: 508 },
+            http: {status: 201, errorStatus: 508},
           }
         );
         json(method.url)
@@ -2014,7 +2014,7 @@ describe('strong-remoting-rest', function() {
             cb(err);
           },
           {
-            http: { status: 201, errorStatus: 508 },
+            http: {status: 201, errorStatus: 508},
           }
         );
         json(method.url)
@@ -2027,10 +2027,10 @@ describe('strong-remoting-rest', function() {
             cb(null, status);
           },
           {
-            accepts: { arg: 'status', type: 'number' },
+            accepts: {arg: 'status', type: 'number'},
             returns: {
               arg: 'status',
-              http: { target: 'status' },
+              http: {target: 'status'},
             },
           }
         );
@@ -2048,7 +2048,7 @@ describe('strong-remoting-rest', function() {
     it('returns 404 with standard JSON body for unknown URL', function(done) {
       json('/unknown-url')
         .expect(404)
-        .end(expectErrorResponseContaining({ statusCode: 404 }, done));
+        .end(expectErrorResponseContaining({statusCode: 404}, done));
     });
   });
 
@@ -2060,17 +2060,17 @@ describe('strong-remoting-rest', function() {
           cb(null, input, input);
         },
         {
-          accepts: { arg: 'input', type: 'string' },
+          accepts: {arg: 'input', type: 'string'},
           returns: [
-            { arg: 'value', type: 'string' },
-            { arg: 'output', type: 'string', http: { target: 'header' }},
+            {arg: 'value', type: 'string'},
+            {arg: 'output', type: 'string', http: {target: 'header'}},
           ],
         }
       );
       json(method.url + '?input=' + A_STRING_VALUE)
         .expect(200)
         .expect('output', A_STRING_VALUE)
-        .expect({ value: A_STRING_VALUE })
+        .expect({value: A_STRING_VALUE})
         .end(done);
     });
 
@@ -2078,20 +2078,20 @@ describe('strong-remoting-rest', function() {
       var A_STRING_VALUE = 'foobar';
       var method = givenSharedStaticMethod(
         function fn(input, cb) {
-          cb(null, { value: input }, input);
+          cb(null, {value: input}, input);
         },
         {
-          accepts: { arg: 'input', type: 'string' },
+          accepts: {arg: 'input', type: 'string'},
           returns: [
-            { arg: 'value', type: 'object', root: true },
-            { arg: 'output', type: 'string', http: { target: 'header' }},
+            {arg: 'value', type: 'object', root: true},
+            {arg: 'output', type: 'string', http: {target: 'header'}},
           ],
         }
       );
       json(method.url + '?input=' + A_STRING_VALUE)
         .expect(200)
         .expect('output', A_STRING_VALUE)
-        .expect({ value: A_STRING_VALUE })
+        .expect({value: A_STRING_VALUE})
         .end(done);
     });
 
@@ -2102,8 +2102,8 @@ describe('strong-remoting-rest', function() {
           cb(null, input);
         },
         {
-          accepts: { arg: 'input', type: 'string' },
-          returns: { arg: 'output', type: 'string', http: {
+          accepts: {arg: 'input', type: 'string'},
+          returns: {arg: 'output', type: 'string', http: {
             target: 'header',
             header: 'X-Custom-Header',
           },
@@ -2119,8 +2119,8 @@ describe('strong-remoting-rest', function() {
   describe('returns type "file"', function() {
     var METHOD_SIGNATURE = {
       returns: [
-        { arg: 'body', type: 'file', root: true },
-        { arg: 'Content-Type', type: 'string', http: { target: 'header' }},
+        {arg: 'body', type: 'file', root: true},
+        {arg: 'Content-Type', type: 'string', http: {target: 'header'}},
       ],
     };
 
@@ -2217,8 +2217,8 @@ describe('strong-remoting-rest', function() {
     var method = givenSharedStaticMethod(
       function(arg, cb) { cb(null, arg); },
       {
-        accepts: { arg: 'arg', type: 'string' },
-        returns: { arg: 'arg', type: 'string' },
+        accepts: {arg: 'arg', type: 'string'},
+        returns: {arg: 'arg', type: 'string'},
       });
 
     request(app).get(method.url + '?arg=1&arg=2')
@@ -2234,13 +2234,13 @@ describe('strong-remoting-rest', function() {
     var method = givenSharedStaticMethod(
       function(arg, cb) { cb(null, arg); },
       {
-        accepts: { arg: 'arg', type: 'any', http: { source: 'form' }},
-        returns: { arg: 'arg', type: 'any' },
+        accepts: {arg: 'arg', type: 'any', http: {source: 'form'}},
+        returns: {arg: 'arg', type: 'any'},
       });
 
     request(app).post(method.url)
       .set('Content-Type', 'application/json;charset=UTF-8')
-      .send({ arg: '123' })
+      .send({arg: '123'})
       .expect(200)
       .end(function(err, res) {
         if (err) return done(err);
@@ -2253,7 +2253,7 @@ describe('strong-remoting-rest', function() {
   it('rejects multi-item array passed to a number argument', function(done) {
     var method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
-      { accepts: { arg: 'arg', type: 'number' }});
+      {accepts: {arg: 'arg', type: 'number'}});
 
     request(app).get(method.url + '?arg=1&arg=2')
       .expect(400)
@@ -2264,18 +2264,17 @@ describe('strong-remoting-rest', function() {
     function(done) {
       var method = givenSharedStaticMethod(
         function(arg, cb) { cb(); },
-        { accepts: { arg: 'arg', type: 'integer' }});
+        {accepts: {arg: 'arg', type: 'integer'}});
 
       request(app).get(method.url + '?arg=2&arg=3')
         .expect(400)
         .end(done);
     });
 
-
   it('supports "Object" type string', function(done) {
     var method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
-      { accepts: { arg: 'arg', type: 'Object' }});
+      {accepts: {arg: 'arg', type: 'Object'}});
 
     request(app)
       .get(method.url + '?arg={"x":1}')
@@ -2286,7 +2285,7 @@ describe('strong-remoting-rest', function() {
   it('supports custom type string', function(done) {
     var method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
-      { accepts: { arg: 'arg', type: 'Model' }});
+      {accepts: {arg: 'arg', type: 'Model'}});
 
     request(app)
       .get(method.url + '?arg={"x":1}')
@@ -2297,7 +2296,7 @@ describe('strong-remoting-rest', function() {
   it('returns correct content-type in an empty XML response', function(done) {
     var method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
-      { accepts: { arg: 'arg', type: 'Model' }});
+      {accepts: {arg: 'arg', type: 'Model'}});
 
     request(app)
       .get(method.url + '?arg={"x":1}&_format=xml')
@@ -2311,7 +2310,7 @@ describe('strong-remoting-rest', function() {
   it('defaults content-type to application/json', function(done) {
     var method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
-      { accepts: { arg: 'arg', type: 'Model' }});
+      {accepts: {arg: 'arg', type: 'Model'}});
 
     request(app)
       .get(method.url + '?arg={"x":1}')
@@ -2330,8 +2329,8 @@ describe('strong-remoting-rest', function() {
             cb(null, msg);
           },
           {
-            accepts: { arg: 'person', type: 'string' },
-            returns: { arg: 'msg', type: 'string' },
+            accepts: {arg: 'person', type: 'string'},
+            returns: {arg: 'msg', type: 'string'},
           }
         );
 
@@ -2350,11 +2349,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: { source: 'path' }},
+              {arg: 'b', type: 'number'},
+              {arg: 'a', type: 'number', http: {source: 'path'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/:a' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/:a'},
           }
         );
 
@@ -2372,11 +2371,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: { source: 'query' }},
+              {arg: 'b', type: 'number'},
+              {arg: 'a', type: 'number', http: {source: 'query'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/'},
           }
         );
 
@@ -2397,7 +2396,7 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' },
+              {arg: 'b', type: 'number'},
             ],
           }
         );
@@ -2416,10 +2415,10 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
@@ -2441,17 +2440,17 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
-        var data = { date: { $type: 'date', $data: new Date() }};
+        var data = {date: {$type: 'date', $data: new Date()}};
         objects.invoke(method.name, [data], function(err, resData) {
           if (err) return done(err);
-          expect(resData).to.deep.equal({ date: data.date.$data.toISOString() });
+          expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
           done();
         });
       });
@@ -2463,11 +2462,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number', http: { source: 'form' }},
-              { arg: 'a', type: 'number', http: { source: 'form' }},
+              {arg: 'b', type: 'number', http: {source: 'form'}},
+              {arg: 'a', type: 'number', http: {source: 'form'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/'},
           }
         );
 
@@ -2485,12 +2484,12 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'number' },
-              { arg: 'b', type: 'number' },
+              {arg: 'a', type: 'number'},
+              {arg: 'b', type: 'number'},
             ],
             returns: [
-              { arg: 'a', type: 'number' },
-              { arg: 'b', type: 'number' },
+              {arg: 'a', type: 'number'},
+              {arg: 'b', type: 'number'},
             ],
           }
         );
@@ -2528,8 +2527,8 @@ describe('strong-remoting-rest', function() {
             cb(null, this.id + ':' + msg);
           },
           {
-            accepts: { arg: 'person', type: 'string' },
-            returns: { arg: 'msg', type: 'string' },
+            accepts: {arg: 'person', type: 'string'},
+            returns: {arg: 'msg', type: 'string'},
           }
         );
 
@@ -2548,11 +2547,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: { source: 'path' }},
+              {arg: 'b', type: 'number'},
+              {arg: 'a', type: 'number', http: {source: 'path'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/:a' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/:a'},
           }
         );
 
@@ -2570,11 +2569,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: { source: 'query' }},
+              {arg: 'b', type: 'number'},
+              {arg: 'a', type: 'number', http: {source: 'query'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/'},
           }
         );
 
@@ -2595,7 +2594,7 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number' },
+              {arg: 'b', type: 'number'},
             ],
           }
         );
@@ -2614,10 +2613,10 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
@@ -2639,17 +2638,17 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'object', http: { source: 'body' }},
+              {arg: 'a', type: 'object', http: {source: 'body'}},
             ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' },
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
           }
         );
 
-        var data = { date: { $type: 'date', $data: new Date() }};
+        var data = {date: {$type: 'date', $data: new Date()}};
         objects.invoke(method.name, [39], [data], function(err, resData) {
           if (err) return done(err);
-          expect(resData).to.deep.equal({ date: data.date.$data.toISOString() });
+          expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
           done();
         });
       });
@@ -2661,11 +2660,11 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'b', type: 'number', http: { source: 'form' }},
-              { arg: 'a', type: 'number', http: { source: 'form' }},
+              {arg: 'b', type: 'number', http: {source: 'form'}},
+              {arg: 'a', type: 'number', http: {source: 'form'}},
             ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' },
+            returns: {arg: 'n', type: 'number'},
+            http: {path: '/'},
           }
         );
 
@@ -2683,13 +2682,13 @@ describe('strong-remoting-rest', function() {
           },
           {
             accepts: [
-              { arg: 'a', type: 'number' },
-              { arg: 'b', type: 'number' },
+              {arg: 'a', type: 'number'},
+              {arg: 'b', type: 'number'},
             ],
             returns: [
-              { arg: 'id', type: 'any' },
-              { arg: 'a', type: 'number' },
-              { arg: 'b', type: 'number' },
+              {arg: 'id', type: 'any'},
+              {arg: 'a', type: 'number'},
+              {arg: 'b', type: 'number'},
             ],
           }
         );
@@ -2729,8 +2728,8 @@ describe('strong-remoting-rest', function() {
     }
     fn = fn || function(cb) { cb(); };
 
-    remotes.testClass = { testMethod: fn };
-    config = extend({ shared: true }, config);
+    remotes.testClass = {testMethod: fn};
+    config = extend({shared: true}, config);
     extend(remotes.testClass.testMethod, config);
     return {
       name: 'testClass.testMethod',
@@ -2748,7 +2747,7 @@ describe('strong-remoting-rest', function() {
     fn = fn || function(cb) { cb(); };
     remotes.testClass = factory.createSharedClass();
     remotes.testClass.prototype.testMethod = fn;
-    config = extend({ shared: true }, config);
+    config = extend({shared: true}, config);
     extend(remotes.testClass.prototype.testMethod, config);
     return {
       name: 'testClass.prototype.testMethod',

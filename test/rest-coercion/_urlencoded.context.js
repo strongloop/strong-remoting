@@ -80,8 +80,8 @@ module.exports = function createUrlEncodedContext(ctx, target) {
     var source = TARGET_QUERY_STRING ? 'query' : 'form';
     extend(testClass.testMethod, {
       shared: true,
-      accepts: extend(argSpec, { http: { source: source }}),
-      returns: { name: 'success', type: 'boolean' },
+      accepts: extend(argSpec, {http: {source: source}}),
+      returns: {name: 'success', type: 'boolean'},
     });
 
     var uri = '/testClass/testMethod';

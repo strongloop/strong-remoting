@@ -3,7 +3,9 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
-var expect = require('chai').expect;
+'use strict';
+
+var expect = require('./helpers/expect');
 var express = require('express');
 var RemoteObjects = require('../');
 var User = require('./e2e/fixtures/user');
@@ -40,7 +42,7 @@ describe('authorization hook', function() {
 
       invokeRemote(server.address().port,
         function(err, session) {
-          expect(err).to.not.exist;
+          expect(err).to.not.exist();
           expect(session.userId).to.equal(123);
           //                        vvvvvvvv - local before hook
           expect(callStack).to.eql(['before', 'authorization', 'before']);
@@ -53,7 +55,7 @@ describe('authorization hook', function() {
   function invokeRemote(port, callback) {
     var url = 'http://127.0.0.1:' + port;
     var method = 'User.login';
-    var args = [{ username: 'joe', password: 'secret' }];
+    var args = [{username: 'joe', password: 'secret'}];
 
     remotes.connect(url, 'rest');
     remotes.invoke(method, args, callback);

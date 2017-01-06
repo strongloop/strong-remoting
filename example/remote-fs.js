@@ -13,7 +13,7 @@ var fs = remotes.exports.fs = require('fs');
 fs.createReadStream.shared = true;
 
 // describe the arguments
-fs.createReadStream.accepts = { arg: 'path', type: 'string' };
+fs.createReadStream.accepts = {arg: 'path', type: 'string'};
 
 // describe the stream destination
 fs.createReadStream.http = {

@@ -23,7 +23,7 @@ function suite(prefix, ctx) {
     // The exact type is not important to test how required array parameters
     // treat missing values, therefore we test a single type (boolean) only.
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: ['boolean'], required: true }, [
+    verifyTestCases({arg: 'arg', type: ['boolean'], required: true}, [
       // Valid values - JSON encoding
       ['arg=[]', []],
       ['arg=[true,false]', [true, false]],
@@ -52,7 +52,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - array of booleans - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: ['boolean'] }, [
+    verifyTestCases({arg: 'arg', type: ['boolean']}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],
@@ -90,7 +90,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - array of numbers - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: ['number'] }, [
+    verifyTestCases({arg: 'arg', type: ['number']}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],
@@ -141,7 +141,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - array of strings - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: ['string'] }, [
+    verifyTestCases({arg: 'arg', type: ['string']}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],
@@ -188,7 +188,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - array of dates - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: ['date'] }, [
+    verifyTestCases({arg: 'arg', type: ['date']}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],
@@ -237,7 +237,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - array of any - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: ['any'] }, [
+    verifyTestCases({arg: 'arg', type: ['any']}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],
@@ -273,7 +273,7 @@ function suite(prefix, ctx) {
 
       // Valid values - items are objects
       ['arg={}', [{}]],
-      ['arg={"foo":"bar"}', [{ 'foo': 'bar' }]],
+      ['arg={"foo":"bar"}', [{'foo': 'bar'}]],
       // Item is not a valid JSON object - it will be treated as a string
       ['arg={malformed}', ['{malformed}']],
 

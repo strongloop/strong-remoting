@@ -3,6 +3,8 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 var assert = require('assert');
 var HttpInvocation = require('../lib/http-invocation');
 var extend = require('util')._extend;
@@ -31,12 +33,12 @@ describe('RestAdapter', function() {
 
     it('fills `routes`', function() {
       remotes.exports.testClass = factory.createSharedClass();
-      remotes.exports.testClass.http = { path: '/test-class', verb: 'any' };
+      remotes.exports.testClass.http = {path: '/test-class', verb: 'any'};
 
       var classes = getRestClasses();
 
       expect(classes[0]).to.have.property('routes')
-        .eql([{ path: '/test-class', verb: 'any' }]);
+        .eql([{path: '/test-class', verb: 'any'}]);
     });
 
     it('fills `sharedClass`', function() {
@@ -48,17 +50,17 @@ describe('RestAdapter', function() {
 
     it('fills `ctor`', function() {
       var testClass = remotes.exports.testClass = factory.createSharedClass();
-      testClass.sharedCtor.http = { path: '/shared-ctor', verb: 'all' };
+      testClass.sharedCtor.http = {path: '/shared-ctor', verb: 'all'};
 
       var classes = getRestClasses();
 
       expect(classes[0].ctor).to.have.property('routes')
-        .eql([{ path: '/shared-ctor', verb: 'all' }]);
+        .eql([{path: '/shared-ctor', verb: 'all'}]);
     });
 
     it('fills static methods', function() {
       var testClass = remotes.exports.testClass = factory.createSharedClass();
-      testClass.staticMethod = extend(someFunc, { shared: true });
+      testClass.staticMethod = extend(someFunc, {shared: true});
 
       var methods = getRestClasses()[0].methods;
 
@@ -71,7 +73,7 @@ describe('RestAdapter', function() {
 
     it('fills prototype methods', function() {
       var testClass = remotes.exports.testClass = factory.createSharedClass();
-      testClass.prototype.instanceMethod = extend(someFunc, { shared: true });
+      testClass.prototype.instanceMethod = extend(someFunc, {shared: true});
 
       var methods = getRestClasses()[0].methods;
 
@@ -91,26 +93,26 @@ describe('RestAdapter', function() {
   describe('path normalization', function() {
     it('fills `routes`', function() {
       remotes.exports.testClass = factory.createSharedClass();
-      remotes.exports.testClass.http = { path: '/testClass', verb: 'any' };
+      remotes.exports.testClass.http = {path: '/testClass', verb: 'any'};
 
       var classes = getRestClasses();
 
       expect(classes[0]).to.have.property('routes')
-        .eql([{ path: '/test-class', verb: 'any' }]);
+        .eql([{path: '/test-class', verb: 'any'}]);
     });
 
     function getRestClasses() {
-      return new RestAdapter(remotes, { normalizeHttpPath: true }).getClasses();
+      return new RestAdapter(remotes, {normalizeHttpPath: true}).getClasses();
     }
   });
 
   describe('RestClass', function() {
     describe('getPath', function() {
       it('returns the path of the first route', function() {
-        var restClass = givenRestClass({ http: [
-          { path: '/a-path' },
-          { path: '/another-path' },
-        ] });
+        var restClass = givenRestClass({http: [
+          {path: '/a-path'},
+          {path: '/another-path'},
+        ]});
         expect(restClass.getPath()).to.equal('/a-path');
       });
     });
@@ -124,35 +126,35 @@ describe('RestAdapter', function() {
   });
 
   describe('RestMethod', function() {
-    var anArg = { arg: 'an-arg-name', type: String };
+    var anArg = {arg: 'an-arg-name', type: String};
 
     it('has `accepts`', function() {
-      var method = givenRestStaticMethod({ accepts: anArg });
+      var method = givenRestStaticMethod({accepts: anArg});
       expect(method.accepts).to.eql([anArg]);
     });
 
     it('has `returns`', function() {
-      var method = givenRestStaticMethod({ returns: anArg });
+      var method = givenRestStaticMethod({returns: anArg});
       expect(method.returns).to.eql([anArg]);
     });
 
     it('has `errors`', function() {
-      var method = givenRestStaticMethod({ errors: anArg });
+      var method = givenRestStaticMethod({errors: anArg});
       expect(method.errors).to.eql([anArg]);
     });
 
     it('has `description`', function() {
-      var method = givenRestStaticMethod({ description: 'a-desc' });
+      var method = givenRestStaticMethod({description: 'a-desc'});
       expect(method.description).to.equal('a-desc');
     });
 
     it('has `notes`', function() {
-      var method = givenRestStaticMethod({ notes: 'some-notes' });
+      var method = givenRestStaticMethod({notes: 'some-notes'});
       expect(method.notes).to.equal('some-notes');
     });
 
     it('has `documented`', function() {
-      var method = givenRestStaticMethod({ documented: false });
+      var method = givenRestStaticMethod({documented: false});
       expect(method.documented).to.equal(false);
     });
 
@@ -164,35 +166,35 @@ describe('RestAdapter', function() {
     describe('isReturningArray()', function() {
       it('returns true when there is single root Array arg', function() {
         var method = givenRestStaticMethod({
-          returns: { root: true, type: Array },
+          returns: {root: true, type: Array},
         });
         expect(method.isReturningArray()).to.equal(true);
       });
 
       it('returns true when there is single root "array" arg', function() {
         var method = givenRestStaticMethod({
-          returns: { root: true, type: Array },
+          returns: {root: true, type: Array},
         });
         expect(method.isReturningArray()).to.equal(true);
       });
 
       it('returns true when there is single root [Model] arg', function() {
         var method = givenRestStaticMethod({
-          returns: { root: true, type: ['string'] },
+          returns: {root: true, type: ['string']},
         });
         expect(method.isReturningArray()).to.equal(true);
       });
 
       it('returns false otherwise', function() {
         var method = givenRestStaticMethod({
-          returns: { arg: 'result', type: Array },
+          returns: {arg: 'result', type: Array},
         });
         expect(method.isReturningArray()).to.equal(false);
       });
 
       it('handles invalid type', function() {
         var method = givenRestStaticMethod({
-          returns: { root: true },
+          returns: {root: true},
         });
         expect(method.isReturningArray()).to.equal(false);
       });
@@ -204,7 +206,7 @@ describe('RestAdapter', function() {
           accepts: {
             arg: 'data',
             type: Object,
-            http: { source: 'body' },
+            http: {source: 'body'},
           },
         });
         expect(method.acceptsSingleBodyArgument()).to.equal(true);
@@ -212,7 +214,7 @@ describe('RestAdapter', function() {
 
       it('returns false otherwise', function() {
         var method = givenRestStaticMethod({
-          accepts: { arg: 'data', type: Object },
+          accepts: {arg: 'data', type: Object},
         });
         expect(method.acceptsSingleBodyArgument()).to.equal(false);
       });
@@ -222,27 +224,27 @@ describe('RestAdapter', function() {
       ignoreDeprecationsInThisBlock();
 
       it('returns POST for `all`', function() {
-        var method = givenRestStaticMethod({ http: { verb: 'all' }});
+        var method = givenRestStaticMethod({http: {verb: 'all'}});
         expect(method.getHttpMethod()).to.equal('POST');
       });
 
       it('returns DELETE for `del`', function() {
-        var method = givenRestStaticMethod({ http: { verb: 'del' }});
+        var method = givenRestStaticMethod({http: {verb: 'del'}});
         expect(method.getHttpMethod()).to.equal('DELETE');
       });
 
       it('returns upper-case value otherwise', function() {
-        var method = givenRestStaticMethod({ http: { verb: 'get' }});
+        var method = givenRestStaticMethod({http: {verb: 'get'}});
         expect(method.getHttpMethod()).to.equal('GET');
       });
     });
 
     describe('getPath', function() {
       it('returns the path of the first route', function() {
-        var method = givenRestStaticMethod({ http: [
-          { path: '/a-path' },
-          { path: '/another-path' },
-        ] });
+        var method = givenRestStaticMethod({http: [
+          {path: '/a-path'},
+          {path: '/another-path'},
+        ]});
         expect(method.getPath()).to.equal('/a-path');
       });
     });
@@ -252,8 +254,8 @@ describe('RestAdapter', function() {
 
       it('returns class path + method path', function() {
         var method = givenRestStaticMethod(
-          { http: { path: '/a-method' }},
-          { http: { path: '/a-class' }}
+          {http: {path: '/a-method'}},
+          {http: {path: '/a-class'}}
         );
 
         expect(method.getFullPath()).to.equal('/a-class/a-method');
@@ -262,10 +264,10 @@ describe('RestAdapter', function() {
 
     describe('getEndpoints', function() {
       it('should return verb and fullPath for multiple paths', function() {
-        var method = givenRestStaticMethod({ http: [
-          { verb: 'DEL', path: '/testMethod1' },
-          { verb: 'PUT', path: '/testMethod2' },
-        ] });
+        var method = givenRestStaticMethod({http: [
+          {verb: 'DEL', path: '/testMethod1'},
+          {verb: 'PUT', path: '/testMethod2'},
+        ]});
 
         var expectedEndpoints = [
           {
@@ -281,7 +283,7 @@ describe('RestAdapter', function() {
       });
 
       it('should return verb and fullPath for single path', function() {
-        var method = givenRestStaticMethod({ http: { verb: 'all' }});
+        var method = givenRestStaticMethod({http: {verb: 'all'}});
         expect(method.getEndpoints()).to.eql([
           {
             verb: 'POST',
@@ -293,8 +295,8 @@ describe('RestAdapter', function() {
 
     function givenRestStaticMethod(methodConfig, classConfig) {
       var name = 'testMethod';
-      methodConfig = extend({ shared: true }, methodConfig);
-      classConfig = extend({ shared: true }, classConfig);
+      methodConfig = extend({shared: true}, methodConfig);
+      classConfig = extend({shared: true}, classConfig);
       remotes.testClass = extend({}, classConfig);
       var fn = remotes.testClass[name] = extend(function() {}, methodConfig);
 
@@ -309,67 +311,67 @@ describe('RestAdapter', function() {
   describe('sortRoutes', function() {
     it('should sort routes based on verb & path', function() {
       var routes = [
-        { route: { verb: 'get', path: '/' }},
-        { route: { verb: 'get', path: '/:id' }},
-        { route: { verb: 'get', path: '/findOne' }},
-        { route: { verb: 'delete', path: '/' }},
-        { route: { verb: 'del', path: '/:id' }},
+        {route: {verb: 'get', path: '/'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/findOne'}},
+        {route: {verb: 'delete', path: '/'}},
+        {route: {verb: 'del', path: '/:id'}},
       ];
 
       routes.sort(RestAdapter.sortRoutes);
 
       expect(routes).to.eql([
-        { route: { verb: 'get', path: '/findOne' }},
-        { route: { verb: 'get', path: '/:id' }},
-        { route: { verb: 'get', path: '/' }},
-        { route: { verb: 'del', path: '/:id' }},
-        { route: { verb: 'delete', path: '/' }},
+        {route: {verb: 'get', path: '/findOne'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/'}},
+        {route: {verb: 'del', path: '/:id'}},
+        {route: {verb: 'delete', path: '/'}},
       ]);
     });
 
     it('should sort routes based on path accuracy', function() {
       var routes = [
-        { route: { verb: 'get', path: '/' }},
-        { route: { verb: 'get', path: '/:id/docs' }},
-        { route: { verb: 'get', path: '/:id' }},
-        { route: { verb: 'get', path: '/findOne' }},
+        {route: {verb: 'get', path: '/'}},
+        {route: {verb: 'get', path: '/:id/docs'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/findOne'}},
       ];
 
       routes.sort(RestAdapter.sortRoutes);
 
       expect(routes).to.eql([
-        { route: { verb: 'get', path: '/findOne' }},
-        { route: { verb: 'get', path: '/:id/docs' }},
-        { route: { verb: 'get', path: '/:id' }},
-        { route: { verb: 'get', path: '/' }},
+        {route: {verb: 'get', path: '/findOne'}},
+        {route: {verb: 'get', path: '/:id/docs'}},
+        {route: {verb: 'get', path: '/:id'}},
+        {route: {verb: 'get', path: '/'}},
       ]);
     });
 
     it('should sort routes with common parts', function() {
       var routes = [
-        { route: { verb: 'get', path: '/sum' }},
-        { route: { verb: 'get', path: '/sum/1' }},
+        {route: {verb: 'get', path: '/sum'}},
+        {route: {verb: 'get', path: '/sum/1'}},
       ];
 
       routes.sort(RestAdapter.sortRoutes);
 
       expect(routes).to.eql([
-        { route: { verb: 'get', path: '/sum/1' }},
-        { route: { verb: 'get', path: '/sum' }},
+        {route: {verb: 'get', path: '/sum/1'}},
+        {route: {verb: 'get', path: '/sum'}},
       ]);
     });
 
     it('should sort routes with trailing /', function() {
       var routes = [
-        { route: { verb: 'get', path: '/sum/' }},
-        { route: { verb: 'get', path: '/sum/1' }},
+        {route: {verb: 'get', path: '/sum/'}},
+        {route: {verb: 'get', path: '/sum/1'}},
       ];
 
       routes.sort(RestAdapter.sortRoutes);
 
       expect(routes).to.eql([
-        { route: { verb: 'get', path: '/sum/1' }},
-        { route: { verb: 'get', path: '/sum/' }},
+        {route: {verb: 'get', path: '/sum/1'}},
+        {route: {verb: 'get', path: '/sum/'}},
       ]);
     });
   });
@@ -388,7 +390,7 @@ describe('RestAdapter', function() {
           this.createRequest();
         }
         req = this.req;
-        res = this.res = { foo: 'bar' };
+        res = this.res = {foo: 'bar'};
         this.transformResponse(res, null, callback);
       };
     });
@@ -412,7 +414,7 @@ describe('RestAdapter', function() {
         next();
       });
 
-      var restAdapter = givenRestStaticMethod({ isStatic: true });
+      var restAdapter = givenRestStaticMethod({isStatic: true});
       restAdapter.connect('foo');
       restAdapter.invoke(name, [], [], function() {
         assert(beforeCalled);
@@ -430,7 +432,7 @@ describe('RestAdapter', function() {
         next();
       });
 
-      var restAdapter = givenRestStaticMethod({ isStatic: true });
+      var restAdapter = givenRestStaticMethod({isStatic: true});
       restAdapter.connect('foo');
       restAdapter.invoke(name, [], [], function() {
         expect(_req).to.equal(req);
@@ -447,7 +449,7 @@ describe('RestAdapter', function() {
         next();
       });
 
-      var restAdapter = givenRestStaticMethod({ isStatic: true });
+      var restAdapter = givenRestStaticMethod({isStatic: true});
       restAdapter.connect('foo');
       restAdapter.invoke(name, [], [], function() {
         expect(_res).to.equal(res);
@@ -457,8 +459,8 @@ describe('RestAdapter', function() {
 
     function givenRestStaticMethod(methodConfig, classConfig) {
       var name = 'testMethod';
-      methodConfig = extend({ shared: true }, methodConfig);
-      classConfig = extend({ shared: true }, classConfig);
+      methodConfig = extend({shared: true}, methodConfig);
+      classConfig = extend({shared: true}, classConfig);
       var testClass = extend({}, classConfig);
       var fn = testClass[name] = extend(function() {}, methodConfig);
 

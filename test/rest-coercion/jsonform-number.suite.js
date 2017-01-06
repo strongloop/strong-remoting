@@ -15,63 +15,63 @@ module.exports = function(ctx) {
 
   describe('json form - number - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'number', required: true }, [
+    verifyTestCases({arg: 'arg', type: 'number', required: true}, [
       // Valid values
-      [{ arg: 0 }, 0],
-      [{ arg: 1 }, 1],
-      [{ arg: -1 }, -1],
+      [{arg: 0}, 0],
+      [{arg: 1}, 1],
+      [{arg: -1}, -1],
 
       // Empty values should trigger ERROR_BAD_REQUEST
       [EMPTY_BODY, ERROR_BAD_REQUEST],
-      [{ arg: null }, ERROR_BAD_REQUEST],
-      [{ arg: '' }, ERROR_BAD_REQUEST],
+      [{arg: null}, ERROR_BAD_REQUEST],
+      [{arg: ''}, ERROR_BAD_REQUEST],
     ]);
   });
 
   describe('json form - number - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'number' }, [
+    verifyTestCases({arg: 'arg', type: 'number'}, [
       // Empty values
       [EMPTY_BODY, undefined],
 
       // Valid values
-      [{ arg: 0 }, 0],
-      [{ arg: 1 }, 1],
-      [{ arg: -1 }, -1],
-      [{ arg: 1.2 }, 1.2],
-      [{ arg: -1.2 }, -1.2],
+      [{arg: 0}, 0],
+      [{arg: 1}, 1],
+      [{arg: -1}, -1],
+      [{arg: 1.2}, 1.2],
+      [{arg: -1.2}, -1.2],
 
       // Numbers larger than MAX_SAFE_INTEGER get trimmed
-      [{ arg: 2343546576878989879789 }, 2.34354657687899e+21],
-      [{ arg: -2343546576878989879789 }, -2.34354657687899e+21],
+      [{arg: 2343546576878989879789}, 2.34354657687899e+21],
+      [{arg: -2343546576878989879789}, -2.34354657687899e+21],
 
       // Scientific notation works
-      [{ arg: 1.234e+30 }, 1.234e+30],
-      [{ arg: -1.234e+30 }, -1.234e+30],
+      [{arg: 1.234e+30}, 1.234e+30],
+      [{arg: -1.234e+30}, -1.234e+30],
 
       // Number-like string values should trigger ERROR_BAD_REQUEST
-      [{ arg: '0' }, ERROR_BAD_REQUEST],
-      [{ arg: '1' }, ERROR_BAD_REQUEST],
-      [{ arg: '-1' }, ERROR_BAD_REQUEST],
-      [{ arg: '1.2' }, ERROR_BAD_REQUEST],
-      [{ arg: '-1.2' }, ERROR_BAD_REQUEST],
-      [{ arg: '2343546576878989879789' }, ERROR_BAD_REQUEST],
-      [{ arg: '-2343546576878989879789' }, ERROR_BAD_REQUEST],
-      [{ arg: '1.234e+30' }, ERROR_BAD_REQUEST],
-      [{ arg: '-1.234e+30' }, ERROR_BAD_REQUEST],
+      [{arg: '0'}, ERROR_BAD_REQUEST],
+      [{arg: '1'}, ERROR_BAD_REQUEST],
+      [{arg: '-1'}, ERROR_BAD_REQUEST],
+      [{arg: '1.2'}, ERROR_BAD_REQUEST],
+      [{arg: '-1.2'}, ERROR_BAD_REQUEST],
+      [{arg: '2343546576878989879789'}, ERROR_BAD_REQUEST],
+      [{arg: '-2343546576878989879789'}, ERROR_BAD_REQUEST],
+      [{arg: '1.234e+30'}, ERROR_BAD_REQUEST],
+      [{arg: '-1.234e+30'}, ERROR_BAD_REQUEST],
 
       // All other non-number values should trigger ERROR_BAD_REQUEST
-      [{ arg: null }, ERROR_BAD_REQUEST],
-      [{ arg: '' }, ERROR_BAD_REQUEST],
-      [{ arg: false }, ERROR_BAD_REQUEST],
-      [{ arg: 'false' }, ERROR_BAD_REQUEST],
-      [{ arg: true }, ERROR_BAD_REQUEST],
-      [{ arg: 'true' }, ERROR_BAD_REQUEST],
-      [{ arg: 'text' }, ERROR_BAD_REQUEST],
-      [{ arg: [] }, ERROR_BAD_REQUEST],
-      [{ arg: [1, 2] }, ERROR_BAD_REQUEST],
-      [{ arg: {}}, ERROR_BAD_REQUEST],
-      [{ arg: { a: true }}, ERROR_BAD_REQUEST],
+      [{arg: null}, ERROR_BAD_REQUEST],
+      [{arg: ''}, ERROR_BAD_REQUEST],
+      [{arg: false}, ERROR_BAD_REQUEST],
+      [{arg: 'false'}, ERROR_BAD_REQUEST],
+      [{arg: true}, ERROR_BAD_REQUEST],
+      [{arg: 'true'}, ERROR_BAD_REQUEST],
+      [{arg: 'text'}, ERROR_BAD_REQUEST],
+      [{arg: []}, ERROR_BAD_REQUEST],
+      [{arg: [1, 2]}, ERROR_BAD_REQUEST],
+      [{arg: {}}, ERROR_BAD_REQUEST],
+      [{arg: {a: true}}, ERROR_BAD_REQUEST],
     ]);
   });
 };

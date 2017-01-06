@@ -14,7 +14,7 @@ module.exports = function(ctx) {
 
   describe('json body - any - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: 'any', required: true }, [
+    verifyTestCases({arg: 'anyname', type: 'any', required: true}, [
       [null, ERROR_BAD_REQUEST],
       // Both empty array and empty object are valid values for "any"
       [[]],
@@ -25,14 +25,14 @@ module.exports = function(ctx) {
       // To send a string in a JSON body, one has to manually encode it,
       // because supertest sends string data verbatim
       ['"text"', 'text'],
-      [{ x: null }],
+      [{x: null}],
       [[1]],
     ]);
   });
 
   describe('json body - any - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: 'any' }, [
+    verifyTestCases({arg: 'anyname', type: 'any'}, [
       // Empty values
       [null, null],
 
@@ -50,80 +50,80 @@ module.exports = function(ctx) {
       // Verify that deep coercion is not triggered
       // and types specified in JSON are preserved
 
-      [{ x: null }],
+      [{x: null}],
       [[null]],
-      [{ x: 'null' }],
+      [{x: 'null'}],
       [['null']],
 
-      [{ x: false }],
+      [{x: false}],
       [[false]],
-      [{ x: 'false' }],
+      [{x: 'false'}],
       [['false']],
 
-      [{ x: '' }],
+      [{x: ''}],
       [['']],
 
-      [{ x: true }],
+      [{x: true}],
       [[true]],
-      [{ x: 'true' }],
+      [{x: 'true'}],
       [['true']],
 
-      [{ x: 0 }],
+      [{x: 0}],
       [[0]],
-      [{ x: '0' }],
+      [{x: '0'}],
       [['0']],
 
-      [{ x: 1 }],
+      [{x: 1}],
       [[1]],
-      [{ x: '1' }],
+      [{x: '1'}],
       [['1']],
 
-      [{ x: -1 }],
+      [{x: -1}],
       [[-1]],
-      [{ x: '-1' }],
+      [{x: '-1'}],
       [['-1']],
 
-      [{ x: 1.2 }],
+      [{x: 1.2}],
       [[1.2]],
-      [{ x: '1.2' }],
+      [{x: '1.2'}],
       [['1.2']],
 
-      [{ x: -1.2 }],
+      [{x: -1.2}],
       [[-1.2]],
-      [{ x: '-1.2' }],
+      [{x: '-1.2'}],
       [['-1.2']],
 
-      [{ x: 'text' }],
+      [{x: 'text'}],
       [['text']],
 
-      [{ x: [] }],
+      [{x: []}],
       [[[]]],
-      [{ x: '[]' }],
+      [{x: '[]'}],
       [['[]']],
 
-      [{ x: {}}],
+      [{x: {}}],
       [[{}]],
-      [{ x: '{}' }],
+      [{x: '{}'}],
       [['{}']],
 
       // Numeric strings larger than MAX_SAFE_INTEGER
-      [{ x: '2343546576878989879789' }],
+      [{x: '2343546576878989879789'}],
       [['2343546576878989879789']],
-      [{ x: '-2343546576878989879789' }],
+      [{x: '-2343546576878989879789'}],
       [['-2343546576878989879789']],
 
       // Strings mimicking scientific notation
-      [{ x: '1.234e+30' }],
+      [{x: '1.234e+30'}],
       [['1.234e+30']],
-      [{ x: '-1.234e+30' }],
+      [{x: '-1.234e+30'}],
       [['-1.234e+30']],
 
       // Should `any` recognize date?
-      [{ x: '2016-05-19T13:28:51.299Z' }],
+      [{x: '2016-05-19T13:28:51.299Z'}],
       [['2016-05-19T13:28:51.299Z']],
-      [{ x: '2016-05-19' }],
+      [{x: '2016-05-19'}],
       [['2016-05-19']],
-      [{ x: 'Thu May 19 2016 15:28:51 GMT 0200 (CEST)' }],
+      [{x: 'Thu May 19 2016 15:28:51 GMT 0200 (CEST)'}],
       [['Thu May 19 2016 15:28:51 GMT 0200 (CEST)']],
     ]);
   });

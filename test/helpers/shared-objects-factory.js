@@ -24,6 +24,8 @@
  * THE SOFTWARE.
  */
 
+'use strict';
+
 var extend = require('util')._extend;
 
 exports.createSharedClass =  function createSharedClass(config) {
@@ -43,9 +45,9 @@ exports.createSharedClass =  function createSharedClass(config) {
 
   extend(SharedClass.sharedCtor, {
     shared: true,
-    accepts: [{ arg: 'id', type: 'any', http: { source: 'path' }}],
-    http: { path: '/:id' },
-    returns: { arg: 'instance', type: 'object', root: true },
+    accepts: [{arg: 'id', type: 'any', http: {source: 'path'}}],
+    http: {path: '/:id'},
+    returns: {arg: 'instance', type: 'object', root: true},
   });
 
   SharedClass._sharedCtor = function(id, cb) {

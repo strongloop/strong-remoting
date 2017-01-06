@@ -19,7 +19,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - string - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'string', required: true }, [
+    verifyTestCases({arg: 'arg', type: 'string', required: true}, [
       // Valid values
       ['arg=text', 'text'],
       // Empty-like values are treated as strings
@@ -35,7 +35,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - string - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'string' }, [
+    verifyTestCases({arg: 'arg', type: 'string'}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],

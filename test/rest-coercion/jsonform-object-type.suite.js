@@ -17,63 +17,62 @@ module.exports = function(ctx) {
 
   describe('json form - CustomClass - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'CustomClass', required: true }, [
+    verifyTestCases({arg: 'arg', type: 'CustomClass', required: true}, [
       // Valid values
-      [{ arg: {}}, CustomClass({})],
-      [{ arg: { foo: 'bar' }}, CustomClass({ foo: 'bar' })],
+      [{arg: {}}, CustomClass({})],
+      [{arg: {foo: 'bar'}}, CustomClass({foo: 'bar'})],
 
       // Empty values should trigger ERROR_BAD_REQUEST
       [EMPTY_BODY, ERROR_BAD_REQUEST],
-      [{ arg: null }, ERROR_BAD_REQUEST],
-      [{ arg: '' }, ERROR_BAD_REQUEST],
+      [{arg: null}, ERROR_BAD_REQUEST],
+      [{arg: ''}, ERROR_BAD_REQUEST],
 
       // Arrays are not allowed
-      [{ arg: [] }, ERROR_BAD_REQUEST],
-      [{ arg: [1, 2] }, ERROR_BAD_REQUEST],
+      [{arg: []}, ERROR_BAD_REQUEST],
+      [{arg: [1, 2]}, ERROR_BAD_REQUEST],
     ]);
   });
 
   describe('json form - CustomClass - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'CustomClass' }, [
+    verifyTestCases({arg: 'arg', type: 'CustomClass'}, [
       // Empty values
       [EMPTY_BODY, undefined],
-      [{ arg: null }, null],
+      [{arg: null}, null],
 
       // Valid values
-      [{ arg: { name: null }}, CustomClass({ name: null })],
-      [{ arg: {}}, CustomClass({})],
-      [{ arg: { name: 'value' }}, CustomClass({ name: 'value' })],
-      [{ arg: { name: 1 }}, CustomClass({ name: 1 })],
-
+      [{arg: {name: null}}, CustomClass({name: null})],
+      [{arg: {}}, CustomClass({})],
+      [{arg: {name: 'value'}}, CustomClass({name: 'value'})],
+      [{arg: {name: 1}}, CustomClass({name: 1})],
 
       // Verify that deep coercion is not triggered
       // and types specified in JSON are preserved
-      [{ arg: { name: '1' }}, CustomClass({ name: '1' })],
-      [{ arg: { name: -1 }}, CustomClass({ name: -1 })],
-      [{ arg: { name: '-1' }}, CustomClass({ name: '-1' })],
-      [{ arg: { name: 1.2 }}, CustomClass({ name: 1.2 })],
-      [{ arg: { name: '1.2' }}, CustomClass({ name: '1.2' })],
-      [{ arg: { name: -1.2 }}, CustomClass({ name: -1.2 })],
-      [{ arg: { name: '-1.2' }}, CustomClass({ name: '-1.2' })],
-      [{ arg: { name: 'true' }}, CustomClass({ name: 'true' })],
-      [{ arg: { name: 'false' }}, CustomClass({ name: 'false' })],
+      [{arg: {name: '1'}}, CustomClass({name: '1'})],
+      [{arg: {name: -1}}, CustomClass({name: -1})],
+      [{arg: {name: '-1'}}, CustomClass({name: '-1'})],
+      [{arg: {name: 1.2}}, CustomClass({name: 1.2})],
+      [{arg: {name: '1.2'}}, CustomClass({name: '1.2'})],
+      [{arg: {name: -1.2}}, CustomClass({name: -1.2})],
+      [{arg: {name: '-1.2'}}, CustomClass({name: '-1.2'})],
+      [{arg: {name: 'true'}}, CustomClass({name: 'true'})],
+      [{arg: {name: 'false'}}, CustomClass({name: 'false'})],
 
       // Invalid values should trigger ERROR_BAD_REQUEST
-      [{ arg: '' }, ERROR_BAD_REQUEST],
-      [{ arg: false }, ERROR_BAD_REQUEST],
-      [{ arg: true }, ERROR_BAD_REQUEST],
-      [{ arg: 0 }, ERROR_BAD_REQUEST],
-      [{ arg: 1 }, ERROR_BAD_REQUEST],
-      [{ arg: -1 }, ERROR_BAD_REQUEST],
+      [{arg: ''}, ERROR_BAD_REQUEST],
+      [{arg: false}, ERROR_BAD_REQUEST],
+      [{arg: true}, ERROR_BAD_REQUEST],
+      [{arg: 0}, ERROR_BAD_REQUEST],
+      [{arg: 1}, ERROR_BAD_REQUEST],
+      [{arg: -1}, ERROR_BAD_REQUEST],
 
       // Arrays are not allowed
-      [{ arg: [] }, ERROR_BAD_REQUEST],
-      [{ arg: ['text'] }, ERROR_BAD_REQUEST],
-      [{ arg: [1, 2] }, ERROR_BAD_REQUEST],
+      [{arg: []}, ERROR_BAD_REQUEST],
+      [{arg: ['text']}, ERROR_BAD_REQUEST],
+      [{arg: [1, 2]}, ERROR_BAD_REQUEST],
 
       // Verify that errors thrown by the factory function are handled
-      [{ arg: { invalid: true }}, ERROR_BAD_REQUEST],
+      [{arg: {invalid: true}}, ERROR_BAD_REQUEST],
     ]);
   });
 };

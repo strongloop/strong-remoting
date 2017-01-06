@@ -3,9 +3,11 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 var assert = require('assert');
 var extend = require('util')._extend;
-var expect = require('chai').expect;
+var expect = require('./helpers/expect');
 var Context = require('../lib/context-base');
 var SharedMethod = require('../lib/shared-method');
 var TypeRegistry = require('../lib/type-registry');
@@ -19,21 +21,21 @@ describe('SharedMethod', function() {
   describe('constructor', function() {
     it('normalizes "array" type in "accepts" arguments', function() {
       var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
-        accepts: { arg: 'data', type: 'array' },
+        accepts: {arg: 'data', type: 'array'},
       });
 
       expect(sharedMethod.accepts).to.eql([
-        { arg: 'data', type: ['any'] },
+        {arg: 'data', type: ['any']},
       ]);
     });
 
     it('normalizes "array" type in "returns" arguments', function() {
       var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
-        returns: { arg: 'data', type: 'array' },
+        returns: {arg: 'data', type: 'array'},
       });
 
       expect(sharedMethod.returns).to.eql([
-        { arg: 'data', type: ['any'] },
+        {arg: 'data', type: ['any']},
       ]);
     });
 
@@ -57,7 +59,7 @@ describe('SharedMethod', function() {
     });
 
     it('checks by name if a function is going to be invoked', function() {
-      var mockSharedClass = { prototype: { myName: myFunction }};
+      var mockSharedClass = {prototype: {myName: myFunction}};
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass);
       assert.equal(sharedMethod.isDelegateFor('myName', false), true);
       assert.equal(sharedMethod.isDelegateFor('myName', true), false);
@@ -65,16 +67,16 @@ describe('SharedMethod', function() {
     });
 
     it('checks by name if static function is going to be invoked', function() {
-      var mockSharedClass = { myName: myFunction };
-      var options = { isStatic: true };
+      var mockSharedClass = {myName: myFunction};
+      var options = {isStatic: true};
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
       assert.equal(sharedMethod.isDelegateFor('myName', true), true);
       assert.equal(sharedMethod.isDelegateFor('myName', false), false);
     });
 
     it('checks by alias if static function is going to be invoked', function() {
-      var mockSharedClass = { myName: myFunction };
-      var options = { isStatic: true, aliases: ['myAlias'] };
+      var mockSharedClass = {myName: myFunction};
+      var options = {isStatic: true, aliases: ['myAlias']};
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
       assert.equal(sharedMethod.isDelegateFor('myAlias', true), true);
       assert.equal(sharedMethod.isDelegateFor('myAlias', false), false);
@@ -97,29 +99,29 @@ describe('SharedMethod', function() {
     function myFunction() {}
 
     it('checks by name if static function is going to be invoked', function() {
-      var mockSharedClass = { myName: myFunction };
-      var options = { isStatic: true };
+      var mockSharedClass = {myName: myFunction};
+      var options = {isStatic: true};
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
       assert.equal(sharedMethod.isDelegateForName('myName'), true);
     });
 
     it('checks by alias if static function is going to be invoked', function() {
-      var mockSharedClass = { myName: myFunction };
-      var options = { isStatic: true, aliases: ['myAlias'] };
+      var mockSharedClass = {myName: myFunction};
+      var options = {isStatic: true, aliases: ['myAlias']};
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
       assert.equal(sharedMethod.isDelegateForName('myAlias'), true);
     });
 
     it('checks by name if prototype function is going to be invoked', function() {
-      var mockSharedClass = { myName: myFunction };
-      var options = { isStatic: false };
+      var mockSharedClass = {myName: myFunction};
+      var options = {isStatic: false};
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
       assert.equal(sharedMethod.isDelegateForName('prototype.myName'), true);
     });
 
     it('checks by alias if prototype function is going to be invoked', function() {
-      var mockSharedClass = { myName: myFunction };
-      var options = { isStatic: false, aliases: ['myAlias'] };
+      var mockSharedClass = {myName: myFunction};
+      var options = {isStatic: false, aliases: ['myAlias']};
       var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
       assert.equal(sharedMethod.isDelegateForName('prototype.myAlias'), true);
     });
@@ -135,12 +137,12 @@ describe('SharedMethod', function() {
   describe('sharedMethod.invoke', function() {
     it('returns 400 when number argument is `NaN`', function(done) {
       var method = givenSharedMethod({
-        accepts: { arg: 'num', type: 'number' },
+        accepts: {arg: 'num', type: 'number'},
       });
 
-      method.invoke('ctx', { num: NaN }, {}, ctx(method), function(err) {
+      method.invoke('ctx', {num: NaN}, {}, ctx(method), function(err) {
         setImmediate(function() {
-          expect(err).to.exist;
+          expect(err).to.exist();
           expect(err.message).to.contain('not a number');
           expect(err.statusCode).to.equal(400);
           done();
@@ -162,12 +164,12 @@ describe('SharedMethod', function() {
       it('returns 400 when integer argument is a decimal number',
         function(done) {
           var method = givenSharedMethod({
-            accepts: { arg: 'num', type: 'integer' },
+            accepts: {arg: 'num', type: 'integer'},
           });
 
-          method.invoke('ctx', { num: 2.5 }, {}, ctx(method), function(err) {
+          method.invoke('ctx', {num: 2.5}, {}, ctx(method), function(err) {
             setImmediate(function() {
-              expect(err).to.exist;
+              expect(err).to.exist();
               expect(err.message).to.match(/not a safe integer/);
               expect(err.statusCode).to.equal(400);
               done();
@@ -177,12 +179,12 @@ describe('SharedMethod', function() {
 
       it('returns 400 when integer argument is `NaN`', function(done) {
         var method = givenSharedMethod({
-          accepts: { arg: 'num', type: 'integer' },
+          accepts: {arg: 'num', type: 'integer'},
         });
 
-        method.invoke('ctx', { num: NaN }, {}, ctx(method), function(err) {
+        method.invoke('ctx', {num: NaN}, {}, ctx(method), function(err) {
           setImmediate(function() {
-            expect(err).to.exist;
+            expect(err).to.exist();
             expect(err.message).to.match(/not a number/i);
             expect(err.statusCode).to.equal(400);
             done();
@@ -194,16 +196,16 @@ describe('SharedMethod', function() {
         function(done) {
           var method = givenSharedMethod(
             function(arg, cb) {
-              return cb({ 'num': arg });
+              return cb({'num': arg});
             },
             {
-              accepts: { arg: 'num', type: 'integer' },
+              accepts: {arg: 'num', type: 'integer'},
             });
 
-          method.invoke('ctx', { num: 2343546576878989879789 }, {}, ctx(method),
+          method.invoke('ctx', {num: 2343546576878989879789}, {}, ctx(method),
           function(err) {
             setImmediate(function() {
-              expect(err).to.exist;
+              expect(err).to.exist();
               expect(err.message).to.match(/integer/i);
               expect(err.statusCode).to.equal(400);
               done();
@@ -214,13 +216,13 @@ describe('SharedMethod', function() {
       it('treats integer argument of type x.0 as integer', function(done) {
         var method = givenSharedMethod(
           function(arg, cb) {
-            return cb({ 'num': arg });
+            return cb({'num': arg});
           },
           {
-            accepts: { arg: 'num', type: 'integer' },
+            accepts: {arg: 'num', type: 'integer'},
           });
 
-        method.invoke('ctx', { num: 12.0 }, {}, ctx(method), function(result) {
+        method.invoke('ctx', {num: 12.0}, {}, ctx(method), function(result) {
           setImmediate(function() {
             expect(result.num).to.equal(12);
             done();
@@ -235,12 +237,12 @@ describe('SharedMethod', function() {
               cb(null, 3.141);
             },
             {
-              returns: { arg: 'value', type: 'integer' },
+              returns: {arg: 'value', type: 'integer'},
             });
 
           method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
             setImmediate(function() {
-              expect(err).to.exist;
+              expect(err).to.exist();
               expect(err.message).to.match(/integer/i);
               expect(err.statusCode).to.equal(500);
               done();
@@ -254,12 +256,12 @@ describe('SharedMethod', function() {
             cb(null, -2343546576878989879789);
           },
           {
-            returns: { arg: 'value', type: 'integer' },
+            returns: {arg: 'value', type: 'integer'},
           });
 
         method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
           setImmediate(function() {
-            expect(err).to.exist;
+            expect(err).to.exist();
             expect(err.message).to.match(/integer/i);
             expect(err.statusCode).to.equal(500);
             done();
@@ -275,7 +277,7 @@ describe('SharedMethod', function() {
             cb(null, new Date(0));
           },
           {
-            returns: { arg: 'value', type: 'date' },
+            returns: {arg: 'value', type: 'date'},
           });
 
         method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
@@ -295,12 +297,12 @@ describe('SharedMethod', function() {
 
     it('returns 400 and doesn\'t crash with unparsable object', function(done) {
       var method = givenSharedMethod({
-        accepts: [{ arg: 'obj', type: 'object' }],
+        accepts: [{arg: 'obj', type: 'object'}],
       });
 
-      method.invoke('ctx', { obj: 'test' }, {}, ctx(method), function(err) {
+      method.invoke('ctx', {obj: 'test'}, {}, ctx(method), function(err) {
         setImmediate(function() {
-          expect(err).to.exist;
+          expect(err).to.exist();
           expect(err.message).to.contain('not an object');
           expect(err.statusCode).to.equal(400);
           done();
@@ -317,14 +319,14 @@ describe('SharedMethod', function() {
         },
         {
           returns: [
-            { arg: 'first', type: 'string' },
-            { arg: 'second', type: 'string' },
+            {arg: 'first', type: 'string'},
+            {arg: 'second', type: 'string'},
           ],
         });
 
       method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
         setImmediate(function() {
-          expect(result).to.eql({ first: 'one', second: 'two' });
+          expect(result).to.eql({first: 'one', second: 'two'});
           done();
         });
       });
@@ -339,13 +341,13 @@ describe('SharedMethod', function() {
         },
         {
           returns: [
-            { arg: 'value', type: 'string' },
+            {arg: 'value', type: 'string'},
           ],
         });
 
       method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
         setImmediate(function() {
-          expect(result).to.eql({ value: 'data' });
+          expect(result).to.eql({value: 'data'});
           done();
         });
       });
@@ -360,13 +362,13 @@ describe('SharedMethod', function() {
         },
         {
           returns: [
-            { arg: 'value', type: ['string'] },
+            {arg: 'value', type: ['string']},
           ],
         });
 
       method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
         setImmediate(function() {
-          expect(result).to.eql({ value: ['a', 'b'] });
+          expect(result).to.eql({value: ['a', 'b']});
           done();
         });
       });
@@ -397,11 +399,11 @@ describe('SharedMethod', function() {
       };
     }
 
-    var mockSharedClass = { fn: fn };
+    var mockSharedClass = {fn: fn};
     return new SharedMethod(fn, 'fn', mockSharedClass, options);
   }
 
   function ctx(method) {
-    return new Context(method, new TypeRegistry({ warnOnUnknownType: false }));
+    return new Context(method, new TypeRegistry({warnOnUnknownType: false}));
   }
 });

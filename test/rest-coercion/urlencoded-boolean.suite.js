@@ -19,7 +19,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - boolean - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'boolean', required: true }, [
+    verifyTestCases({arg: 'arg', type: 'boolean', required: true}, [
       // Valid values
       ['arg=false', false],
       ['arg=true', true],
@@ -38,7 +38,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - boolean - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'boolean' }, [
+    verifyTestCases({arg: 'arg', type: 'boolean'}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],

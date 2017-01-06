@@ -35,7 +35,7 @@ describe('Coercion in RestAdapter', function() {
 
   loadAllTestFiles();
 
-  /***** IMPLEMENTATION DETAILS *****/
+  /** *** IMPLEMENTATION DETAILS *****/
 
   var server; // eslint-disable-line one-var
   function setupRemoteServer(done) {
@@ -57,7 +57,7 @@ describe('Coercion in RestAdapter', function() {
 
   function setupRemoteObjects() {
     ctx.remoteObjects = RemoteObjects.create({
-      errorHandler: { debug: true, log: false },
+      errorHandler: {debug: true, log: false},
     });
   }
 
@@ -104,8 +104,8 @@ describe('Coercion in RestAdapter', function() {
   function verifyResultOnResponse(err, res, actualValue, expectedResult, done) {
     if (err && !res) return done(err);
     var actual = res.statusCode === 200 ?
-      { value: actualValue } :
-      { error: res.statusCode };
+      {value: actualValue} :
+      {error: res.statusCode};
 
     var actualCtor = actual.value && typeof actual.value === 'object' &&
         actual.value.constructor;
@@ -115,8 +115,8 @@ describe('Coercion in RestAdapter', function() {
     }
 
     var expected = expectedResult instanceof Error ?
-      { error: +expectedResult.message } :
-      { value: expectedResult };
+      {error: +expectedResult.message} :
+      {value: expectedResult};
 
     var expectedCtor = expected.value && typeof expected.value === 'object' &&
         expected.value.constructor;

@@ -3,6 +3,8 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 var assert = require('assert');
 var RemoteObjects = require('../');
 var expect = require('chai').expect;
@@ -39,10 +41,10 @@ describe('strong-remoting', function() {
     remotes.fs = fs;
     fs.createReadStream.shared = true;
     fs.createReadStream.accepts = [
-      { arg: 'path', type: 'string' },
-      { arg: 'encoding', type: 'string' },
+      {arg: 'path', type: 'string'},
+      {arg: 'encoding', type: 'string'},
     ];
-    fs.createReadStream.returns = { arg: 'res', type: 'stream' };
+    fs.createReadStream.returns = {arg: 'res', type: 'stream'};
     fs.createReadStream.http = {
       verb: 'get',
       pipe: {
@@ -54,7 +56,7 @@ describe('strong-remoting', function() {
   it('should stream the file output', function(done) {
     createSteam();
     json('get', '/fs/createReadStream?path=' + __dirname + '/data/foo.json&encoding=utf8')
-      .expect({ bar: 'baz' }, done);
+      .expect({bar: 'baz'}, done);
   });
 
   it('should stream the file output with no compression', function(done) {
@@ -73,7 +75,7 @@ describe('a function returning a ReadableStream', function() {
   before(function(done) {
     var test = this;
     // NOTE: Date is intentionally excluded as it is not supported yet
-    var data = test.data = [{ foo: 'bar' }, 'bat', false, 0, null];
+    var data = test.data = [{foo: 'bar'}, 'bat', false, 0, null];
     app = express();
     server = app.listen(0, '127.0.0.1', done);
     function StreamClass() {
@@ -85,7 +87,7 @@ describe('a function returning a ReadableStream', function() {
     };
 
     StreamClass.createStreamWithError = function createStreamWithError(cb) {
-      var rs = new Readable({ objectMode: true });
+      var rs = new Readable({objectMode: true});
 
       rs._read = function() {
         // required method

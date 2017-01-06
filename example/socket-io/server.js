@@ -13,10 +13,10 @@ var fs = remotes.exports.fs = require('fs');
 fs.readFile.shared = true;
 
 // describe the arguments
-fs.readFile.accepts = { arg: 'path', type: 'string' };
+fs.readFile.accepts = {arg: 'path', type: 'string'};
 
 // describe the result
-fs.readFile.returns = { arg: 'data', type: 'buffer' };
+fs.readFile.returns = {arg: 'data', type: 'buffer'};
 
 // event emitter
 var EventEmitter = require('events').EventEmitter;
@@ -24,12 +24,12 @@ var ee = remotes.exports.ee = new EventEmitter();
 
 // expose the on method
 ee.on.shared = true;
-ee.on.accepts = { arg: 'event', type: 'string' };
-ee.on.returns = { arg: 'data', type: 'object' };
+ee.on.accepts = {arg: 'event', type: 'string'};
+ee.on.returns = {arg: 'data', type: 'object'};
 
 setInterval(function() {
   // emit some data
-  ee.emit('foo', { some: 'data' });
+  ee.emit('foo', {some: 'data'});
 }, 1000);
 
 // expose it over http

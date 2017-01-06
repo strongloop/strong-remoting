@@ -20,7 +20,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - geopoint - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'geopoint', required: true }, [
+    verifyTestCases({arg: 'arg', type: 'geopoint', required: true}, [
       // Valid values - nested keys
       ['arg[lat]=2.5&arg[lng]=3', new GeoPoint(2.5, 3)],
       ['arg[0]=2.5&arg[1]=3', new GeoPoint(2.5, 3)],
@@ -53,7 +53,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - geopoint - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'geopoint' }, [
+    verifyTestCases({arg: 'arg', type: 'geopoint'}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],
