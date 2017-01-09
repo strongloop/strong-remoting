@@ -21,7 +21,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - date - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'date', required: true }, [
+    verifyTestCases({arg: 'arg', type: 'date', required: true}, [
       // Valid values
       ['arg=2016-05-19T13:28:51.299Z', new Date('2016-05-19T13:28:51.299Z')],
 
@@ -38,7 +38,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - date - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'date' }, [
+    verifyTestCases({arg: 'arg', type: 'date'}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],

@@ -1,10 +1,11 @@
-// Copyright IBM Corp. 2014. All Rights Reserved.
+// Copyright IBM Corp. 2017. All Rights Reserved.
 // Node module: strong-remoting
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 'use strict';
 
-module.exports = function(callback) {
+const chai = require('chai');
+chai.use(require('dirty-chai'));
 
-};
+module.exports = chai.expect;

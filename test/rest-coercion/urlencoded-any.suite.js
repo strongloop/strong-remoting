@@ -19,7 +19,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - any - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'any', required: true }, [
+    verifyTestCases({arg: 'arg', type: 'any', required: true}, [
       // Valid values
       ['arg=1234', 1234],
       ['arg=text', 'text'],
@@ -34,7 +34,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - any - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'any' }, [
+    verifyTestCases({arg: 'arg', type: 'any'}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],
@@ -53,8 +53,8 @@ function suite(prefix, ctx) {
       ['arg=text', 'text'],
       ['arg=[]', []],
       ['arg={}', {}],
-      ['arg={"x":1}', { x: 1 }],
-      ['arg={"x":"1"}', { x: '1' }],
+      ['arg={"x":1}', {x: 1}],
+      ['arg={"x":"1"}', {x: '1'}],
       ['arg={x:1}', '{x:1}'], // invalid JSON - the key is not quoted
       ['arg=[1]', [1]],
       ['arg=["1"]', ['1']],

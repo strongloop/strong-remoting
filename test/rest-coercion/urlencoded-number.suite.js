@@ -19,7 +19,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - number - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'number', required: true }, [
+    verifyTestCases({arg: 'arg', type: 'number', required: true}, [
       // Valid values
       ['arg=0', 0],
       ['arg=1', 1],
@@ -38,7 +38,7 @@ function suite(prefix, ctx) {
 
   describe(prefix + ' - number - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'arg', type: 'number' }, [
+    verifyTestCases({arg: 'arg', type: 'number'}, [
       // Empty values
       [EMPTY_QUERY, undefined],
       ['arg', undefined],

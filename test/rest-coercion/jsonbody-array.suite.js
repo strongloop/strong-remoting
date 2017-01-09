@@ -19,7 +19,7 @@ module.exports = function(ctx) {
     // The exact type is not important to test how required array parameters
     // treat missing values, therefore we test a single type (boolean) only.
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: ['boolean'], required: true }, [
+    verifyTestCases({arg: 'anyname', type: ['boolean'], required: true}, [
       // valid values
       [[]], // an empty array is a valid value for required array
       [[true, false]],
@@ -30,7 +30,7 @@ module.exports = function(ctx) {
 
   describe('json body - array of booleans - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: ['boolean'] }, [
+    verifyTestCases({arg: 'anyname', type: ['boolean']}, [
       // no value is provided
       [null],
       // empty array
@@ -66,7 +66,7 @@ module.exports = function(ctx) {
 
   describe('json body - array of numbers - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: ['number'] }, [
+    verifyTestCases({arg: 'anyname', type: ['number']}, [
       // no value is provided
       [null],
       // empty array
@@ -100,7 +100,7 @@ module.exports = function(ctx) {
       ['"-1.2"', ERROR_BAD_REQUEST],
       ['"text"', ERROR_BAD_REQUEST],
       [{}, ERROR_BAD_REQUEST],
-      [{ x: true }, ERROR_BAD_REQUEST],
+      [{x: true}, ERROR_BAD_REQUEST],
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
       [[null], ERROR_BAD_REQUEST],
@@ -117,7 +117,7 @@ module.exports = function(ctx) {
 
   describe('json body - array of strings - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: ['string'] }, [
+    verifyTestCases({arg: 'anyname', type: ['string']}, [
       // no value is provided
       [null],
       // Empty array
@@ -147,7 +147,7 @@ module.exports = function(ctx) {
 
   describe('json body - array of dates - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: ['date'] }, [
+    verifyTestCases({arg: 'anyname', type: ['date']}, [
       // no value is provided
       [null],
       // Empty array
@@ -181,15 +181,15 @@ module.exports = function(ctx) {
 
   describe('json body - array of geopoints - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: ['geopoint'] }, [
+    verifyTestCases({arg: 'anyname', type: ['geopoint']}, [
       // no value is provided
       [null],
       // Empty array
       [[]],
 
       // Valid values - {lat, lng} objects
-      [[{ lat: 2.3, lng: 3.2 }], [new GeoPoint(2.3, 3.2)]],
-      [[{ lat: 2.3, lng: 3.2 }, { lat: 3.3, lng: 3.5 }], [
+      [[{lat: 2.3, lng: 3.2}], [new GeoPoint(2.3, 3.2)]],
+      [[{lat: 2.3, lng: 3.2}, {lat: 3.3, lng: 3.5}], [
         new GeoPoint(2.3, 3.2),
         new GeoPoint(3.3, 3.5),
       ]],
@@ -207,7 +207,7 @@ module.exports = function(ctx) {
       ['"0"', ERROR_BAD_REQUEST],
       ['"text"', ERROR_BAD_REQUEST],
       [{}, ERROR_BAD_REQUEST],
-      [{ x: true }, ERROR_BAD_REQUEST],
+      [{x: true}, ERROR_BAD_REQUEST],
 
       // Array items have wrong type - should return ERROR_BAD_REQUEST
       [[null], ERROR_BAD_REQUEST],
@@ -221,7 +221,7 @@ module.exports = function(ctx) {
 
   describe('json body - array of any - optional', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
-    verifyTestCases({ arg: 'anyname', type: ['any'] }, [
+    verifyTestCases({arg: 'anyname', type: ['any']}, [
       // no value is provided
       [null],
       // Empty array
@@ -259,7 +259,7 @@ module.exports = function(ctx) {
 
       // Valid values - objects
       [[{}]],
-      [[{ a: 1 }]],
+      [[{a: 1}]],
       [[[]]],
       [[[1]]],
 

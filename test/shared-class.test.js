@@ -3,6 +3,8 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 var assert = require('assert');
 var extend = require('util')._extend;
 var expect = require('chai').expect;
@@ -17,7 +19,7 @@ describe('SharedClass', function() {
 
   describe('constructor', function() {
     it('fills http.path from ctor.http', function() {
-      SomeClass.http = { path: '/foo' };
+      SomeClass.http = {path: '/foo'};
       var sc = new SharedClass('some', SomeClass);
       expect(sc.http.path).to.equal('/foo');
     });
@@ -28,7 +30,7 @@ describe('SharedClass', function() {
     });
 
     it('fills http.path using a normalized path', function() {
-      var sc = new SharedClass('SomeClass', SomeClass, { normalizeHttpPath: true });
+      var sc = new SharedClass('SomeClass', SomeClass, {normalizeHttpPath: true});
       expect(sc.http.path).to.equal('/some-class');
     });
 
@@ -41,7 +43,7 @@ describe('SharedClass', function() {
       var sc = new SharedClass(undefined, myClass);
       var fns = sc.methods().map(getName);
       expect(fns).to.contain('foo');
-      expect(sc.http).to.eql({ path: '/bar' });
+      expect(sc.http).to.eql({path: '/bar'});
     });
   });
 
@@ -65,10 +67,10 @@ describe('SharedClass', function() {
 
       var inputNames = ['foo', 'bar'];
 
-      sc.defineMethod(inputNames[0], { shared: false, isStatic: true });
-      sc.defineMethod(inputNames[1], { shared: true, isStatic: true });
+      sc.defineMethod(inputNames[0], {shared: false, isStatic: true});
+      sc.defineMethod(inputNames[1], {shared: true, isStatic: true});
 
-      var outputNames = sc.methods({ includeDisabled: true }).map(function(m) {
+      var outputNames = sc.methods({includeDisabled: true}).map(function(m) {
         return m.name;
       });
 
@@ -250,10 +252,10 @@ describe('SharedClass', function() {
 
     beforeEach(function() {
       sc = new SharedClass('SomeClass', SomeClass);
-      sm = sc.defineMethod(METHOD_NAME, { isStatic: true });
-      sm = sc.defineMethod(INST_METHOD_NAME, { isStatic: false });
+      sm = sc.defineMethod(METHOD_NAME, {isStatic: true});
+      sm = sc.defineMethod(INST_METHOD_NAME, {isStatic: false});
       sc.resolve(function(define) {
-        define(DYN_METHOD_NAME, { isStatic: true });
+        define(DYN_METHOD_NAME, {isStatic: true});
       });
     });
 

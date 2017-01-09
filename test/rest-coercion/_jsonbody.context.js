@@ -76,8 +76,8 @@ module.exports = function createJsonBodyContext(ctx) {
 
     extend(testClass.testMethod, {
       shared: true,
-      accepts: extend(argSpec, { http: { source: 'body' }}),
-      returns: { name: 'success', type: 'boolean' },
+      accepts: extend(argSpec, {http: {source: 'body'}}),
+      returns: {name: 'success', type: 'boolean'},
     });
 
     ctx.request.get('/testClass/testMethod')

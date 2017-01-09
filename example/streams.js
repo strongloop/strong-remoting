@@ -30,7 +30,6 @@ fileService.upload.http = {
 };
 fileService.upload.shared = true;
 
-
 fileService.download.http = {
   // pipe to the response
   // for the http transport

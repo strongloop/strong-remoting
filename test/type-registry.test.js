@@ -1,3 +1,10 @@
+// Copyright IBM Corp. 2016,2017. All Rights Reserved.
+// Node module: strong-remoting
+// This file is licensed under the Artistic License 2.0.
+// License text available at https://opensource.org/licenses/Artistic-2.0
+
+'use strict';
+
 var expect = require('chai').expect;
 var TypeRegistry = require('../lib/type-registry');
 

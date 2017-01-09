@@ -14,7 +14,7 @@ function SimpleClass(name) {
 }
 helper.type(SimpleClass, {
   description: 'A simple class example',
-  accepts: [{ name: 'name', type: 'string', required: true }],
+  accepts: [{name: 'name', type: 'string', required: true}],
 });
 
 /**
@@ -26,7 +26,7 @@ SimpleClass.prototype.getName = function(callback) {
 helper.method(SimpleClass.prototype.getName, {
   path: 'SimpleClass.prototype.getName',
   description: 'Returns the SimpleClass instance\'s name.',
-  returns: { name: 'name', type: 'string' },
+  returns: {name: 'name', type: 'string'},
 });
 
 /**
@@ -38,8 +38,8 @@ SimpleClass.prototype.greet = function(other, callback) {
 helper.method(SimpleClass.prototype.greet, {
   path: 'SimpleClass.prototype.greet',
   description: 'Takes in a name, returning a greeting for that name.',
-  accepts: [{ name: 'other', type: 'string', required: true }],
-  returns: { name: 'greeting', type: 'string' },
+  accepts: [{name: 'other', type: 'string', required: true}],
+  returns: {name: 'greeting', type: 'string'},
 });
 
 /**
@@ -51,5 +51,5 @@ SimpleClass.getFavoritePerson = function(callback) {
 helper.method(SimpleClass.getFavoritePerson, {
   path: 'SimpleClass.getFavoritePerson',
   description: 'Returns the SimpleClass prototype\'s favorite person\'s name.',
-  returns: { name: 'name', type: 'string' },
+  returns: {name: 'name', type: 'string'},
 });

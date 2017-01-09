@@ -3,9 +3,11 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 var auth = require('http-auth');
 var crypto = require('crypto');
-var expect = require('chai').expect;
+var expect = require('./helpers/expect');
 var express = require('express');
 var fmt = require('util').format;
 
@@ -19,10 +21,10 @@ describe('support for HTTP Authentication', function() {
 
   before(function setupServer(done) {
     var app = express();
-    var basic = auth.basic({ realm: 'testing' }, function(u, p, cb) {
+    var basic = auth.basic({realm: 'testing'}, function(u, p, cb) {
       cb(u === 'basicuser' && p === 'basicpass');
     });
-    var digest = auth.digest({ realm: 'testing' }, function(user, cb) {
+    var digest = auth.digest({realm: 'testing'}, function(user, cb) {
       cb(user === 'digestuser' ? md5('digestuser:testing:digestpass') : null);
     });
     app.use('/noAuth', remotes.handler('rest'));
@@ -63,9 +65,9 @@ describe('support for HTTP Authentication', function() {
 
   describe('when Bearer auth is required', function() {
     it('succeeds with correct credentials',
-      succeeds('/bearerAuth', { bearer: 'bearertoken' }));
+      succeeds('/bearerAuth', {bearer: 'bearertoken'}));
     it('fails with bad credentials',
-      fails('/bearerAuth', { bearer: 'badtoken' }));
+      fails('/bearerAuth', {bearer: 'badtoken'}));
     it('fails with no credentials',
       fails('/bearerAuth'));
   });
@@ -83,7 +85,7 @@ describe('support for HTTP Authentication', function() {
     return function(done) {
       invokeRemote(server.address().port, path, credentials,
           function(err, session) {
-            expect(err).to.not.exist;
+            expect(err).to.not.exist();
             expect(session.userId).to.equal(123);
             done();
           });
@@ -117,7 +119,7 @@ describe('support for HTTP Authentication', function() {
 
     var url = fmt('http://127.0.0.1:%d%s', port, path);
     var method = 'User.login';
-    var args = [{ username: 'joe', password: 'secret' }];
+    var args = [{username: 'joe', password: 'secret'}];
     remotes.connect(url, 'rest');
     remotes.auth = auth;
     remotes.invoke(method, args, callback);

@@ -9,8 +9,9 @@
   ],
   "version": "3.1.1",
   "scripts": {
-    "test": "mocha",
-    "posttest": "grunt eslint"
+    "lint": "grunt eslint",
+    "test": "mocha -R dot",
+    "posttest": "npm run lint"
   },
   "engines": {
     "node": ">=4.0.0"
@@ -41,7 +42,8 @@
     "bluebird": "^3.4.1",
     "browserify": "^13.1.0",
     "chai": "^3.5.0",
-    "eslint-config-loopback": "^1.0.0",
+    "dirty-chai": "^1.2.2",
+    "eslint-config-loopback": "^7.0.1",
     "event-stream": "^3.3.1",
     "eventsource": "^0.2.1",
     "grunt": "^1.0.1",
@@ -49,7 +51,7 @@
     "grunt-cli": "^1.2.0",
     "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-eslint": "^18.0.0",
+    "grunt-eslint": "^19.0.0",
     "grunt-karma": "^2.0.0",
     "http-auth": "^3.0.1",
     "karma": "^1.2.0",

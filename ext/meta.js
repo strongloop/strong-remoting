@@ -25,12 +25,12 @@ function Meta(remotes, options) {
   var extension = {};
   var helper = Remoting.extend(extension);
 
-  helper.method(routes, { returns: { type: 'object', root: true }});
+  helper.method(routes, {returns: {type: 'object', root: true}});
   function routes(callback) {
     callback(null, adapter.allRoutes());
   }
 
-  helper.method(classes, { returns: { type: 'object', root: true }});
+  helper.method(classes, {returns: {type: 'object', root: true}});
   function classes(callback) {
     callback(null, remotes.classes());
   }

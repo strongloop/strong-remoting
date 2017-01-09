@@ -9,7 +9,7 @@ var remotes = require('../').create();
 // expose a simple object
 var user = remotes.exports.user = {
   greet: function(fn) {
-    fn(null, { msg: 'hello, world!' });
+    fn(null, {msg: 'hello, world!'});
   },
 };
 
