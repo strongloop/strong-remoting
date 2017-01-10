@@ -278,23 +278,103 @@ describe('SharedClass', function() {
   });
 
   describe('sharedClass.disableMethodByName(methodName)', function() {
-    it('excludes disabled static methods from the method list', function() {
-      var METHOD_NAME = 'testMethod';
-      var sc = new SharedClass('SomeClass', SomeClass);
-      var sm = sc.defineMethod(METHOD_NAME, {isStatic: true});
-      sc.disableMethodByName(METHOD_NAME);
-      var methods = sc.methods().map(getName);
-      expect(methods).to.not.contain(METHOD_NAME);
+    var sc, sm;
+    beforeEach(function() {
+      sc = new SharedClass('SomeClass', SomeClass);
     });
 
-    it('excludes disabled prototype methods from the method list', function() {
-      var INST_METHOD_NAME = 'prototype.instTestMethod';
-      var sc = new SharedClass('SomeClass', SomeClass);
-      var sm = sc.defineMethod('instTestMethod', {isStatic: false});
-      sc.disableMethodByName(INST_METHOD_NAME);
-      var methods = sc.methods().map(getName);
-      expect(methods).to.not.contain(INST_METHOD_NAME);
-      expect(methods).to.not.contain('instTestMethod');
+    describe('for static methods', function() {
+      var STATIC_METHOD_NAME = 'testMethod';
+      var STATIC_METHOD_ALIAS = 'testMethodAlias';
+
+      beforeEach(function() {
+        sm = sc.defineMethod(STATIC_METHOD_NAME, {
+          isStatic: true,
+          aliases: [STATIC_METHOD_ALIAS],
+        });
+      });
+
+      it('excludes methods from the method list disabled by name', function() {
+        sc.disableMethodByName(STATIC_METHOD_NAME);
+        var methods = sc.methods().map(getName);
+        expect(methods).to.not.contain(STATIC_METHOD_NAME);
+      });
+
+      it('excludes methods from the method list disabled by alias',
+      function() {
+        var methods = sc.methods().map(getName);
+        expect(methods).to.contain(STATIC_METHOD_NAME);
+        sc.disableMethodByName(STATIC_METHOD_ALIAS);
+        methods = sc.methods().map(getName);
+        expect(methods).to.not.contain(STATIC_METHOD_NAME);
+      });
+
+      it('does not exclude methods from the method list using a prototype ' +
+      'method name', function() {
+        var methods = sc.methods().map(getName);
+        expect(methods).to.contain(STATIC_METHOD_NAME);
+        sc.disableMethodByName('prototype.'.concat(STATIC_METHOD_NAME));
+        methods = sc.methods().map(getName);
+        expect(methods).to.contain(STATIC_METHOD_NAME);
+      });
+
+      it('does not exclude methods from the method list using a prototype ' +
+      'method alias', function() {
+        var methods = sc.methods().map(getName);
+        expect(methods).to.contain(STATIC_METHOD_NAME);
+        sc.disableMethodByName('prototype.'.concat(STATIC_METHOD_ALIAS));
+        methods = sc.methods().map(getName);
+        expect(methods).to.contain(STATIC_METHOD_NAME);
+      });
+    });
+
+    describe('for prototype methods', function() {
+      var INST_METHOD_BASENAME = 'instTestMethod';
+      var INST_METHOD_FULLNAME = 'prototype.instTestMethod';
+      var INST_METHOD_BASEALIAS = 'instTestMethodAlias';
+      var INST_METHOD_FULLALIAS = 'prototype.instTestMethodAlias';
+
+      beforeEach(function() {
+        sm = sc.defineMethod(INST_METHOD_BASENAME, {
+          isStatic: false,
+          aliases: [INST_METHOD_BASEALIAS],
+        });
+      });
+
+      it('excludes methods from the method list disabled by name',
+      function() {
+        sc.disableMethodByName(INST_METHOD_FULLNAME);
+        var methods = sc.methods().map(getName);
+        expect(methods).to.not.contain(INST_METHOD_FULLNAME);
+        expect(methods).to.not.contain(INST_METHOD_BASENAME);
+      });
+
+      it('excludes methods from the method list disabled by alias',
+      function() {
+        var methods = sc.methods().map(getName);
+        expect(methods).to.contain(INST_METHOD_BASENAME);
+        sc.disableMethodByName(INST_METHOD_FULLALIAS);
+        methods = sc.methods().map(getName);
+        expect(methods).to.not.contain(INST_METHOD_BASENAME);
+      });
+
+      it('does not exclude methods from the method list using ' +
+      'static method name', function() {
+        var methods = sc.methods().map(getName);
+        expect(methods).to.contain(INST_METHOD_BASENAME);
+        sc.disableMethodByName(INST_METHOD_BASENAME);
+        methods = sc.methods().map(getName);
+        expect(methods).to.contain(INST_METHOD_BASENAME);
+      });
+
+      it('does not exclude methods from the method list using ' +
+      'static method alias', function() {
+        var methods = sc.methods().map(getName);
+        expect(methods).to.contain(INST_METHOD_BASENAME);
+        sc.disableMethodByName(INST_METHOD_BASEALIAS);
+        methods = sc.methods().map(getName);
+        expect(methods).to.contain(INST_METHOD_BASENAME);
+      });
     });
   });
 });
