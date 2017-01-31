@@ -43,7 +43,7 @@
     "browserify": "^13.1.0",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
-    "eslint-config-loopback": "^7.0.1",
+    "eslint-config-loopback": "^8.0.0",
     "event-stream": "^3.3.1",
     "eventsource": "^0.2.1",
     "grunt": "^1.0.1",
