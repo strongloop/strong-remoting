@@ -10,7 +10,6 @@ var express = require('express');
 var RemoteObjects = require('../');
 var User = require('./e2e/fixtures/user');
 var fmt = require('util').format;
-var User = require('./e2e/fixtures/user');
 
 describe('authorization hook', function() {
   var server, remotes;
