@@ -1,3 +1,15 @@
+2017-03-13, Version 2.33.0
+==========================
+
+ * Enable remote methods to be disabled by alias (Rémi Bèges)
+
+ * Release LB2 LTS (Simon Ho)
+
+ * Rest-adapter errorHandler set content-type `json` (David Cheung)
+
+ * Stringify object query params as JSON [2.x] (Horia Radu)
+
+
 2016-10-20, Version 2.32.3
 ==========================
 
