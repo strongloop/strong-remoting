@@ -12,8 +12,9 @@
     "tag": "lts"
   },
   "scripts": {
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "grunt jscs jshint",
-    "test": "mocha -R dot",
+    "test": "nyc mocha -R dot",
     "posttest": "npm run lint"
   },
   "dependencies": {
@@ -40,6 +41,7 @@
     "bluebird": "^3.4.1",
     "browserify": "^13.1.0",
     "chai": "^3.5.0",
+    "coveralls": "^2.11.15",
     "event-stream": "^3.3.1",
     "eventsource": "^0.2.1",
     "grunt": "^1.0.1",
@@ -63,6 +65,7 @@
     "karma-requirejs": "^1.0.0",
     "karma-script-launcher": "^1.0.0",
     "mocha": "^3.0.2",
+    "nyc": "^10.1.2",
     "requirejs": "^2.2.0",
     "socket.io": "^1.4.8",
     "supertest": "^2.0.0",
