@@ -12,8 +12,9 @@
     "tag": "lts"
   },
   "scripts": {
-    "pretest": "grunt jscs jshint",
-    "test": "mocha"
+    "lint": "grunt jscs jshint",
+    "test": "mocha -R dot",
+    "posttest": "npm run lint"
   },
   "dependencies": {
     "async": "^2.0.1",
