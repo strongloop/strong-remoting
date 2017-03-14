@@ -473,6 +473,61 @@ describe('RestAdapter', function() {
       return new RestAdapter(remotes);
     }
   });
+
+  describe('getRestMethodByName()', function() {
+    var SHARED_CLASS_NAME = 'testClass';
+    var METHOD_NAME = 'testMethod';
+    var FULL_NAME = SHARED_CLASS_NAME + '.' + METHOD_NAME;
+
+    var sharedClass, restAdapter;
+
+    beforeEach(givenSharedClassWithStaticMethod);
+    beforeEach(givenConnectedRestAdapter);
+
+    it('should find method by name', function() {
+      var restMethod = restAdapter.getRestMethodByName(FULL_NAME);
+      expect(restMethod).to.have.property('fullName', FULL_NAME);
+    });
+
+    it('should exclude methods disabled after the cache was built', function() {
+      // Get the rest method to trigger cache rebuild
+      restAdapter.getRestMethodByName(FULL_NAME);
+
+      sharedClass.disableMethodByName(METHOD_NAME);
+
+      var restMethod = restAdapter.getRestMethodByName(FULL_NAME);
+      expect(restAdapter.getRestMethodByName(FULL_NAME)).to.equal(undefined);
+    });
+
+    it('should find methods added after the cache was built', function() {
+      // Get the rest method to trigger cache rebuild
+      restAdapter.getRestMethodByName(FULL_NAME);
+
+      givenStaticSharedMethod('anotherMethod');
+
+      var anotherFullName = SHARED_CLASS_NAME + '.anotherMethod';
+      var restMethod = restAdapter.getRestMethodByName(anotherFullName);
+      expect(restMethod).to.have.property('fullName', anotherFullName);
+    });
+
+    function givenSharedClassWithStaticMethod() {
+      var testClass = {shared: true};
+      sharedClass = new SharedClass(SHARED_CLASS_NAME, testClass);
+      remotes.addClass(sharedClass);
+
+      givenStaticSharedMethod(METHOD_NAME);
+    }
+
+    function givenStaticSharedMethod(name, config) {
+      config = extend({shared: true, isStatic: true}, config);
+      sharedClass.ctor[name] = extend(function() {}, config);
+    }
+
+    function givenConnectedRestAdapter() {
+      restAdapter = new RestAdapter(remotes);
+      restAdapter.connect('foo');
+    }
+  });
 });
 
 function someFunc() {
