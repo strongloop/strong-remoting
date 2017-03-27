@@ -155,6 +155,16 @@ describe('SharedClass', function() {
       expect(sc.findMethodByName(METHOD_NAME).accessType).to.eql('READ');
     });
 
+    it('defines a remote method with arbitrary custom metadata', function() {
+      var sc = new SharedClass('SomeClass', SomeClass);
+      SomeClass.prototype.testFn = function() {};
+      sc.defineMethod('testFn', {
+        isStatic: true,
+        accessScope: 'read:custom',
+      });
+      expect(sc.findMethodByName('testFn').accessScope).to.eql('read:custom');
+    });
+
     it('should allow a shared class to resolve dynamically defined functions',
       function(done) {
         var MyClass = function() {};
