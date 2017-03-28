@@ -1,3 +1,25 @@
+2017-03-28, Version 3.2.0
+=========================
+
+ * Preserve custom remoting metadata (shared methods) (Miroslav Bajtoš)
+
+ * Replicate issue template from loopback (Siddhi Pai)
+
+ * Cache getRestMethodByName (Kenny Sabir)
+
+ * Add nyc coverage, report data to coveralls.io (Miroslav Bajtoš)
+
+ * Fix installation of phantomjs-prebuilt (Miroslav Bajtoš)
+
+ * Upgrade eslint-config, fix new violations (Miroslav Bajtoš)
+
+ * Upgrade eslint-config to 7.x (Miroslav Bajtoš)
+
+ * Use dot reporter in "npm test" (Miroslav Bajtoš)
+
+ * Add "npm run lint" script (Miroslav Bajtoš)
+
+
 2016-12-21, Version 3.1.1
 =========================
 
