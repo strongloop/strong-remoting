@@ -9,8 +9,10 @@ var SharedClass = remoting.SharedClass;
 var remotes = require('../../').create();
 
 var user = {
-  greet: function(name, fn) {
-    fn(null, 'hello ' + name);
+  prototype: {
+    greet: function(name, fn) {
+      fn(null, 'hello ' + name);
+    },
   },
 };
 
@@ -21,7 +23,7 @@ var userSharedClass = new SharedClass('user', user);
 
 // tell strong-remoting about your greet method
 userSharedClass.defineMethod('greet', {
-  isStatic: true, // not an instance method
+  isStatic: false, // not an instance method
   accepts: [
     {arg: 'name', type: 'string'},
   ],

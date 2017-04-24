@@ -6,7 +6,7 @@ const primus = new Primus({
 });
 
 primus.send('invoke', {
-  methodString: 'user.greet',
+  methodString: 'user.prototype.greet',
   args: {name: 'John'},
 }, function(err, data) {
   console.log('err', err);
