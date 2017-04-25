@@ -1,3 +1,4 @@
+'use strict';
 // Copyright IBM Corp. 2013,2016. All Rights Reserved.
 // Node module: strong-remoting
 // This file is licensed under the Artistic License 2.0.
@@ -33,13 +34,13 @@ userSharedClass.defineMethod('greet', {
   }],
 });
 
-remotes.before('user.greet', function(ctx, next) {
-  ctx.authId = 'authId';
+remotes.before('user.prototype.greet', function(ctx, next) {
+  ctx.authId = 'value';
   next();
 });
 
-remotes.after('user.greet', function(ctx, next) {
-  console.log('after user.greet authId', ctx.authId);
+remotes.after('user.prototype.greet', function(ctx, next) {
+  console.log('after user.greet:', ctx.authId);
   next();
 });
 
