@@ -1,3 +1,9 @@
+2017-05-30, Version 3.3.0
+=========================
+
+ * Support custom transport/adapter implementations (Piero Maltese)
+
+
 2017-03-28, Version 3.2.0
 =========================
 
