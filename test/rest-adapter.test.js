@@ -48,6 +48,13 @@ describe('RestAdapter', function() {
       expect(classes[0].sharedClass).to.be.an.instanceOf(SharedClass);
     });
 
+    it('fills `sharedClass`', function() {
+      remotes.exports.testClass = factory.createSharedClass();
+      var classes = getRestClasses();
+      expect(classes[0]).to.have.property('sharedClass');
+      expect(classes[0].sharedClass).to.be.an.instanceOf(SharedClass);
+    });
+
     it('fills `ctor`', function() {
       var testClass = remotes.exports.testClass = factory.createSharedClass();
       testClass.sharedCtor.http = {path: '/shared-ctor', verb: 'all'};
