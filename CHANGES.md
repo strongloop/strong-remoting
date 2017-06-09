@@ -1,3 +1,9 @@
+2017-06-09, Version 3.3.1
+=========================
+
+ * fix crash on invalid `_format` type. Fixes #396 (Samuel Reed)
+
+
 2017-05-30, Version 3.3.0
 =========================
 
