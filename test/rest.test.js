@@ -1507,6 +1507,30 @@ describe('strong-remoting-rest', function() {
             done(err, res);
           });
       });
+
+      it('should return a 400 if _format array', function(done) {
+        var method = givenSharedStaticMethod(
+          function bar(a, cb) {
+            cb(null, a);
+          },
+          {
+            accepts: [
+              {arg: 'a', type: 'object', http: {source: 'body'}},
+            ],
+            returns: {arg: 'data', type: 'object', root: true},
+            http: {path: '/'},
+          }
+        );
+
+        request(app).post(method.classUrl + '?_format=json&_format=xml')
+          .set('Accept', 'application/xml')
+          .set('Content-Type', 'application/json')
+          .send('{"x": 1, "y": "Y"}')
+          .expect(406, function(err, res) {
+            console.log(err);
+            done(err, res);
+          });
+      });
     });
 
     describe('uncaught errors', function() {
