@@ -9,6 +9,7 @@ var assert = require('assert');
 var extend = require('util')._extend;
 var inherits = require('util').inherits;
 var RemoteObjects = require('../');
+var SharedClass = RemoteObjects.SharedClass;
 var express = require('express');
 var request = require('supertest');
 var expect = require('chai').expect;
@@ -20,7 +21,8 @@ var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
 var TEST_ERROR = new Error('expected test error');
 
 describe('strong-remoting-rest', function() {
-  var app, appSupportingJsonOnly, server, objects, remotes, lastRequest, lastResponse;
+  var app, appSupportingJsonOnly, server, objects, remotes, lastRequest, lastResponse,
+    restHandlerOptions;
   var adapterName = 'rest';
 
   before(function(done) {
@@ -28,7 +30,8 @@ describe('strong-remoting-rest', function() {
     app.disable('x-powered-by');
     app.use(function(req, res, next) {
       // create the handler for each request
-      objects.handler(adapterName).apply(objects, arguments);
+      const handler = objects.handler(adapterName, restHandlerOptions);
+      handler.apply(objects, arguments);
       lastRequest = req;
       lastResponse = res;
     });
@@ -48,6 +51,8 @@ describe('strong-remoting-rest', function() {
 
   // setup
   beforeEach(function() {
+    restHandlerOptions = undefined;
+
     objects = RemoteObjects.create({
       json: {limit: '1kb'},
       errorHandler: {debug: true, log: false},
@@ -2568,6 +2573,55 @@ describe('strong-remoting-rest', function() {
           });
         });
       });
+
+      it('should hounour class-level normalizeHttpPath', function(done) {
+        const sharedClass = givenSharedClass('TestModel', {
+          normalizeHttpPath: true,
+        });
+
+        const sharedMethod = givenSharedMethodOnClass(
+          sharedClass,
+          'echoMessage',
+          function echoMessage(cb) { cb(); },
+          {isStatic: true});
+
+        let requestUrl = 'hook not triggered';
+        objects.before(sharedMethod.stringName, (ctx, next) => {
+          requestUrl = ctx.req.originalUrl;
+          next();
+        });
+
+        objects.invoke(sharedMethod.stringName, [], function(err, result) {
+          if (err) return done(err);
+          expect(requestUrl).to.equal('/test-model/echo-message');
+          done();
+        });
+      });
+
+      it('should hounour app-wide normalizeHttpPath', function(done) {
+        const sharedClass = givenSharedClass('TestModel');
+
+        const sharedMethod = givenSharedMethodOnClass(
+          sharedClass,
+          'echoMessage',
+          function echoMessage(cb) { cb(); },
+          {isStatic: true});
+
+        restHandlerOptions = {normalizeHttpPath: true};
+        objects.serverAdapter.options = {normalizeHttpPath: true};
+
+        let requestUrl = 'hook not triggered';
+        objects.before(sharedMethod.stringName, (ctx, next) => {
+          requestUrl = ctx.req.originalUrl;
+          next();
+        });
+
+        objects.invoke(sharedMethod.stringName, [], function(err, result) {
+          if (err) return done(err);
+          expect(requestUrl).to.equal('/test-model/echo-message');
+          done();
+        });
+      });
     });
 
     describe('call of prototype method', function() {
@@ -2953,4 +3007,19 @@ describe('strong-remoting-rest', function() {
         });
     }
   });
+
+  function givenSharedClass(name, options) {
+    const ModelCtor = function() {};
+    const sharedClass = new SharedClass('TestModel', ModelCtor, options);
+    objects.addClass(sharedClass);
+    return sharedClass;
+  }
+
+  function givenSharedMethodOnClass(sharedClass, methodName, fn, options) {
+    const ctor = sharedClass.ctor;
+    const target = options.isStatic ? ctor : ctor.prototype;
+    target[methodName] = fn;
+
+    return sharedClass.defineMethod(methodName, options);
+  }
 });

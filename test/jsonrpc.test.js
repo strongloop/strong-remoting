@@ -77,7 +77,7 @@ describe('strong-remoting-jsonrpc', function() {
           });
         };
 
-        var productClass = new SharedClass('product', Product, {});
+        var productClass = new SharedClass('product', Product);
         productClass.defineMethod('getPrice', {isStatic: true});
         objects.addClass(productClass);
       });
