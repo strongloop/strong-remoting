@@ -389,6 +389,29 @@ describe('SharedMethod', function() {
         });
       });
     });
+    it('should remove from result the targeted value from promise', function(done) {
+      var body = {everything: 'ok'};
+      var method = givenSharedMethod(function() {
+        return Promise.resolve([201, body]);
+      }, {
+        returns: [
+          {arg: 'statusResult', type: 'number', http: {target: 'status'}},
+          {arg: 'result', type: 'object', root: true},
+        ],
+      });
+      var context = ctx(method);
+      // override function that should be provided in HttpContext
+      context.setReturnArgByName = function(name) {
+        return name === 'statusResult';
+      };
+      method.invoke('ctx', {}, {}, context, function(err, result) {
+        setImmediate(function() {
+          expect(result).to.not.have.property('statusResult');
+          expect(result).to.eql(body);
+          done();
+        });
+      });
+    });
   });
 
   function givenSharedMethod(fn, options) {

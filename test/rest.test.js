@@ -2061,6 +2061,32 @@ describe('strong-remoting-rest', function() {
         json(method.url + '?status=' + exampleStatus)
           .expect(exampleStatus, done);
       });
+      it('returns a custom status code from a promise returned value', function(done) {
+        var exampleStatus = 222;
+        var sentBody = {eiste: 'ligo', kopries: true};
+        var method = givenSharedStaticMethod(
+          function fn() {
+            return Promise.resolve([exampleStatus, sentBody]);
+          },
+          {
+            returns: [{
+              arg: 'status',
+              http: {target: 'status'},
+            }, {
+              arg: 'result',
+              root: true,
+              type: 'object',
+            }],
+          }
+        );
+        json(method.url)
+          .expect(exampleStatus)
+          .then(function(response) {
+            expect(response.body).to.deep.equal(sentBody);
+            done();
+          })
+          .catch(done);
+      });
     });
     it('returns 404 for unknown method of a shared class', function(done) {
       var classUrl = givenSharedStaticMethod().classUrl;
