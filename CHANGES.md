@@ -1,3 +1,17 @@
+2017-08-03, Version 3.4.0
+=========================
+
+ * Add support for app-wide "normalizeHttpPath" (Jürg Lehni)
+
+ * update messages.json (Diana Lau)
+
+ * fixes #407 (Dimitris)
+
+ * travis: drop Node.js 7.x, add 8.x (Miroslav Bajtoš)
+
+ * Add CODEOWNERS file (Diana Lau)
+
+
 2017-06-09, Version 3.3.1
 =========================
 
