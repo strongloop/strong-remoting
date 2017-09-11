@@ -70,7 +70,7 @@ describe('strong-remoting', function() {
 describe('a function returning a ReadableStream', function() {
   var Readable = require('stream').Readable;
   var remotes = RemoteObjects.create();
-  var streamClass, server, app;
+  var streamClass, server, app, streamClosed;
 
   before(function(done) {
     var test = this;
@@ -99,6 +99,22 @@ describe('a function returning a ReadableStream', function() {
       cb(null, rs);
     };
 
+    StreamClass.createInfiniteStream = function createStream(cb) {
+      streamClosed = new Promise(resolve => {
+        const rs = new Readable({
+          objectMode: true,
+          read: function(size) {
+            setTimeout(() => this.push({foo: 'bar'}), 50);
+          },
+          destroy: function(size) {
+            resolve(true);
+          },
+        });
+
+        cb(null, rs);
+      });
+    };
+
     streamClass = new SharedClass('StreamClass', StreamClass);
 
     this.createStreamMethod = streamClass.defineMethod('createStream', {
@@ -114,6 +130,16 @@ describe('a function returning a ReadableStream', function() {
     streamClass.defineMethod('createStreamWithError', {
       isStatic: true,
       fn: StreamClass.createStreamWithError,
+      returns: [{
+        arg: 'result',
+        type: 'ReadableStream',
+        json: true,
+      }],
+    });
+
+    streamClass.defineMethod('createInfiniteStream', {
+      isStatic: true,
+      fn: StreamClass.createInfiniteStream,
       returns: [{
         arg: 'result',
         type: 'ReadableStream',
@@ -193,6 +219,28 @@ describe('a function returning a ReadableStream', function() {
         done();
       });
     });
+
+    if ('destroy' in new Readable()) {
+      it('should close server stream on client disconnect',
+      function(done) {
+        const es = new EventSource(this.url + '/StreamClass/createInfiniteStream');
+
+        es.on('data', function(e) {
+          es.close();
+          streamClosed.then(() => done());
+        });
+      });
+    } else {
+      it('supports legacy ReadableStreams with no destroy() method',
+      function(done) {
+        const es = new EventSource(this.url + '/StreamClass/createInfiniteStream');
+
+        es.on('data', function(e) {
+          es.close();
+          process.nextTick(done);
+        });
+      });
+    }
 
     after(function() {
       this.server.close();
