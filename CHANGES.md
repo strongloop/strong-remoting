@@ -1,3 +1,15 @@
+2017-09-11, Version 3.4.1
+=========================
+
+ * fix: destroy stream result on client close (Young)
+
+ * CODEOWNERS: add lehni (Miroslav Bajtoš)
+
+ * Update Issue and PR Templates (#419) (Sakib Hasan)
+
+ * Update translated strings Q3 2017 (Allen Boone)
+
+
 2017-08-03, Version 3.4.0
 =========================
 

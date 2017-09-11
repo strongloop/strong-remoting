@@ -7,7 +7,7 @@
     "Remoting",
     "REST"
   ],
-  "version": "3.4.0",
+  "version": "3.4.1",
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "grunt eslint",
