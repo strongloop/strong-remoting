@@ -198,6 +198,20 @@ describe('HttpInvocation', function() {
       expect(inv.createRequest()).to.eql(expectedReq);
     });
 
+    it('creates a loopback auth request', function() {
+      var inv = givenInvocationForEndpoint(null, [], null,
+        {accessToken: {id: 'abc'}});
+      var expectedReq = { method: 'GET',
+        url: 'http://base/testModel/testMethod',
+        protocol: 'http:',
+        json: true,
+        headers: {
+          Authorization: 'abc'
+        }
+      };
+      expect(inv.createRequest()).to.eql(expectedReq);
+    });
+
     it('makes primitive type arguments as query params', function() {
       var accepts = [
         { arg: 'a', type: 'number' },
@@ -337,14 +351,15 @@ function givenInvocation(method, params) {
       params.auth);
 }
 
-function givenInvocationForEndpoint(accepts, args, verb) {
+function givenInvocationForEndpoint(accepts, args, verb, auth) {
   var method = givenSharedStaticMethod({
     accepts: accepts,
   });
   method.getEndpoints = function() {
     return [createEndpoint({ verb: verb || 'GET' })];
   };
-  return givenInvocation(method, { ctorArgs: [], args: args, baseUrl: 'http://base' });
+  return givenInvocation(method, { ctorArgs: [], args: args,
+    baseUrl: 'http://base', auth: auth });
 }
 
 function createEndpoint(config) {

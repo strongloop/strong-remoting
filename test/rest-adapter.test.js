@@ -477,6 +477,42 @@ describe('RestAdapter', function() {
     }
   });
 
+  describe('extractAuth()', function() {
+    var remotes;
+    var restAdapter;
+    beforeEach(function() {
+      remotes = RemoteObjects.create({cors: false});
+      restAdapter = new RestAdapter(remotes);
+    });
+
+    it('should find the access token in the options from the args',
+      function() {
+        var accessToken = {id: 'def'};
+        var options = {accessToken: accessToken};
+        var args = ['a', 'b', 'c', options];
+        var auth = restAdapter.extractAuth(remotes, args);
+        expect(auth).to.deep.equal(options);
+      });
+    it('should find the auth from the remote',
+      function() {
+        remotes.auth = {bearer: 'zzz'};
+        var args = ['a', 'b', 'c'];
+        var auth = restAdapter.extractAuth(remotes, args);
+        expect(auth).to.deep.equal(remotes.auth);
+      });
+
+    it('should find the auth from the remote, ' +
+      'before looking in the loopback options',
+      function() {
+        remotes.auth = {bearer: 'zzz'};
+        var accessToken = {id: 'def'};
+        var options = {accessToken: accessToken};
+        var args = ['a', 'b', 'c', options];
+        var auth = restAdapter.extractAuth(remotes, args);
+        expect(auth).to.deep.equal(remotes.auth);
+      });
+  });
+
   describe('getRestMethodByName()', function() {
     var SHARED_CLASS_NAME = 'testClass';
     var METHOD_NAME = 'testMethod';
