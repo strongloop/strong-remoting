@@ -477,12 +477,14 @@ describe('RestAdapter', function() {
     }
   });
 
-  describe('extractAuth()', function() {
+  describe('_extractAuth()', function() {
     var remotes;
     var restAdapter;
     beforeEach(function() {
       remotes = RemoteObjects.create({cors: false});
-      restAdapter = new RestAdapter(remotes);
+      restAdapter = new RestAdapter(remotes, {
+        passAccessToken: true
+      });
     });
 
     it('should find the access token in the options from the args',
@@ -490,14 +492,14 @@ describe('RestAdapter', function() {
         var accessToken = {id: 'def'};
         var options = {accessToken: accessToken};
         var args = ['a', 'b', 'c', options];
-        var auth = restAdapter.extractAuth(remotes, args);
+        var auth = restAdapter._extractAuth(remotes, args);
         expect(auth).to.deep.equal(options);
       });
     it('should find the auth from the remote',
       function() {
         remotes.auth = {bearer: 'zzz'};
         var args = ['a', 'b', 'c'];
-        var auth = restAdapter.extractAuth(remotes, args);
+        var auth = restAdapter._extractAuth(remotes, args);
         expect(auth).to.deep.equal(remotes.auth);
       });
 
@@ -508,7 +510,7 @@ describe('RestAdapter', function() {
         var accessToken = {id: 'def'};
         var options = {accessToken: accessToken};
         var args = ['a', 'b', 'c', options];
-        var auth = restAdapter.extractAuth(remotes, args);
+        var auth = restAdapter._extractAuth(remotes, args);
         expect(auth).to.deep.equal(remotes.auth);
       });
   });
