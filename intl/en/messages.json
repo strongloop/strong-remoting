@@ -45,6 +45,7 @@
   "e5416be29602388d91e3dee81ddddfcf": "Value is not an array.",
   "e63f0a95675a023883a29671c8c07113": "Unsupported stream descriptor, only descriptors with property \"{{json:true}}\" are supported",
   "e9c8cd93bef08e1bfb9f0ef78f87010a": "Cannot create a file response from {0} ",
+  "ec36540c2f78bc342430b0dd9651c23b": "Cannot invoke unkown method: {0}",
   "f63af79ff8a01dcd636897df49f5c1fb": "must provide a valid {{SharedClass}}",
   "fa1a4e25d3c11b110758643419eefcbf": "{{Shared class}}  \"{0}\" has no method handling {1} {2}"
 }
