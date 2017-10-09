@@ -1,7 +1,7 @@
 {
   "034e10de9a8cf23202573954b4954a71": "hatalı parola!",
   "1522cc23b3b53319de2e8d0e8e9c21cf": "Değer bir sayı değil.",
-  "224c1872889edc69277dfa73bb3486a4": "'{1}' tipindeki '{0}' bağımsız değişkeni için geçersiz dönüş değeri: {2}. Alınan tip: {3}.",
+  "224c1872889edc69277dfa73bb3486a4": "'{1}' tipindeki '{0}' bağımsız değişkeni için geçersizdönüş değeri: {2}. Alınan tip: {3}.",
   "24ef3337f93d26823c496c947b74134b": "Şu öğeyi işleyecek yöntem yok: {0} {1}",
   "256a66d8525fe73b930069e8f3cf46c6": "{0}: \"{{file}}\" tipindeki kök olmayan dönüş bağımsız değişkeni {1} atıldı",
   "25b2cd672b116d35ce74f47b24bb7c69": "{0} zorunlu bir bağımsız değişkendir",
@@ -45,6 +45,7 @@
   "e5416be29602388d91e3dee81ddddfcf": "Değer bir dizi değil.",
   "e63f0a95675a023883a29671c8c07113": "Desteklenmeyen akış tanımlayıcı, yalnızca \"{{json:true}}\" özelliği olan tanımlayıcılar desteklenir",
   "e9c8cd93bef08e1bfb9f0ef78f87010a": "{0} öğesinden dosya yanıtı yaratılamaz ",
+  "ec36540c2f78bc342430b0dd9651c23b": "Bilinmeyen yöntem çağrılamaz: {0}",
   "f63af79ff8a01dcd636897df49f5c1fb": "geçerli bir {{SharedClass}} belirtmelidir",
   "fa1a4e25d3c11b110758643419eefcbf": "{{Shared class}}  \"{0}\" içinde {1} {2} öğesini işleyecek yöntem yok"
 }

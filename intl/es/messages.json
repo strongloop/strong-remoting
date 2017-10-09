@@ -1,7 +1,7 @@
 {
   "034e10de9a8cf23202573954b4954a71": "contraseña incorrecta.",
   "1522cc23b3b53319de2e8d0e8e9c21cf": "El valor no es un número.",
-  "224c1872889edc69277dfa73bb3486a4": "Valor de retorno no válido para el argumento '{0}' de tipo '{1}': {2}. El tipo recibido es {3}.",
+  "224c1872889edc69277dfa73bb3486a4": "Valor de retorno no válido para argumento '{0}' de tipo '{1}': {2}. El tipo recibido es {3}.",
   "24ef3337f93d26823c496c947b74134b": "No existe ningún método para manejar {0} {1}",
   "256a66d8525fe73b930069e8f3cf46c6": "{0}: se ha descartado el argumento de retorno no root {1} de tipo \"{{file}}\"",
   "25b2cd672b116d35ce74f47b24bb7c69": "{0} es un argumento obligatorio",
@@ -38,13 +38,14 @@
   "ab30fc28acd67477c0be3a181c0d3b68": "No se puede sobrescribir el tipo \"{{file}}\" incorporado.",
   "b314f6ed6bd74c9169734e8870e69f65": "Aviso: sobrescribiendo tipo remoto {0}",
   "c17c9e82b76a125b9aab55b00fdb0a23": "No se admiten los tipos de matriz con más de un tipo de elemento. Se utilizará el primer tipo de elemento y se ignorará el resto.",
-  "c811151ab9e3cc0b46ea53b3fe97f077": "Argumento no válido {0}.",
+  "c811151ab9e3cc0b46ea53b3fe97f077": "Argumento no válido {0}. ",
   "ce5999734f432272be2cf2aabb6a715f": "El valor no es un booleano.",
   "cfb44a59b58ff71f76077d3d23f4c542": "Tratando el tipo remoto desconocido {0} como \"any\"",
   "e25a1cc5ea3518033c173fbe2cfaed69": "tipo de corriente no soportado",
   "e5416be29602388d91e3dee81ddddfcf": "El valor no es una matriz.",
   "e63f0a95675a023883a29671c8c07113": "Descriptor de corriente no soportado, sólo están soportados los descriptores con la propiedad \"{{json:true}}\"",
   "e9c8cd93bef08e1bfb9f0ef78f87010a": "No se puede crear un archivo de respuestas desde {0} ",
+  "ec36540c2f78bc342430b0dd9651c23b": "No se puede invocar un método desconocido: {0}",
   "f63af79ff8a01dcd636897df49f5c1fb": "debe proporcionar una {{SharedClass}} válida",
   "fa1a4e25d3c11b110758643419eefcbf": "{{Shared class}}  \"{0}\" no tiene ningún método que maneje {1} {2}"
 }
