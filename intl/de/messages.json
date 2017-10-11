@@ -45,6 +45,7 @@
   "e5416be29602388d91e3dee81ddddfcf": "Wert ist kein Array.",
   "e63f0a95675a023883a29671c8c07113": "Nicht unterstützter Datenstromdeskriptor; nur Deskriptoren mit der Eigenschaft \"{{json:true}}\" werden unterstützt",
   "e9c8cd93bef08e1bfb9f0ef78f87010a": "Es kann keine Dateiantwort aus {0} erstellt werden ",
+  "ec36540c2f78bc342430b0dd9651c23b": "Unbekannte Methode kann nicht aufgerufen werden: {0}",
   "f63af79ff8a01dcd636897df49f5c1fb": "Eine gültige {{SharedClass}} muss angegeben werden",
   "fa1a4e25d3c11b110758643419eefcbf": "{{Shared class}} \"{0}\" verfügt über keine Methode für die Verarbeitung von {1} {2}"
 }

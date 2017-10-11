@@ -6,7 +6,7 @@
   "256a66d8525fe73b930069e8f3cf46c6": "{0}: l'argomento di restituzione non root {1} di tipo \"{{file}}\" è stato eliminato",
   "25b2cd672b116d35ce74f47b24bb7c69": "{0} è un argomento obbligatorio",
   "2874eedf72302267612549956af600de": "origine pipe non supportata",
-  "2ef57c77f9541779bf797f4347525da4": "RemoteObjects.convert(name, fn) non è più supportato. Utilizzare remoteObjects.defineType(name, converter). ",
+  "2ef57c77f9541779bf797f4347525da4": "RemoteObjects.convert(name, fn) non è più supportato. Utilizzare remoteObjects.defineType(name, converter).",
   "3279cb237ed27b3a23d3c41fec2000a0": "il metodo è obbligatorio quando viene richiamato {{invoke()}}",
   "36bcd0e05c475a5daec9025d5c2f3812": "richiamo di un metodo utente",
   "390c95fb109995a2a126d2edfdb287af": "Si è verificato un errore sconosciuto",
@@ -28,7 +28,7 @@
   "8201d8f57251ab2b647fd91457659ea3": "dopo {{speak}}!",
   "8594525bc1910e451e37a3b96b9cb04d": "il metodo non esiste.",
   "882f4f76c3359a51746cb7437c324e71": "Errore: {0}",
-  "8dff637e4c765591ee63a59e898b7a0e": "RemoteObjects.defineType(name, fn) non è più supportato. Utilizzare remoteObjects.defineType(name, converter). ",
+  "8dff637e4c765591ee63a59e898b7a0e": "RemoteObjects.defineType(name, fn) non è più supportato. Utilizzare remoteObjects.defineType(name, converter).",
   "8fd887d3982016ba1e563ce2de85cbde": "Alcuni elementi dell'array non sono un oggetto.",
   "914dc08c2e3001135e112e2d055e5d03": "Il valore non è una stringa.",
   "97132088745bbd7526d5027319ff57e3": "richiamo di un metodo su {0}",
@@ -45,6 +45,7 @@
   "e5416be29602388d91e3dee81ddddfcf": "Il valore non è un array.",
   "e63f0a95675a023883a29671c8c07113": "Descrittore del flusso non supportato, sono supportati solo descrittori con la proprietà \"{{json:true}}\"",
   "e9c8cd93bef08e1bfb9f0ef78f87010a": "Impossibile creare una risposta file da {0} ",
+  "ec36540c2f78bc342430b0dd9651c23b": "Impossibile richiamare metodo sconosciuto: {0}",
   "f63af79ff8a01dcd636897df49f5c1fb": "deve fornire una {{SharedClass}} valida",
   "fa1a4e25d3c11b110758643419eefcbf": "{{Shared class}}  \"{0}\" non dispone di alcun metodo che gestisce {1} {2}"
 }

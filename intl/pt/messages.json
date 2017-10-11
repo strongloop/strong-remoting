@@ -32,7 +32,7 @@
   "8fd887d3982016ba1e563ce2de85cbde": "Alguns itens da matriz não são um objeto.",
   "914dc08c2e3001135e112e2d055e5d03": "O valor não é uma sequência.",
   "97132088745bbd7526d5027319ff57e3": "chamando um método em {0}",
-  "a70394aadda9923fb4d5215ebffd431a": "Atendendo na porta {0}...",
+  "a70394aadda9923fb4d5215ebffd431a": "Recebendo na porta {0}...",
   "aa030253c5d24f0f083bb4406a8d2ec8": "Argumento de retorno inválido {0}. ",
   "aa13189caf3af7ea0d3405bfcbe3a1e2": "O valor não é uma data válida.",
   "ab30fc28acd67477c0be3a181c0d3b68": "Não é possível substituir o tipo \"{{file}}\" integrado.",
@@ -45,6 +45,7 @@
   "e5416be29602388d91e3dee81ddddfcf": "O valor não é uma matriz.",
   "e63f0a95675a023883a29671c8c07113": "Descritor de fluxos não suportado, somente descritores com a propriedade \"{{json:true}}\" são suportados",
   "e9c8cd93bef08e1bfb9f0ef78f87010a": "Não é possível criar uma resposta de arquivo a partir de {0} ",
+  "ec36540c2f78bc342430b0dd9651c23b": "Não é possível chamar o método desconhecido: {0}",
   "f63af79ff8a01dcd636897df49f5c1fb": "deve-se fornecer um {{SharedClass}} válido",
   "fa1a4e25d3c11b110758643419eefcbf": "{{Shared class}}  \"{0}\" não possui manipulação de método {1} {2}"
 }
