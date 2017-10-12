@@ -209,7 +209,7 @@ describe('HttpInvocation', function() {
           Authorization: 'abc'
         }
       };
-      expect(inv.createRequest()).to.eql(expectedReq);
+      expect(inv.createRequest().headers).to.have.property('Authorization', 'abc');
     });
 
     it('makes primitive type arguments as query params', function() {

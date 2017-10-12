@@ -198,6 +198,26 @@ describe('RestAdapter', function() {
       });
     });
 
+    describe('getArgByName()', function() {
+      var anArg = [{ arg: 'argName1', type: String }, { arg: 'argName2', type: String }];
+
+      it('should find the first arg', function() {
+        var method = givenRestStaticMethod({accepts: anArg});
+        expect(method.getArgByName('argName1',
+          ['firstArg', 'secondArg'])).to.equal('firstArg');
+      });
+      it('should not find the last arg', function() {
+        var method = givenRestStaticMethod({accepts: anArg});
+        expect(method.getArgByName('argName2',
+          ['firstArg', 'secondArg'])).to.equal('secondArg');
+      });
+      it('should not find the last arg', function() {
+        var method = givenRestStaticMethod({accepts: anArg});
+        expect(method.getArgByName('argName3',
+          ['firstArg', 'secondArg'])).to.equal(undefined);
+      });
+    });
+
     describe('acceptsSingleBodyArgument()', function() {
       it('returns true when the arg is a single Object from body', function() {
         var method = givenRestStaticMethod({
@@ -491,15 +511,13 @@ describe('RestAdapter', function() {
       function() {
         var accessToken = {id: 'def'};
         var options = {accessToken: accessToken};
-        var args = ['a', 'b', 'c', options];
-        var auth = restAdapter._extractAuth(remotes, args);
+        var auth = restAdapter._extractAuth(remotes, options);
         expect(auth).to.deep.equal(options);
       });
     it('should find the auth from the remote',
       function() {
         remotes.auth = {bearer: 'zzz'};
-        var args = ['a', 'b', 'c'];
-        var auth = restAdapter._extractAuth(remotes, args);
+        var auth = restAdapter._extractAuth(remotes, undefined);
         expect(auth).to.deep.equal(remotes.auth);
       });
 
@@ -509,8 +527,7 @@ describe('RestAdapter', function() {
         remotes.auth = {bearer: 'zzz'};
         var accessToken = {id: 'def'};
         var options = {accessToken: accessToken};
-        var args = ['a', 'b', 'c', options];
-        var auth = restAdapter._extractAuth(remotes, args);
+        var auth = restAdapter._extractAuth(remotes, options);
         expect(auth).to.deep.equal(remotes.auth);
       });
   });
