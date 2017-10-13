@@ -1,3 +1,17 @@
+2017-10-13, Version 3.5.0
+=========================
+
+ * update strong-globalize to 3.1.0 (shimks)
+
+ * translation return for Q4 drop1 (tangyinb)
+
+ * Update minimum request version to 2.83 (Quentin RIBIERRE)
+
+ * CODEOWNERS: add zbarbuto (Miroslav Bajtoš)
+
+ * update globalize string (Diana Lau)
+
+
 2017-09-11, Version 3.4.1
 =========================
 
