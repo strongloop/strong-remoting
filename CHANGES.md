@@ -1,3 +1,17 @@
+2017-10-19, Version 2.34.0
+==========================
+
+ * Drop support for Node.js versions 0.10 and 0.12 (Miroslav Bajtoš)
+
+ * Cache getRestMethodByName (Kenny Sabir)
+
+ * Add nyc coverage, report data to coveralls.io (Miroslav Bajtoš)
+
+ * Sync package scripts with master (Miroslav Bajtoš)
+
+ * Fix Travis-CI platforms (Miroslav Bajtoš)
+
+
 2017-03-13, Version 2.33.0
 ==========================
 
