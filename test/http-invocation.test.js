@@ -207,6 +207,12 @@ describe('HttpInvocation', function() {
       expect(inv.createRequest()).to.eql(expectedReq);
     });
 
+    it('creates a loopback auth request', function() {
+      const inv = givenInvocationForEndpoint(null, [], null,
+        {accessToken: {id: 'abc'}});
+      expect(inv.createRequest().headers).to.have.property('Authorization', 'abc');
+    });
+
     it('makes primitive type arguments as query params', function() {
       var accepts = [
         {arg: 'a', type: 'number'},
@@ -347,14 +353,19 @@ function givenInvocation(method, params) {
       params.typeRegistry || new TypeRegistry());
 }
 
-function givenInvocationForEndpoint(accepts, args, verb) {
+function givenInvocationForEndpoint(accepts, args, verb, auth) {
   var method = givenSharedStaticMethod({
     accepts: accepts,
   });
   method.getEndpoints = function() {
     return [createEndpoint({verb: verb || 'GET'})];
   };
-  return givenInvocation(method, {ctorArgs: [], args: args, baseUrl: 'http://base'});
+  return givenInvocation(method, {
+    ctorArgs: [],
+    args: args,
+    baseUrl: 'http://base',
+    auth: auth,
+  });
 }
 
 function createEndpoint(config) {

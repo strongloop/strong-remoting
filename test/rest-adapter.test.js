@@ -200,6 +200,31 @@ describe('RestAdapter', function() {
       });
     });
 
+    describe('getArgByName()', function() {
+      const acceptsTwoArgs = [
+        {arg: 'argName1', type: String},
+        {arg: 'argName2', type: String},
+      ];
+
+      it('should find the first arg', function() {
+        const method = givenRestStaticMethod({accepts: acceptsTwoArgs});
+        expect(method.getArgByName('argName1', ['firstArg', 'secondArg']))
+          .to.equal('firstArg');
+      });
+
+      it('should not find the second arg', function() {
+        const method = givenRestStaticMethod({accepts: acceptsTwoArgs});
+        expect(method.getArgByName('argName2', ['firstArg', 'secondArg']))
+          .to.equal('secondArg');
+      });
+
+      it('should not find argument not defined in metadata', function() {
+        const method = givenRestStaticMethod({accepts: acceptsTwoArgs});
+        expect(method.getArgByName('unknown-arg', ['firstArg', 'secondArg']))
+          .to.equal(undefined);
+      });
+    });
+
     describe('acceptsSingleBodyArgument()', function() {
       it('returns true when the arg is a single Object from body', function() {
         var method = givenRestStaticMethod({
@@ -472,6 +497,37 @@ describe('RestAdapter', function() {
       var restMethod = new RestAdapter.RestMethod(restClass, sharedMethod);
       return new RestAdapter(remotes);
     }
+  });
+
+  describe('_getInvocationAuth()', function() {
+    let remotes, restAdapter;
+    beforeEach(() => {
+      remotes = RemoteObjects.create({cors: false});
+      restAdapter = new RestAdapter(remotes, {
+        passAccessToken: true,
+      });
+    });
+
+    it('should find the access token in the options from the args', () => {
+      const accessToken = {id: 'def'};
+      const options = {accessToken: accessToken};
+      const auth = restAdapter._getInvocationAuth(options);
+      expect(auth).to.deep.equal(options);
+    });
+
+    it('should find the auth from the remote', () => {
+      remotes.auth = {bearer: 'zzz'};
+      const auth = restAdapter._getInvocationAuth(undefined);
+      expect(auth).to.deep.equal(remotes.auth);
+    });
+
+    it('should prefer global auth over invocation options', () => {
+      remotes.auth = {bearer: 'zzz'};
+      const accessToken = {id: 'def'};
+      const options = {accessToken: accessToken};
+      const auth = restAdapter._getInvocationAuth(options);
+      expect(auth).to.deep.equal(remotes.auth);
+    });
   });
 
   describe('getRestMethodByName()', function() {
