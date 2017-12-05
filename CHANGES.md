@@ -1,3 +1,13 @@
+2017-12-05, Version 3.7.0
+=========================
+
+ * Add support for pass-through authentication (Kenny Sabir)
+
+ * Update LICENSE.md (Diana Lau)
+
+ * CODEOWNERS: move @lehni to Alumni section (Miroslav Bajtoš)
+
+
 2017-10-17, Version 3.6.0
 =========================
 
