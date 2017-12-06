@@ -2376,6 +2376,24 @@ describe('strong-remoting-rest', function() {
       });
   });
 
+  it('does not default content-type to application/json if response is 304', () => {
+    const method = givenSharedStaticMethod(
+      cb => cb(null, {key: 'value'}),
+      {returns: {arg: 'result', type: 'object'}}
+    );
+    return request(app).get(method.url)
+      .expect(200)
+      .then(res => {
+        expect(res.get('Content-type')).to.exist();
+        return request(app).get(method.url)
+        .set('If-None-Match', res.get('etag'))
+        .expect(304);
+      })
+      .then(res => {
+        expect(res.get('Content-type')).to.not.exist();
+      });
+  });
+
   describe('client', function() {
     describe('call of constructor method', function() {
       it('should work', function(done) {
