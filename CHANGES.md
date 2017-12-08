@@ -1,3 +1,9 @@
+2017-12-08, Version 3.8.0
+=========================
+
+ * Avoid setting Content-Type on 304 (Zak Barbuto)
+
+
 2017-12-05, Version 3.7.0
 =========================
 
