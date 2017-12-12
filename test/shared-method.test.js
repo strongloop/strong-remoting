@@ -203,14 +203,14 @@ describe('SharedMethod', function() {
             });
 
           method.invoke('ctx', {num: 2343546576878989879789}, {}, ctx(method),
-          function(err) {
-            setImmediate(function() {
-              expect(err).to.exist();
-              expect(err.message).to.match(/integer/i);
-              expect(err.statusCode).to.equal(400);
-              done();
+            function(err) {
+              setImmediate(function() {
+                expect(err).to.exist();
+                expect(err.message).to.match(/integer/i);
+                expect(err.statusCode).to.equal(400);
+                done();
+              });
             });
-          });
         });
 
       it('treats integer argument of type x.0 as integer', function(done) {

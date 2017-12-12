@@ -489,21 +489,21 @@ describe('strong-remoting-rest', function() {
     it('should allow string[] arg in the query with stringified value',
       function(done) {
         var method = givenSharedStaticMethod(
-        function bar(a, b, cb) {
-          cb(null, b.join('') + a);
-        },
+          function bar(a, b, cb) {
+            cb(null, b.join('') + a);
+          },
           {
             accepts: [
-            {arg: 'a', type: 'string'},
-            {arg: 'b', type: ['string'], http: {source: 'query'}},
+              {arg: 'a', type: 'string'},
+              {arg: 'b', type: ['string'], http: {source: 'query'}},
             ],
             returns: {arg: 'n', type: 'string'},
             http: {path: '/'},
           }
-      );
+        );
 
         json(method.classUrl + '/?a=z&b=["x", "y"]')
-        .expect({n: 'xyz'}, done);
+          .expect({n: 'xyz'}, done);
       });
 
     it('should allow custom argument functions', function(done) {
@@ -650,27 +650,27 @@ describe('strong-remoting-rest', function() {
     it('should allow arguments in the header without http source',
       function(done) {
         var method = givenSharedStaticMethod(
-        function bar(a, b, cb) {
-          cb(null, a + b);
-        },
+          function bar(a, b, cb) {
+            cb(null, a + b);
+          },
           {
             accepts: [
-            {arg: 'b', type: 'number'},
-            {arg: 'a', type: 'number'},
+              {arg: 'b', type: 'number'},
+              {arg: 'a', type: 'number'},
             ],
             returns: {arg: 'n', type: 'number'},
             http: {verb: 'get', path: '/'},
           }
-      );
+        );
 
         request(app).get(method.classUrl)
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/json')
-        .set('a', 1)
-        .set('b', 2)
-        .send()
-        .expect('Content-Type', /json/)
-        .expect({n: 3}, done);
+          .set('Accept', 'application/json')
+          .set('Content-Type', 'application/json')
+          .set('a', 1)
+          .set('b', 2)
+          .send()
+          .expect('Content-Type', /json/)
+          .expect({n: 3}, done);
       });
 
     it('should allow arguments from http req and res', function(done) {
@@ -1283,36 +1283,36 @@ describe('strong-remoting-rest', function() {
       it('should produce xml from json objects with toJSON() inside an array',
         function(done) {
           var method = givenSharedStaticMethod(
-          function bar(a, cb) {
-            a.toJSON = function() {
-              return {
-                foo: a.y,
-                bar: a.x,
+            function bar(a, cb) {
+              a.toJSON = function() {
+                return {
+                  foo: a.y,
+                  bar: a.x,
+                };
               };
-            };
-            cb(null, [a, {c: 1}]);
-          },
+              cb(null, [a, {c: 1}]);
+            },
             {
               accepts: [
-              {arg: 'a', type: 'object', http: {source: 'body'}},
+                {arg: 'a', type: 'object', http: {source: 'body'}},
               ],
               returns: {arg: 'data', type: 'object', root: true},
               http: {path: '/'},
             }
-        );
+          );
 
           request(app).post(method.classUrl)
-          .set('Accept', 'application/xml')
-          .set('Content-Type', 'application/json')
-          .send('{"x": 1, "y": "Y"}')
-          .expect('Content-Type', /xml/)
-          .expect(200, function(err, res) {
-            expect(res.text).to.equal('<?xml version=\"1.0\" ' +
+            .set('Accept', 'application/xml')
+            .set('Content-Type', 'application/json')
+            .send('{"x": 1, "y": "Y"}')
+            .expect('Content-Type', /xml/)
+            .expect(200, function(err, res) {
+              expect(res.text).to.equal('<?xml version=\"1.0\" ' +
               'encoding=\"UTF-8\"?>\n<response>\n  <result>\n    ' +
               '<foo>Y</foo>\n    <bar>1</bar>\n  </result>\n  <result>\n    ' +
               '<c>1</c>\n  </result>\n</response>');
-            done(err, res);
-          });
+              done(err, res);
+            });
         });
 
       it('should allow customized xml root element', function(done) {
@@ -1421,7 +1421,7 @@ describe('strong-remoting-rest', function() {
           .expect('Content-Type', /xml.*charset=utf-8/)
           .expect(200, function(err, res) {
             expect(res.text).to.equal(
-            '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n' +
+              '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n' +
             '<response>\n  ' +
               '<a>fooÁáĂΩasd&gt;&lt;=$~!@#$%^&amp;*()-_=+/.,;&apos;&quot;[]{}?</a>\n' +
             '</response>');
@@ -2386,8 +2386,8 @@ describe('strong-remoting-rest', function() {
       .then(res => {
         expect(res.get('Content-type')).to.exist();
         return request(app).get(method.url)
-        .set('If-None-Match', res.get('etag'))
-        .expect(304);
+          .set('If-None-Match', res.get('etag'))
+          .expect(304);
       })
       .then(res => {
         expect(res.get('Content-type')).to.not.exist();

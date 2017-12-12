@@ -84,7 +84,7 @@ module.exports = function(ctx) {
       [{arg: [{x: 1}, {}]}, [{x: 1}, {}]],
       [{arg: [{x: null}]}, [{x: null}]],
 
-       // Invalid values should trigger ERROR_BAD_REQUEST
+      // Invalid values should trigger ERROR_BAD_REQUEST
       [{arg: ''}, ERROR_BAD_REQUEST],
       [{arg: false}, ERROR_BAD_REQUEST],
       [{arg: true}, ERROR_BAD_REQUEST],

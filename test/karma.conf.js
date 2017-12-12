@@ -92,7 +92,7 @@ module.exports = function(config) {
     // Add browserify to preprocessors
     preprocessors: {
       'test/e2e/**': ['browserify'],
-      //'lib/*.js': ['browserify']
+      // 'lib/*.js': ['browserify']
     },
   });
 };
