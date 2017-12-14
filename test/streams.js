@@ -222,24 +222,24 @@ describe('a function returning a ReadableStream', function() {
 
     if ('destroy' in new Readable()) {
       it('should close server stream on client disconnect',
-      function(done) {
-        const es = new EventSource(this.url + '/StreamClass/createInfiniteStream');
+        function(done) {
+          const es = new EventSource(this.url + '/StreamClass/createInfiniteStream');
 
-        es.on('data', function(e) {
-          es.close();
-          streamClosed.then(() => done());
+          es.on('data', function(e) {
+            es.close();
+            streamClosed.then(() => done());
+          });
         });
-      });
     } else {
       it('supports legacy ReadableStreams with no destroy() method',
-      function(done) {
-        const es = new EventSource(this.url + '/StreamClass/createInfiniteStream');
+        function(done) {
+          const es = new EventSource(this.url + '/StreamClass/createInfiniteStream');
 
-        es.on('data', function(e) {
-          es.close();
-          process.nextTick(done);
+          es.on('data', function(e) {
+            es.close();
+            process.nextTick(done);
+          });
         });
-      });
     }
 
     after(function() {

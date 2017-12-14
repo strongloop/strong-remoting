@@ -346,11 +346,11 @@ function givenSharedStaticMethod(fn, config) {
 function givenInvocation(method, params) {
   params = params || {};
   return new HttpInvocation(method,
-      params.ctorArgs,
-      params.args,
-      params.baseUrl,
-      params.auth,
-      params.typeRegistry || new TypeRegistry());
+    params.ctorArgs,
+    params.args,
+    params.baseUrl,
+    params.auth,
+    params.typeRegistry || new TypeRegistry());
 }
 
 function givenInvocationForEndpoint(accepts, args, verb, auth) {

@@ -148,8 +148,8 @@ describe('Coercion in RestAdapter', function() {
       for (var tc in suite) { // eslint-disable-line one-var
         var result = suite[tc];
         result = result.error ?
-           '<HTTP Error ' + result.error  + '>' :
-           stringify(result.value);
+          '<HTTP Error ' + result.error + '>' :
+          stringify(result.value);
         rows.push([sn, tc, result].join('\t'));
       }
     }

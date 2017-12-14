@@ -176,7 +176,7 @@ describe('SharedClass', function() {
         var METHOD_NAME = 'dynFn';
         process.nextTick(function() {
           MyClass[METHOD_NAME] = function(str, cb) {
-            cb(null,  str);
+            cb(null, str);
           };
           done();
         });
@@ -318,13 +318,13 @@ describe('SharedClass', function() {
       });
 
       it('excludes methods from the method list disabled by alias',
-      function() {
-        var methods = sc.methods().map(getName);
-        expect(methods).to.contain(STATIC_METHOD_NAME);
-        sc.disableMethodByName(STATIC_METHOD_ALIAS);
-        methods = sc.methods().map(getName);
-        expect(methods).to.not.contain(STATIC_METHOD_NAME);
-      });
+        function() {
+          var methods = sc.methods().map(getName);
+          expect(methods).to.contain(STATIC_METHOD_NAME);
+          sc.disableMethodByName(STATIC_METHOD_ALIAS);
+          methods = sc.methods().map(getName);
+          expect(methods).to.not.contain(STATIC_METHOD_NAME);
+        });
 
       it('does not exclude methods from the method list using a prototype ' +
       'method name', function() {
@@ -359,21 +359,21 @@ describe('SharedClass', function() {
       });
 
       it('excludes methods from the method list disabled by name',
-      function() {
-        sc.disableMethodByName(INST_METHOD_FULLNAME);
-        var methods = sc.methods().map(getName);
-        expect(methods).to.not.contain(INST_METHOD_FULLNAME);
-        expect(methods).to.not.contain(INST_METHOD_BASENAME);
-      });
+        function() {
+          sc.disableMethodByName(INST_METHOD_FULLNAME);
+          var methods = sc.methods().map(getName);
+          expect(methods).to.not.contain(INST_METHOD_FULLNAME);
+          expect(methods).to.not.contain(INST_METHOD_BASENAME);
+        });
 
       it('excludes methods from the method list disabled by alias',
-      function() {
-        var methods = sc.methods().map(getName);
-        expect(methods).to.contain(INST_METHOD_BASENAME);
-        sc.disableMethodByName(INST_METHOD_FULLALIAS);
-        methods = sc.methods().map(getName);
-        expect(methods).to.not.contain(INST_METHOD_BASENAME);
-      });
+        function() {
+          var methods = sc.methods().map(getName);
+          expect(methods).to.contain(INST_METHOD_BASENAME);
+          sc.disableMethodByName(INST_METHOD_FULLALIAS);
+          methods = sc.methods().map(getName);
+          expect(methods).to.not.contain(INST_METHOD_BASENAME);
+        });
 
       it('does not exclude methods from the method list using ' +
       'static method name', function() {
