@@ -1,5 +1,10 @@
 {
   "preset": "google",
+  "excludeFiles": [
+    "example",
+    "coverage",
+    "node_modules"
+  ],
   "requireCurlyBraces": [
      "for",
      "while",
