@@ -3,6 +3,8 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 // This helper adds methods to a module that we assume will be added to the remotes.
 // TODO(schoon) - Make this _the_ API, not a "helper".
 // TODO(schoon) - Document EVERYTHING

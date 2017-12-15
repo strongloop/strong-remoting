@@ -3,6 +3,10 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
+var g = require('strong-globalize')();
+
 var Remotes = require('../../client/js/client');
 var SocketIOAdapter = require('../../client/js/socket-io-adapter');
 var remotes = Remotes.connect('http://localhost:3000', SocketIOAdapter);

@@ -3,6 +3,8 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 var g = require('strong-globalize')();
 // create a set of shared classes
 var remotes = require('../').create();
@@ -16,11 +18,6 @@ var user = remotes.exports.user = {
 
 // share the greet method
 user.greet.shared = true;
-
-// expose a simple class
-function Dog(name) {
-  this.name = name;
-}
 
 // define a vanilla JavaScript class
 function Dog(name) {
