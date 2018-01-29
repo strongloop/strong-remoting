@@ -1,3 +1,19 @@
+2018-01-29, Version 3.8.1
+=========================
+
+ * Fix formatting in lib/remote-objects (Miroslav Bajtoš)
+
+ * Fix typo in status code check (Zak Barbuto)
+
+ * Simplify build, fix Node.js 4.x (Miroslav Bajtoš)
+
+ * Fix linting issues in examples (Miroslav Bajtoš)
+
+ * fixup! add top-level dep on eslint-plugin-mocha (Miroslav Bajtoš)
+
+ * Update eslint and eslint-config to latest (Miroslav Bajtoš)
+
+
 2017-12-08, Version 3.8.0
 =========================
 
