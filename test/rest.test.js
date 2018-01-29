@@ -64,6 +64,14 @@ describe('strong-remoting-rest', function() {
     objects.connect('http://localhost:' + server.address().port, adapterName);
   });
 
+  before(() => {
+    process.on('unhandledRejection', unhandledRejection);
+  });
+
+  after(() => {
+    process.removeListener('unhandledRejection', unhandledRejection);
+  });
+
   function json(method, url) {
     if (url === undefined) {
       url = method;
@@ -2394,6 +2402,22 @@ describe('strong-remoting-rest', function() {
       });
   });
 
+  it('does not default content-type to application/json if response is 304 and content already sent', () => {
+    const method = givenSharedStaticMethod(
+      (res) => {
+        res.status(304).end();
+        return Promise.resolve({});
+      },
+      {accepts: {arg: 'res', type: 'object', http: {source: 'res'}}}
+    );
+
+    return request(app).get(method.url)
+      .expect(304)
+      .then(res => {
+        expect(res.get('Content-type')).to.not.exist();
+      });
+  });
+
   describe('client', function() {
     describe('call of constructor method', function() {
       it('should work', function(done) {
@@ -3039,5 +3063,9 @@ describe('strong-remoting-rest', function() {
     target[methodName] = fn;
 
     return sharedClass.defineMethod(methodName, options);
+  }
+
+  function unhandledRejection(err) {
+    throw err;
   }
 });
