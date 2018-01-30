@@ -1,3 +1,9 @@
+2018-01-30, Version 3.9.0
+=========================
+
+ * chore: upgrade dependencies (Raymond Feng)
+
+
 2018-01-29, Version 3.8.1
 =========================
 
