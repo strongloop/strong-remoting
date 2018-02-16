@@ -29,7 +29,7 @@
     "eventemitter2": "^2.1.0",
     "express": "4.x",
     "inflection": "^1.7.1",
-    "jayson": "^1.2.0",
+    "jayson": "^2.0.5",
     "js2xmlparser": "^1.0.0",
     "jscs": "^3.0.7",
     "jshint": "^2.9.5",
