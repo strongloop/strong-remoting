@@ -26,7 +26,7 @@
     "eventemitter2": "^5.0.1",
     "express": "4.x",
     "inflection": "^1.7.1",
-    "jayson": "^1.2.0",
+    "jayson": "^2.0.5",
     "js2xmlparser": "^1.0.0",
     "loopback-datatype-geopoint": "^1.0.0",
     "loopback-phase": "^3.1.0",
