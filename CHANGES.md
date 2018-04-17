@@ -1,3 +1,9 @@
+2018-04-17, Version 3.11.0
+==========================
+
+ * feat: remove shared class & type converter (Miroslav Bajtoš)
+
+
 2018-02-19, Version 3.10.0
 ==========================
 
