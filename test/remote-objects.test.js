@@ -5,9 +5,10 @@
 
 'use strict';
 
-var expect = require('chai').expect;
-var RemoteObjects = require('../');
-var RestAdapter = require('../lib/rest-adapter');
+const expect = require('chai').expect;
+const RemoteObjects = require('../');
+const RestAdapter = require('../lib/rest-adapter');
+const SharedClass = require('../lib/shared-class');
 
 describe('RemoteObjects', function() {
   var remotes;
@@ -27,6 +28,32 @@ describe('RemoteObjects', function() {
 
     it('should accept a provided adapter if valid', function() {
       remotes.handler(RestAdapter);
+    });
+  });
+
+  describe('deleteClassByName()', () => {
+    it('removes the class', () => {
+      class TempClass {}
+
+      const sharedClass = new SharedClass('TempClass', TempClass);
+      remotes.addClass(sharedClass);
+      expect(Object.keys(remotes._classes)).to.contain('TempClass');
+
+      remotes.deleteClassByName('TempClass');
+      expect(Object.keys(remotes._classes)).to.not.contain('TempClass');
+    });
+  });
+
+  describe('deleteTypeByName()', () => {
+    it('removes the type converter', () => {
+      class MyType {}
+
+      const registeredTypes = remotes._typeRegistry._types;
+      remotes.defineObjectType('MyType', data => new MyType());
+      expect(Object.keys(registeredTypes)).to.contain('mytype');
+
+      remotes.deleteTypeByName('MyType');
+      expect(Object.keys(registeredTypes)).to.not.contain('mytype');
     });
   });
 });
