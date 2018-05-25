@@ -32,7 +32,7 @@
     "loopback-phase": "^3.1.0",
     "mux-demux": "^3.7.9",
     "qs": "^6.2.1",
-    "request": "^2.83.0",
+    "request": "^2.87.0",
     "sse": "0.0.8",
     "strong-error-handler": "^2.3.0",
     "strong-globalize": "^3.1.0",
