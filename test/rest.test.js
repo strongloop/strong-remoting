@@ -1431,7 +1431,7 @@ describe('strong-remoting-rest', function() {
             expect(res.text).to.equal(
               '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n' +
             '<response>\n  ' +
-              '<a>fooÁáĂΩasd&gt;&lt;=$~!@#$%^&amp;*()-_=+/.,;&apos;&quot;[]{}?</a>\n' +
+              '<a>fooÁáĂΩasd>&lt;=$~!@#$%^&amp;*()-_=+/.,;\'"[]{}?</a>\n' +
             '</response>');
             done();
           });
