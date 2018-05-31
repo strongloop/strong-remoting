@@ -11,7 +11,7 @@
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint .",
-    "test": "nyc mocha -R dot",
+    "test": "nyc mocha",
     "posttest": "npm run lint"
   },
   "engines": {
@@ -50,8 +50,8 @@
     "event-stream": "^3.3.1",
     "eventsource": "^0.2.1",
     "http-auth": "^3.0.1",
-    "mocha": "^3.0.2",
     "nyc": "^10.1.2",
+    "mocha": "^5.2.0",
     "requirejs": "^2.2.0",
     "socket.io": "^1.4.8",
     "supertest": "^2.0.0"
