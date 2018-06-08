@@ -1,3 +1,17 @@
+2018-06-08, Version 2.35.0
+==========================
+
+ * Travis: enable Node.js 10.x (Miroslav Bajtoš)
+
+ * Update deps to fix security vulnerabilities (Miroslav Bajtoš)
+
+ * Upgrade jayson from 1.x to 2.x (Miroslav Bajtoš)
+
+ * Simplify build (Miroslav Bajtoš)
+
+ * Update sse to 0.0.7 (ivy ho)
+
+
 2017-10-19, Version 2.34.0
 ==========================
 
