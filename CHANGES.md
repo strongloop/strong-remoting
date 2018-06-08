@@ -1,3 +1,9 @@
+2018-06-08, Version 2.35.1
+==========================
+
+ * Move jshint & jscs to dev-dependencies (Miroslav Bajtoš)
+
+
 2018-06-08, Version 2.35.0
 ==========================
 
