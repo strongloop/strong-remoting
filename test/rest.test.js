@@ -12,7 +12,7 @@ var RemoteObjects = require('../');
 var SharedClass = RemoteObjects.SharedClass;
 var express = require('express');
 var request = require('supertest');
-var expect = require('chai').expect;
+var expect = require('./helpers/expect');
 var factory = require('./helpers/shared-objects-factory.js');
 var Promise = global.Promise || require('bluebird');
 var Readable = require('stream').Readable;
@@ -1431,7 +1431,7 @@ describe('strong-remoting-rest', function() {
             expect(res.text).to.equal(
               '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n' +
             '<response>\n  ' +
-              '<a>fooÁáĂΩasd&gt;&lt;=$~!@#$%^&amp;*()-_=+/.,;&apos;&quot;[]{}?</a>\n' +
+              '<a>fooÁáĂΩasd>&lt;=$~!@#$%^&amp;*()-_=+/.,;\'"[]{}?</a>\n' +
             '</response>');
             done();
           });
@@ -1588,7 +1588,7 @@ describe('strong-remoting-rest', function() {
                 var error = res.body.error;
                 expect(error).to.have.property('message').that.match(/multiple errors/);
                 expect(error).to.include.keys('details');
-                expect(error.details).to.include(expectedDetail);
+                expect(error.details).to.deep.include(expectedDetail);
                 done();
               });
           });
@@ -1971,7 +1971,7 @@ describe('strong-remoting-rest', function() {
       json(method.url).expect(500).end(function(err, res) {
         if (err) return done(err);
         expect(res.body)
-          .to.have.deep.property('error.message', testError.message);
+          .to.have.nested.property('error.message', testError.message);
         done();
       });
     });
@@ -1981,7 +1981,7 @@ describe('strong-remoting-rest', function() {
       json(method.url).end(function(err) {
         if (err) return done(err);
         expect(lastRequest)
-          .to.have.deep.property('remotingContext.method.name');
+          .to.have.nested.property('remotingContext.method.name');
         done();
       });
     });
@@ -1991,7 +1991,7 @@ describe('strong-remoting-rest', function() {
       json(method.getUrlForId(1234)).end(function(err) {
         if (err) return done(err);
         expect(lastRequest)
-          .to.have.deep.property('remotingContext.ctorArgs.id', 1234);
+          .to.have.nested.property('remotingContext.ctorArgs.id', 1234);
         // Notice that the id was correctly coerced to a Number ^^^^
         done();
       });

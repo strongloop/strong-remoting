@@ -68,7 +68,7 @@ describe('RestAdapter', function() {
       expect(methods[0]).to.have.property('name', 'staticMethod');
       expect(methods[0]).to.have.property('fullName', 'testClass.staticMethod');
       expect(methods[0])
-        .to.have.deep.property('routes[0].path', '/staticMethod');
+        .to.have.nested.property('routes[0].path', '/staticMethod');
     });
 
     it('fills prototype methods', function() {
@@ -82,7 +82,7 @@ describe('RestAdapter', function() {
         .to.have.property('fullName', 'testClass.prototype.instanceMethod');
       expect(methods[0])
         // Note: the `/id:` part is coming from testClass.sharedCtor
-        .to.have.deep.property('routes[0].path', '/:id/instanceMethod');
+        .to.have.nested.property('routes[0].path', '/:id/instanceMethod');
     });
 
     function getRestClasses() {
