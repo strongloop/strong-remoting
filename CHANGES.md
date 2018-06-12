@@ -1,3 +1,21 @@
+2018-06-12, Version 3.12.0
+==========================
+
+ * Disable package-lock feature of npm (Miroslav Bajtoš)
+
+ * Upgrade dependencies to latest versions (Miroslav Bajtoš)
+
+ * Upgrade chai & dirty-chai to latest (Miroslav Bajtoš)
+
+ * Upgrade js2xmlparser to latest (Miroslav Bajtoš)
+
+ * Upgrade mocha to latest (Miroslav Bajtoš)
+
+ * Travis: add Node.js 10.x to the build matrix (Miroslav Bajtoš)
+
+ * Drop support for Node 4.x (Miroslav Bajtoš)
+
+
 2018-04-17, Version 3.11.0
 ==========================
 
