@@ -1578,7 +1578,6 @@ describe('strong-remoting-rest', function() {
           .end(function(err, res) {
             if (err) return done(err);
             var expectedDetail = res.body.error;
-            delete expectedDetail.statusCode;
 
             request(app).get(method(errArray).url)
               .set('Accept', 'application/json')
