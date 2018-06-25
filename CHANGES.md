@@ -1,3 +1,11 @@
+2018-06-25, Version 3.12.1
+==========================
+
+ * Delete remote hooks when class is deleted (MohammedEssehemy)
+
+ * Upgrade dependencies to their latest versions (shimks)
+
+
 2018-06-12, Version 3.12.0
 ==========================
 
