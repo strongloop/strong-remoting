@@ -42,6 +42,20 @@ describe('RemoteObjects', function() {
       remotes.deleteClassByName('TempClass');
       expect(Object.keys(remotes._classes)).to.not.contain('TempClass');
     });
+
+    it('removes the remote hooks', () => {
+      remotes.before('TempClass.' + 'find', function(ctx, next) { next(); });
+      remotes.after('TempClass.' + 'find', function(ctx, next) { next(); });
+      remotes.afterError('TempClass.' + 'find', function(ctx, next) { next(); });
+      expect(Object.keys(remotes.listenerTree.before)).to.contain('TempClass');
+      expect(Object.keys(remotes.listenerTree.after)).to.contain('TempClass');
+      expect(Object.keys(remotes.listenerTree.afterError)).to.contain('TempClass');
+
+      remotes.deleteClassByName('TempClass');
+      expect(Object.keys(remotes.listenerTree.before)).to.not.contain('TempClass');
+      expect(Object.keys(remotes.listenerTree.after)).to.not.contain('TempClass');
+      expect(Object.keys(remotes.listenerTree.afterError)).to.not.contain('TempClass');
+    });
   });
 
   describe('deleteTypeByName()', () => {
