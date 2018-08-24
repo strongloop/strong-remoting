@@ -186,8 +186,7 @@ describe('SharedClass', function() {
         sharedClass.defineMethod(METHOD_NAME, {});
         var methods = sharedClass.methods().map(getName);
         expect(methods).to.contain(METHOD_NAME);
-      }
-    );
+      });
   });
 
   describe('sharedClass.resolve(resolver)', function() {

@@ -200,7 +200,8 @@ describe('SharedMethod', function() {
             },
             {
               accepts: {arg: 'num', type: 'integer'},
-            });
+            }
+          );
 
           method.invoke('ctx', {num: 2343546576878989879789}, {}, ctx(method),
             function(err) {
@@ -220,7 +221,8 @@ describe('SharedMethod', function() {
           },
           {
             accepts: {arg: 'num', type: 'integer'},
-          });
+          }
+        );
 
         method.invoke('ctx', {num: 12.0}, {}, ctx(method), function(result) {
           setImmediate(function() {
@@ -238,7 +240,8 @@ describe('SharedMethod', function() {
             },
             {
               returns: {arg: 'value', type: 'integer'},
-            });
+            }
+          );
 
           method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
             setImmediate(function() {
@@ -257,7 +260,8 @@ describe('SharedMethod', function() {
           },
           {
             returns: {arg: 'value', type: 'integer'},
-          });
+          }
+        );
 
         method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
           setImmediate(function() {
@@ -278,7 +282,8 @@ describe('SharedMethod', function() {
           },
           {
             returns: {arg: 'value', type: 'date'},
-          });
+          }
+        );
 
         method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
           setImmediate(function() {
@@ -322,7 +327,8 @@ describe('SharedMethod', function() {
             {arg: 'first', type: 'string'},
             {arg: 'second', type: 'string'},
           ],
-        });
+        }
+      );
 
       method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
         setImmediate(function() {
@@ -343,7 +349,8 @@ describe('SharedMethod', function() {
           returns: [
             {arg: 'value', type: 'string'},
           ],
-        });
+        }
+      );
 
       method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
         setImmediate(function() {
@@ -364,7 +371,8 @@ describe('SharedMethod', function() {
           returns: [
             {arg: 'value', type: ['string']},
           ],
-        });
+        }
+      );
 
       method.invoke('ctx', {}, {}, ctx(method), function(err, result) {
         setImmediate(function() {

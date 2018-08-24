@@ -276,8 +276,7 @@ describe('strong-remoting-rest', function() {
             assert.equal(b, false);
             done();
           });
-        }
-      );
+        });
 
       it('should reject empty string when string required',
         function(done) {
@@ -300,8 +299,7 @@ describe('strong-remoting-rest', function() {
             expect(err).to.be.an.instanceof(Error);
             done();
           });
-        }
-      );
+        });
 
       it('should reject falsy required arguments of incorrect type', function(done) {
         var method = givenSharedStaticMethod(

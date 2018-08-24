@@ -46,8 +46,7 @@ describe('authorization hook', function() {
           //                        vvvvvvvv - local before hook
           expect(callStack).to.eql(['before', 'authorization', 'before']);
           done();
-        }
-      );
+        });
     });
   });
 
