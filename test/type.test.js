@@ -6,6 +6,7 @@
 var assert = require('assert');
 var Dynamic = require('../lib/dynamic');
 var RemoteObjects = require('../');
+var expect = require('chai').expect;
 
 describe('types', function() {
   var remotes;
@@ -19,6 +20,18 @@ describe('types', function() {
         return val;
       });
       assert(Dynamic.getConverter(name));
+    });
+  });
+
+  describe('remotes.deleteType(name, fn)', function() {
+    it('should delete type from existing types', function() {
+      var name = 'DeleteType';
+      remotes.defineType(name, function(val, ctx) {
+        return val;
+      });
+      assert.strictEqual(Dynamic.getConverter(name).typeName, name);
+      remotes.deleteType(name);
+      expect(Dynamic.getConverter(name)).to.be.undefined;
     });
   });
 
