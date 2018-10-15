@@ -1,3 +1,13 @@
+2018-10-15, Version 3.13.1
+==========================
+
+ * Update LTS status (Miroslav Bajtoš)
+
+ * Removed extra whitespace (Josué Morales)
+
+ * style: fix linting (virkt25)
+
+
 2018-07-09, Version 3.13.0
 ==========================
 
