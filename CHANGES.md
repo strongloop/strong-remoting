@@ -1,3 +1,9 @@
+2019-01-11, Version 3.13.2
+==========================
+
+ * Fixate event-stream version to 3.3.1 (Miroslav Bajtoš)
+
+
 2018-10-15, Version 3.13.1
 ==========================
 
