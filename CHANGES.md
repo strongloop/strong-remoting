@@ -1,3 +1,13 @@
+2019-05-10, Version 3.14.0
+==========================
+
+ * chore: update copyright years (Diana Lau)
+
+ * update README for LTS status (Diana Lau)
+
+ * Enable Node.js 12.x on Travis CI (Miroslav Bajtoš)
+
+
 2019-01-11, Version 3.13.2
 ==========================
 
