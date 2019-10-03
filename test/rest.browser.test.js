@@ -29,7 +29,9 @@ describe('strong-remoting-rest', function() {
 
   // setup
   beforeEach(function() {
-    objects = RemoteObjects.create();
+    objects = RemoteObjects.create({
+      errorHandler: {debug: true},
+    });
     remotes = objects.exports;
 
     // connect to the app
@@ -323,6 +325,34 @@ describe('strong-remoting-rest', function() {
 
         objects.invoke(method.name, ['', false, 0], function(err, a, b, c) {
           expect(err).to.be.an.instanceof(Error);
+          done();
+        });
+      });
+
+      it('handles anonymous object types in the response', (done) => {
+        const method = givenSharedStaticMethod(
+          function updateAll(cb) {
+            cb(null, {count: 1});
+          },
+          // See LoopBack's PersistedModel.updateAll method
+          {
+            returns: {
+              arg: 'info',
+              type: {
+                count: {
+                  type: 'number',
+                  description: 'The number of instances updated',
+                },
+              },
+              root: true,
+            },
+            http: {path: '/'},
+          }
+        );
+
+        objects.invoke(method.name, [], (err, result) => {
+          if (err) return done(err);
+          expect(result).to.eql({count: 1});
           done();
         });
       });
