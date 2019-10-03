@@ -6,15 +6,15 @@
 'use strict';
 
 // faux remote stream
-var destination = process.stdout;
-var fs = require('fs');
-var path = require('path');
+const destination = process.stdout;
+const fs = require('fs');
+const path = require('path');
 
 // create a set of shared classes
-var remotes = require('../').create();
+const remotes = require('../').create();
 
 // our modules
-var fileService = remotes.exports.files = {
+const fileService = remotes.exports.files = {
   upload: function() {
     return destination;
   },

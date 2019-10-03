@@ -5,22 +5,22 @@
 
 'use strict';
 
-var assert = require('assert');
-var extend = require('util')._extend;
-var expect = require('./helpers/expect');
-var Context = require('../lib/context-base');
-var SharedMethod = require('../lib/shared-method');
-var TypeRegistry = require('../lib/type-registry');
-var factory = require('./helpers/shared-objects-factory.js');
-var Promise = global.Promise || require('bluebird');
+const assert = require('assert');
+const extend = require('util')._extend;
+const expect = require('./helpers/expect');
+const Context = require('../lib/context-base');
+const SharedMethod = require('../lib/shared-method');
+const TypeRegistry = require('../lib/type-registry');
+const factory = require('./helpers/shared-objects-factory.js');
+const Promise = global.Promise || require('bluebird');
 
 describe('SharedMethod', function() {
-  var STUB_CLASS = {};
-  var STUB_METHOD = function(cb) { cb(); };
+  const STUB_CLASS = {};
+  const STUB_METHOD = function(cb) { cb(); };
 
   describe('constructor', function() {
     it('normalizes "array" type in "accepts" arguments', function() {
-      var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
+      const sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
         accepts: {arg: 'data', type: 'array'},
       });
 
@@ -30,7 +30,7 @@ describe('SharedMethod', function() {
     });
 
     it('normalizes "array" type in "returns" arguments', function() {
-      var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
+      const sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
         returns: {arg: 'data', type: 'array'},
       });
 
@@ -40,7 +40,7 @@ describe('SharedMethod', function() {
     });
 
     it('passes along `documented` flag correctly', function() {
-      var sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
+      const sharedMethod = new SharedMethod(STUB_METHOD, 'a-name', STUB_CLASS, {
         documented: false,
       });
 
@@ -53,40 +53,40 @@ describe('SharedMethod', function() {
     function myFunction() {}
 
     it('checks if the given function is going to be invoked', function() {
-      var mockSharedClass = {};
-      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass);
+      const mockSharedClass = {};
+      const sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass);
       assert.equal(sharedMethod.isDelegateFor(myFunction), true);
     });
 
     it('checks by name if a function is going to be invoked', function() {
-      var mockSharedClass = {prototype: {myName: myFunction}};
-      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass);
+      const mockSharedClass = {prototype: {myName: myFunction}};
+      const sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass);
       assert.equal(sharedMethod.isDelegateFor('myName', false), true);
       assert.equal(sharedMethod.isDelegateFor('myName', true), false);
       assert.equal(sharedMethod.isDelegateFor('myName'), true);
     });
 
     it('checks by name if static function is going to be invoked', function() {
-      var mockSharedClass = {myName: myFunction};
-      var options = {isStatic: true};
-      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      const mockSharedClass = {myName: myFunction};
+      const opts = {isStatic: true};
+      const sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, opts);
       assert.equal(sharedMethod.isDelegateFor('myName', true), true);
       assert.equal(sharedMethod.isDelegateFor('myName', false), false);
     });
 
     it('checks by alias if static function is going to be invoked', function() {
-      var mockSharedClass = {myName: myFunction};
-      var options = {isStatic: true, aliases: ['myAlias']};
-      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      const mockSharedClass = {myName: myFunction};
+      const opts = {isStatic: true, aliases: ['myAlias']};
+      const sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, opts);
       assert.equal(sharedMethod.isDelegateFor('myAlias', true), true);
       assert.equal(sharedMethod.isDelegateFor('myAlias', false), false);
     });
 
     it('checks if the given name is a string', function() {
-      var mockSharedClass = {};
-      var err;
+      const mockSharedClass = {};
+      let err;
       try {
-        var sharedMethod = new SharedMethod(myFunction, Number, mockSharedClass);
+        const sharedMethod = new SharedMethod(myFunction, Number, mockSharedClass);
       } catch (e) {
         err = e;
       }
@@ -99,44 +99,44 @@ describe('SharedMethod', function() {
     function myFunction() {}
 
     it('checks by name if static function is going to be invoked', function() {
-      var mockSharedClass = {myName: myFunction};
-      var options = {isStatic: true};
-      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      const mockSharedClass = {myName: myFunction};
+      const opts = {isStatic: true};
+      const sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, opts);
       assert.equal(sharedMethod.isDelegateForName('myName'), true);
     });
 
     it('checks by alias if static function is going to be invoked', function() {
-      var mockSharedClass = {myName: myFunction};
-      var options = {isStatic: true, aliases: ['myAlias']};
-      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      const mockSharedClass = {myName: myFunction};
+      const opts = {isStatic: true, aliases: ['myAlias']};
+      const sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, opts);
       assert.equal(sharedMethod.isDelegateForName('myAlias'), true);
     });
 
     it('checks by name if prototype function is going to be invoked', function() {
-      var mockSharedClass = {myName: myFunction};
-      var options = {isStatic: false};
-      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      const mockSharedClass = {myName: myFunction};
+      const opts = {isStatic: false};
+      const sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, opts);
       assert.equal(sharedMethod.isDelegateForName('prototype.myName'), true);
     });
 
     it('checks by alias if prototype function is going to be invoked', function() {
-      var mockSharedClass = {myName: myFunction};
-      var options = {isStatic: false, aliases: ['myAlias']};
-      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, options);
+      const mockSharedClass = {myName: myFunction};
+      const opts = {isStatic: false, aliases: ['myAlias']};
+      const sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass, opts);
       assert.equal(sharedMethod.isDelegateForName('prototype.myAlias'), true);
     });
 
     it('checks if the given name is a string', function() {
-      var mockSharedClass = {};
-      var err;
-      var sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass);
+      const mockSharedClass = {};
+      let err;
+      const sharedMethod = new SharedMethod(myFunction, 'myName', mockSharedClass);
       expect(function() { sharedMethod.isDelegateForName(myFunction); }).to.throw(/argument.*string/);
     });
   });
 
   describe('sharedMethod.invoke', function() {
     it('returns 400 when number argument is `NaN`', function(done) {
-      var method = givenSharedMethod({
+      const method = givenSharedMethod({
         accepts: {arg: 'num', type: 'number'},
       });
 
@@ -163,7 +163,7 @@ describe('SharedMethod', function() {
 
       it('returns 400 when integer argument is a decimal number',
         function(done) {
-          var method = givenSharedMethod({
+          const method = givenSharedMethod({
             accepts: {arg: 'num', type: 'integer'},
           });
 
@@ -178,7 +178,7 @@ describe('SharedMethod', function() {
         });
 
       it('returns 400 when integer argument is `NaN`', function(done) {
-        var method = givenSharedMethod({
+        const method = givenSharedMethod({
           accepts: {arg: 'num', type: 'integer'},
         });
 
@@ -194,7 +194,7 @@ describe('SharedMethod', function() {
 
       it('returns 400 when integer argument is not a safe integer',
         function(done) {
-          var method = givenSharedMethod(
+          const method = givenSharedMethod(
             function(arg, cb) {
               return cb({'num': arg});
             },
@@ -215,7 +215,7 @@ describe('SharedMethod', function() {
         });
 
       it('treats integer argument of type x.0 as integer', function(done) {
-        var method = givenSharedMethod(
+        const method = givenSharedMethod(
           function(arg, cb) {
             return cb({'num': arg});
           },
@@ -234,7 +234,7 @@ describe('SharedMethod', function() {
 
       it('returns 500 for non-integer return value if type: `integer`',
         function(done) {
-          var method = givenSharedMethod(
+          const method = givenSharedMethod(
             function(cb) {
               cb(null, 3.141);
             },
@@ -254,7 +254,7 @@ describe('SharedMethod', function() {
         });
 
       it('returns 500 if returned value is not a safe integer', function(done) {
-        var method = givenSharedMethod(
+        const method = givenSharedMethod(
           function(cb) {
             cb(null, -2343546576878989879789);
           },
@@ -276,7 +276,7 @@ describe('SharedMethod', function() {
 
     describe('data type: Date', function() {
       it('converts return values to GMT timezone', function(done) {
-        var method = givenSharedMethod(
+        const method = givenSharedMethod(
           function(cb) {
             cb(null, new Date(0));
           },
@@ -301,7 +301,7 @@ describe('SharedMethod', function() {
     });
 
     it('returns 400 and doesn\'t crash with unparsable object', function(done) {
-      var method = givenSharedMethod({
+      const method = givenSharedMethod({
         accepts: [{arg: 'obj', type: 'object'}],
       });
 
@@ -316,7 +316,7 @@ describe('SharedMethod', function() {
     });
 
     it('resolves promise returned from the method', function(done) {
-      var method = givenSharedMethod(
+      const method = givenSharedMethod(
         function() {
           return new Promise(function(resolve, reject) {
             resolve(['one', 'two']);
@@ -339,7 +339,7 @@ describe('SharedMethod', function() {
     });
 
     it('handles promise resolved with a single arg', function(done) {
-      var method = givenSharedMethod(
+      const method = givenSharedMethod(
         function() {
           return new Promise(function(resolve, reject) {
             resolve('data');
@@ -361,7 +361,7 @@ describe('SharedMethod', function() {
     });
 
     it('handles promise resolved with a single array arg', function(done) {
-      var method = givenSharedMethod(
+      const method = givenSharedMethod(
         function() {
           return new Promise(function(resolve, reject) {
             resolve(['a', 'b']);
@@ -383,8 +383,8 @@ describe('SharedMethod', function() {
     });
 
     it('handles rejected promise returned from the method', function(done) {
-      var testError = new Error('expected test error');
-      var method = givenSharedMethod(function() {
+      const testError = new Error('expected test error');
+      const method = givenSharedMethod(function() {
         return new Promise(function(resolve, reject) {
           reject(testError);
         });
@@ -398,8 +398,8 @@ describe('SharedMethod', function() {
       });
     });
     it('should remove from result the targeted value from promise', function(done) {
-      var body = {everything: 'ok'};
-      var method = givenSharedMethod(function() {
+      const body = {everything: 'ok'};
+      const method = givenSharedMethod(function() {
         return Promise.resolve([201, body]);
       }, {
         returns: [
@@ -407,7 +407,7 @@ describe('SharedMethod', function() {
           {arg: 'result', type: 'object', root: true},
         ],
       });
-      var context = ctx(method);
+      const context = ctx(method);
       // override function that should be provided in HttpContext
       context.setReturnArgByName = function(name) {
         return name === 'statusResult';
@@ -430,7 +430,7 @@ describe('SharedMethod', function() {
       };
     }
 
-    var mockSharedClass = {fn: fn};
+    const mockSharedClass = {fn: fn};
     return new SharedMethod(fn, 'fn', mockSharedClass, options);
   }
 

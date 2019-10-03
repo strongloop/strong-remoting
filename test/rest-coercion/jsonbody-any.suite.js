@@ -5,12 +5,12 @@
 
 'use strict';
 
-var jsonBodyContext = require('./_jsonbody.context');
+const jsonBodyContext = require('./_jsonbody.context');
 
 module.exports = function(ctx) {
   ctx = jsonBodyContext(ctx);
-  var ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
-  var verifyTestCases = ctx.verifyTestCases;
+  const ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
+  const verifyTestCases = ctx.verifyTestCases;
 
   describe('json body - any - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.

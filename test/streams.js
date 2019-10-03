@@ -5,18 +5,18 @@
 
 'use strict';
 
-var assert = require('assert');
-var RemoteObjects = require('../');
-var expect = require('chai').expect;
-var SharedClass = require('../lib/shared-class');
-var express = require('express');
-var request = require('supertest');
-var fs = require('fs');
-var es = require('event-stream');
-var EventSource = require('eventsource');
+const assert = require('assert');
+const RemoteObjects = require('../');
+const expect = require('chai').expect;
+const SharedClass = require('../lib/shared-class');
+const express = require('express');
+const request = require('supertest');
+const fs = require('fs');
+const es = require('event-stream');
+const EventSource = require('eventsource');
 
 describe('strong-remoting', function() {
-  var app, remotes, objects;
+  let app, remotes, objects;
 
   beforeEach(function() {
     objects = RemoteObjects.create();
@@ -68,14 +68,14 @@ describe('strong-remoting', function() {
 });
 
 describe('a function returning a ReadableStream', function() {
-  var Readable = require('stream').Readable;
-  var remotes = RemoteObjects.create();
-  var streamClass, server, app, streamClosed;
+  const Readable = require('stream').Readable;
+  const remotes = RemoteObjects.create();
+  let streamClass, server, app, streamClosed;
 
   before(function(done) {
-    var test = this;
+    const test = this;
     // NOTE: Date is intentionally excluded as it is not supported yet
-    var data = test.data = [{foo: 'bar'}, 'bat', false, 0, null];
+    const data = test.data = [{foo: 'bar'}, 'bat', false, 0, null];
     app = express();
     server = app.listen(0, '127.0.0.1', done);
     function StreamClass() {
@@ -87,7 +87,7 @@ describe('a function returning a ReadableStream', function() {
     };
 
     StreamClass.createStreamWithError = function createStreamWithError(cb) {
-      var rs = new Readable({objectMode: true});
+      const rs = new Readable({objectMode: true});
 
       rs._read = function() {
         // required method
@@ -156,10 +156,10 @@ describe('a function returning a ReadableStream', function() {
   });
 
   it('should return a ReadableStream', function(done) {
-    var testData = this.data;
+    const testData = this.data;
     remotes.invoke('StreamClass.createStream', [], function(err, stream) {
       assert(stream.readable, 'must be a ReadableStream');
-      var out = es.writeArray(function(err, result) {
+      const out = es.writeArray(function(err, result) {
         if (err) return done(err);
         expect(testData).to.eql(result);
         done();
@@ -182,18 +182,18 @@ describe('a function returning a ReadableStream', function() {
 
   describe('an http client requesting a stream as an event source', function() {
     before(function(done) {
-      var server = this.server = app.listen(done);
+      const server = this.server = app.listen(done);
       this.port = server.address().port;
     });
     before(function() {
-      var test = this;
+      const test = this;
       this.url = 'http://localhost:' + this.port;
     });
 
     it('should respond with an event stream', function(done) {
-      var es = new EventSource(this.url + '/StreamClass/createStream');
-      var testData = this.data;
-      var result = [];
+      const es = new EventSource(this.url + '/StreamClass/createStream');
+      const testData = this.data;
+      const result = [];
 
       es.on('data', function(e) {
         result.push(JSON.parse(e.data));
@@ -206,10 +206,10 @@ describe('a function returning a ReadableStream', function() {
     });
 
     it('should respond with an event stream with errors', function(done) {
-      var es = new EventSource(this.url + '/StreamClass/createStreamWithError');
+      const es = new EventSource(this.url + '/StreamClass/createStreamWithError');
 
       es.on('error', function(e) {
-        var err;
+        let err;
         if (e && e.data) {
           err = JSON.parse(e.data);
         } else {

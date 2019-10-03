@@ -5,20 +5,20 @@
 
 'use strict';
 
-var assert = require('assert');
-var HttpInvocation = require('../lib/http-invocation');
-var SharedMethod = require('../lib/shared-method');
-var extend = require('util')._extend;
-var expect = require('chai').expect;
-var TypeRegistry = require('../lib/type-registry');
+const assert = require('assert');
+const HttpInvocation = require('../lib/http-invocation');
+const SharedMethod = require('../lib/shared-method');
+const extend = require('util')._extend;
+const expect = require('chai').expect;
+const TypeRegistry = require('../lib/type-registry');
 
 describe('HttpInvocation', function() {
   describe('namedArgs', function() {
     function expectNamedArgs(accepts, inputArgs, expectedNamedArgs) {
-      var method = givenSharedStaticMethod({
+      const method = givenSharedStaticMethod({
         accepts: accepts,
       });
-      var inv = givenInvocation(method, {args: inputArgs});
+      const inv = givenInvocation(method, {args: inputArgs});
       expect(inv.namedArgs).to.deep.equal(expectedNamedArgs);
     }
 
@@ -48,7 +48,7 @@ describe('HttpInvocation', function() {
 
     describe('HttpContext.isAcceptable()', function() {
       it('should accept an acceptable argument', function() {
-        var acceptable = HttpInvocation.isAcceptable(2, {
+        const acceptable = HttpInvocation.isAcceptable(2, {
           arg: 'foo',
           type: 'number',
         });
@@ -56,7 +56,7 @@ describe('HttpInvocation', function() {
       });
 
       it('should always accept args when type is any', function() {
-        var acceptable = HttpInvocation.isAcceptable(2, {
+        const acceptable = HttpInvocation.isAcceptable(2, {
           arg: 'bar',
           type: 'any',
         });
@@ -64,7 +64,7 @@ describe('HttpInvocation', function() {
       });
 
       it('should always accept args when type is complex', function() {
-        var acceptable = HttpInvocation.isAcceptable({}, {
+        const acceptable = HttpInvocation.isAcceptable({}, {
           arg: 'bar',
           type: 'MyComplexType',
         });
@@ -72,7 +72,7 @@ describe('HttpInvocation', function() {
       });
 
       it('should accept null arg when type is complex', function() {
-        var acceptable = HttpInvocation.isAcceptable(null, {
+        const acceptable = HttpInvocation.isAcceptable(null, {
           arg: 'bar',
           type: 'MyComplexType',
         });
@@ -135,9 +135,9 @@ describe('HttpInvocation', function() {
     });
 
     it('should forward all error properties', function(done) {
-      var method = givenSharedStaticMethod({});
-      var inv = givenInvocation(method);
-      var res = {
+      const method = givenSharedStaticMethod({});
+      const inv = givenInvocation(method);
+      const res = {
         statusCode: 555,
         body: {
           error: {
@@ -166,9 +166,9 @@ describe('HttpInvocation', function() {
     });
 
     it('should forward statusCode and non-object error response', function(done) {
-      var method = givenSharedStaticMethod({});
-      var inv = givenInvocation(method);
-      var res = {
+      const method = givenSharedStaticMethod({});
+      const inv = givenInvocation(method);
+      const res = {
         statusCode: 555,
         body: 'error body',
       };
@@ -184,13 +184,13 @@ describe('HttpInvocation', function() {
     });
 
     function transformReturnType(returns, typeName, typeFactoryFn, res, cb) {
-      var method = givenSharedStaticMethod({returns: returns});
+      const method = givenSharedStaticMethod({returns: returns});
 
-      var typeRegistry = new TypeRegistry();
+      const typeRegistry = new TypeRegistry();
       typeRegistry.registerObjectType(typeName, typeFactoryFn);
 
-      var inv = givenInvocation(method, {typeRegistry: typeRegistry});
-      var body = res.body || {};
+      const inv = givenInvocation(method, {typeRegistry: typeRegistry});
+      const body = res.body || {};
 
       inv.transformResponse(res, body, cb);
     }
@@ -198,8 +198,8 @@ describe('HttpInvocation', function() {
 
   describe('createRequest', function() {
     it('creates a simple request', function() {
-      var inv = givenInvocationForEndpoint(null, []);
-      var expectedReq = {method: 'GET',
+      const inv = givenInvocationForEndpoint(null, []);
+      const expectedReq = {method: 'GET',
         url: 'http://base/testModel/testMethod',
         protocol: 'http:',
         json: true,
@@ -214,14 +214,14 @@ describe('HttpInvocation', function() {
     });
 
     it('makes primitive type arguments as query params', function() {
-      var accepts = [
+      const accepts = [
         {arg: 'a', type: 'number'},
         {arg: 'b', type: 'string'},
       ];
-      var aValue = 2;
-      var bValue = 'foo';
-      var inv = givenInvocationForEndpoint(accepts, [aValue, bValue]);
-      var expectedReq = {method: 'GET',
+      const aValue = 2;
+      const bValue = 'foo';
+      const inv = givenInvocationForEndpoint(accepts, [aValue, bValue]);
+      const expectedReq = {method: 'GET',
         url: 'http://base/testModel/testMethod?a=2&b=foo',
         protocol: 'http:',
         json: true,
@@ -230,12 +230,12 @@ describe('HttpInvocation', function() {
     });
 
     it('makes an array argument as a query param', function() {
-      var accepts = [
+      const accepts = [
         {arg: 'a', type: 'object'},
       ];
-      var aValue = [1, 2, 3];
-      var inv = givenInvocationForEndpoint(accepts, [aValue]);
-      var expectedReq = {method: 'GET',
+      const aValue = [1, 2, 3];
+      const inv = givenInvocationForEndpoint(accepts, [aValue]);
+      const expectedReq = {method: 'GET',
         url: 'http://base/testModel/testMethod?a=' + encodeURIComponent('[1,2,3]'),
         protocol: 'http:',
         json: true,
@@ -244,12 +244,12 @@ describe('HttpInvocation', function() {
     });
 
     it('keeps an empty array as a query param', function() {
-      var accepts = [
+      const accepts = [
         {arg: 'a', type: 'object'},
       ];
-      var aValue = [];
-      var inv = givenInvocationForEndpoint(accepts, [aValue]);
-      var expectedReq = {method: 'GET',
+      const aValue = [];
+      const inv = givenInvocationForEndpoint(accepts, [aValue]);
+      const expectedReq = {method: 'GET',
         url: 'http://base/testModel/testMethod?a=' + encodeURIComponent('[]'),
         protocol: 'http:',
         json: true,
@@ -258,12 +258,12 @@ describe('HttpInvocation', function() {
     });
 
     it('keeps an empty array as a body param for a POST request', function() {
-      var accepts = [
+      const accepts = [
         {arg: 'a', type: 'object'},
       ];
-      var aValue = [];
-      var inv = givenInvocationForEndpoint(accepts, [aValue], 'POST');
-      var expectedReq = {method: 'POST',
+      const aValue = [];
+      const inv = givenInvocationForEndpoint(accepts, [aValue], 'POST');
+      const expectedReq = {method: 'POST',
         url: 'http://base/testModel/testMethod',
         protocol: 'http:',
         json: true,
@@ -275,10 +275,10 @@ describe('HttpInvocation', function() {
     });
 
     it('handles a loopback filter as a query param', function() {
-      var accepts = [
+      const accepts = [
         {arg: 'filter', type: 'object'},
       ];
-      var filter = {
+      const filter = {
         where: {
           id: {
             inq: [1, 2],
@@ -289,10 +289,10 @@ describe('HttpInvocation', function() {
         },
         include: ['related'],
       };
-      var inv = givenInvocationForEndpoint(accepts, [filter]);
-      var expectedFilter =
+      const inv = givenInvocationForEndpoint(accepts, [filter]);
+      const expectedFilter =
         '{"where":{"id":{"inq":[1,2]},"typeId":{"inq":[]}},"include":["related"]}';
-      var expectedReq = {method: 'GET',
+      const expectedReq = {method: 'GET',
         url: 'http://base/testModel/testMethod?filter=' +
           encodeURIComponent(expectedFilter),
         protocol: 'http:',
@@ -303,10 +303,10 @@ describe('HttpInvocation', function() {
   });
 
   it('handles a loopback filter as a body param for a POST request', function() {
-    var accepts = [
+    const accepts = [
       {arg: 'filter', type: 'object'},
     ];
-    var filter = {
+    const filter = {
       where: {
         id: {
           inq: [1, 2],
@@ -317,8 +317,8 @@ describe('HttpInvocation', function() {
       },
       include: ['related'],
     };
-    var inv = givenInvocationForEndpoint(accepts, [filter], 'POST');
-    var expectedReq = {method: 'POST',
+    const inv = givenInvocationForEndpoint(accepts, [filter], 'POST');
+    const expectedReq = {method: 'POST',
       url: 'http://base/testModel/testMethod',
       protocol: 'http:',
       json: true,
@@ -337,7 +337,7 @@ function givenSharedStaticMethod(fn, config) {
   }
   fn = fn || function(cb) { cb(); };
 
-  var testClass = {testMethod: fn};
+  const testClass = {testMethod: fn};
   config = extend({shared: true}, config);
   extend(testClass.testMethod, config);
   return SharedMethod.fromFunction(fn, 'testStaticMethodName', null, true);
@@ -354,7 +354,7 @@ function givenInvocation(method, params) {
 }
 
 function givenInvocationForEndpoint(accepts, args, verb, auth) {
-  var method = givenSharedStaticMethod({
+  const method = givenSharedStaticMethod({
     accepts: accepts,
   });
   method.getEndpoints = function() {

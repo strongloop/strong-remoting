@@ -5,7 +5,7 @@
 
 'use strict';
 
-var RemoteObjects = require('../../../');
-var remotes = module.exports = RemoteObjects.create();
+const RemoteObjects = require('../../../');
+const remotes = module.exports = RemoteObjects.create();
 
 remotes.exports.User = require('./user');

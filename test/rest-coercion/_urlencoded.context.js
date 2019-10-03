@@ -5,16 +5,16 @@
 
 'use strict';
 
-var debug = require('debug')('test');
-var expect = require('chai').expect;
-var util = require('util');
-var format = util.format;
-var extend = util._extend;
+const debug = require('debug')('test');
+const expect = require('chai').expect;
+const util = require('util');
+const format = util.format;
+const extend = util._extend;
 
-var EMPTY_QUERY = '';
+const EMPTY_QUERY = '';
 
 module.exports = function createUrlEncodedContext(ctx, target) {
-  var TARGET_QUERY_STRING = target === 'qs';
+  const TARGET_QUERY_STRING = target === 'qs';
 
   return extend(Object.create(ctx), {
     /** Send empty data, i.e. empty request body or no query string */
@@ -52,14 +52,14 @@ module.exports = function createUrlEncodedContext(ctx, target) {
    */
   function verifyTestCases(argSpec, testCases) {
     testCases.forEach(function(tc) {
-      var queryString = tc[0];
-      var expectedValue = tc[1];
+      const queryString = tc[0];
+      const expectedValue = tc[1];
 
-      var niceInput = queryString === EMPTY_QUERY ?
+      const niceInput = queryString === EMPTY_QUERY ?
         TARGET_QUERY_STRING ? 'empty query' : 'empty form' :
         '?' + queryString;
-      var niceExpectation = ctx.prettyExpectation(expectedValue);
-      var testName = format('coerces %s to %s', niceInput, niceExpectation);
+      const niceExpectation = ctx.prettyExpectation(expectedValue);
+      const testName = format('coerces %s to %s', niceInput, niceExpectation);
 
       it(testName, function(done) {
         ctx.runtime.currentInput = niceInput;
@@ -69,23 +69,23 @@ module.exports = function createUrlEncodedContext(ctx, target) {
   }
 
   function testCoercion(argSpec, queryString, expectedResult, done) {
-    var argValue;
-    var testClass = ctx.remoteObjects.exports.testClass = {
+    let argValue;
+    const testClass = ctx.remoteObjects.exports.testClass = {
       testMethod: function(arg, cb) {
         argValue = arg;
         return cb(null, true);
       },
     };
 
-    var source = TARGET_QUERY_STRING ? 'query' : 'form';
+    const source = TARGET_QUERY_STRING ? 'query' : 'form';
     extend(testClass.testMethod, {
       shared: true,
       accepts: extend(argSpec, {http: {source: source}}),
       returns: {name: 'success', type: 'boolean'},
     });
 
-    var uri = '/testClass/testMethod';
-    var chain; // eslint-disable-line one-var
+    let uri = '/testClass/testMethod';
+    let chain; // eslint-disable-line one-var
     if (TARGET_QUERY_STRING) {
       uri = uri + '?' + queryString;
       chain = ctx.request.get(uri);

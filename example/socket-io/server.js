@@ -6,10 +6,10 @@
 'use strict';
 
 // create a set of shared classes
-var remotes = require('../../').create();
+const remotes = require('../../').create();
 
 // share some fs module code
-var fs = remotes.exports.fs = require('fs');
+const fs = remotes.exports.fs = require('fs');
 
 // specifically the readFile function
 fs.readFile.shared = true;
@@ -21,8 +21,8 @@ fs.readFile.accepts = {arg: 'path', type: 'string'};
 fs.readFile.returns = {arg: 'data', type: 'buffer'};
 
 // event emitter
-var EventEmitter = require('events').EventEmitter;
-var ee = remotes.exports.ee = new EventEmitter();
+const EventEmitter = require('events').EventEmitter;
+const ee = remotes.exports.ee = new EventEmitter();
 
 // expose the on method
 ee.on.shared = true;
@@ -35,7 +35,7 @@ setInterval(function() {
 }, 1000);
 
 // expose it over http
-var server =
+const server =
 require('http')
   .createServer()
   .listen(3000);

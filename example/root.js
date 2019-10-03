@@ -6,10 +6,10 @@
 'use strict';
 
 // create a set of shared classes
-var remotes = require('../').create();
+const remotes = require('../').create();
 
 // expose a simple object
-var products = remotes.exports.products = {
+const products = remotes.exports.products = {
   find: function(fn) {
     fn(null, ['tv', 'vcr', 'radio']);
   },

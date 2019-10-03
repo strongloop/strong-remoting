@@ -5,11 +5,11 @@
 
 'use strict';
 
-var g = require('strong-globalize')();
+const g = require('strong-globalize')();
 
-var Remotes = require('../../client/js/client');
-var SocketIOAdapter = require('../../client/js/socket-io-adapter');
-var remotes = Remotes.connect('http://localhost:3000', SocketIOAdapter);
+const Remotes = require('../../client/js/client');
+const SocketIOAdapter = require('../../client/js/socket-io-adapter');
+const remotes = Remotes.connect('http://localhost:3000', SocketIOAdapter);
 
 remotes.invoke('fs.readFile', {path: 'test.txt'}, function(err, data) {
   g.log(data.toString());

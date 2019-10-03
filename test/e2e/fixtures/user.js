@@ -5,7 +5,7 @@
 
 'use strict';
 
-var debug = require('debug')('test user');
+const debug = require('debug')('test user');
 
 module.exports = User;
 
@@ -14,7 +14,7 @@ function User() {
 }
 
 User.sharedCtor = function(id, callback) {
-  var user = new User();
+  const user = new User();
   user.username = 'joe';
   callback(null, user);
 };
@@ -25,7 +25,7 @@ User.sharedCtor.http = [
   {path: '/', verb: 'get'},
 ];
 
-var login = User.login = function(credentials, callback) {
+const login = User.login = function(credentials, callback) {
   debug('login with credentials: %j', credentials);
   setTimeout(function() {
     if (!credentials.password) {
@@ -38,7 +38,7 @@ login.shared = true;
 login.accepts = {arg: 'credentials', type: 'object'};
 login.returns = {arg: 'session', type: 'object'};
 
-var hasUsername = User.prototype.hasUsername = function(username, callback) {
+const hasUsername = User.prototype.hasUsername = function(username, callback) {
   callback(null, username === this.username);
 };
 

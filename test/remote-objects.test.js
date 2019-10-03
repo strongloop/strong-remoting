@@ -11,12 +11,12 @@ const RestAdapter = require('../lib/rest-adapter');
 const SharedClass = require('../lib/shared-class');
 
 describe('RemoteObjects', function() {
-  var remotes;
+  let remotes;
   beforeEach(function() { remotes = RemoteObjects.create(); });
 
   describe('RemoteObjects.handler()', function() {
     it('should throws an error if the provided adapter is not valid', function() {
-      var invalidAdapter = function() {};
+      const invalidAdapter = function() {};
       try {
         remotes.handler(invalidAdapter);
       } catch (err) {

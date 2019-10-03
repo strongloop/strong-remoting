@@ -5,14 +5,14 @@
 
 'use strict';
 
-var assert = require('assert');
-var RemoteObjects = require('../');
-var express = require('express');
-var request = require('supertest');
-var SharedClass = require('../lib/shared-class');
+const assert = require('assert');
+const RemoteObjects = require('../');
+const express = require('express');
+const request = require('supertest');
+const SharedClass = require('../lib/shared-class');
 
 describe('strong-remoting-jsonrpc', function() {
-  var app, server, objects, remotes;
+  let app, server, objects, remotes;
 
   // setup
   beforeEach(function() {
@@ -77,7 +77,7 @@ describe('strong-remoting-jsonrpc', function() {
           });
         };
 
-        var productClass = new SharedClass('product', Product);
+        const productClass = new SharedClass('product', Product);
         productClass.defineMethod('getPrice', {isStatic: true});
         objects.addClass(productClass);
       });
@@ -110,8 +110,8 @@ describe('strong-remoting-jsonrpc', function() {
       // The 1kb limit is set by RemoteObjects.create({json: {limit: '1kb'}});
       it('should reject json payload larger than 1kb', function(done) {
         // Build an object that is larger than 1kb
-        var name = '';
-        for (var i = 0; i < 2048; i++) {
+        let name = '';
+        for (let i = 0; i < 2048; i++) {
           name += '11111111111';
         }
 

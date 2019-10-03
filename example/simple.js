@@ -6,14 +6,14 @@
 'use strict';
 
 // create a set of shared classes
-var remoting = require('../');
-var SharedClass = remoting.SharedClass;
-var remotes = remoting.create();
-var express = require('express');
-var app = express();
+const remoting = require('../');
+const SharedClass = remoting.SharedClass;
+const remotes = remoting.create();
+const express = require('express');
+const app = express();
 
 // define a class-like object (or constructor)
-var user = {
+const user = {
   greet: function(fn) {
     fn(null, 'hello, world!');
   },
@@ -21,7 +21,7 @@ var user = {
 
 // create a shared class to allow strong-remoting to map
 // http requests to method invocations on your class
-var userSharedClass = new SharedClass('user', user);
+const userSharedClass = new SharedClass('user', user);
 
 // tell strong-remoting about your greet method
 userSharedClass.defineMethod('greet', {

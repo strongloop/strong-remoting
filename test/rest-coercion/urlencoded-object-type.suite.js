@@ -5,8 +5,8 @@
 
 'use strict';
 
-var urlEncodedContext = require('./_urlencoded.context');
-var customClassContext = require('./_custom-class.context.js');
+const urlEncodedContext = require('./_urlencoded.context');
+const customClassContext = require('./_custom-class.context.js');
 
 module.exports = function(ctx) {
   suite('query string', urlEncodedContext(ctx, 'qs'));
@@ -15,10 +15,10 @@ module.exports = function(ctx) {
 
 function suite(prefix, ctx) {
   ctx = customClassContext(ctx);
-  var EMPTY_QUERY = ctx.EMPTY_QUERY;
-  var ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
-  var CustomClass = ctx.CustomClass;
-  var verifyTestCases = ctx.verifyTestCases;
+  const EMPTY_QUERY = ctx.EMPTY_QUERY;
+  const ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
+  const CustomClass = ctx.CustomClass;
+  const verifyTestCases = ctx.verifyTestCases;
 
   describe(prefix + ' - CustomClass - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.

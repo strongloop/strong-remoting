@@ -5,10 +5,10 @@
 
 'use strict';
 
-var RemoteObjects = require('../../');
-var expect = require('chai').expect;
-var REMOTE_URL = 'http://localhost:3000';
-var remotes = require('./fixtures/remotes');
+const RemoteObjects = require('../../');
+const expect = require('chai').expect;
+const REMOTE_URL = 'http://localhost:3000';
+const remotes = require('./fixtures/remotes');
 
 remotes.connect(REMOTE_URL, 'rest');
 

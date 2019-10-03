@@ -6,10 +6,10 @@
 'use strict';
 
 // create a set of shared classes
-var remotes = require('../').create();
+const remotes = require('../').create();
 
 // expose a simple object
-var user = remotes.exports.user = {
+const user = remotes.exports.user = {
   greet: function(fn) {
     fn(null, {msg: 'hello, world!'});
   },

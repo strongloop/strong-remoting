@@ -6,10 +6,10 @@
 'use strict';
 
 // create a set of shared classes
-var remotes = require('../').create();
+const remotes = require('../').create();
 
 // share some fs module code
-var fs = remotes.exports.fs = require('fs');
+const fs = remotes.exports.fs = require('fs');
 
 // specifically the createReadStream function
 fs.createReadStream.shared = true;

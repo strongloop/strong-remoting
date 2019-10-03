@@ -5,13 +5,13 @@
 
 'use strict';
 
-var GeoPoint = require('loopback-datatype-geopoint');
-var jsonBodyContext = require('./_jsonbody.context');
+const GeoPoint = require('loopback-datatype-geopoint');
+const jsonBodyContext = require('./_jsonbody.context');
 
 module.exports = function(ctx) {
   ctx = jsonBodyContext(ctx);
-  var ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
-  var verifyTestCases = ctx.verifyTestCases;
+  const ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
+  const verifyTestCases = ctx.verifyTestCases;
 
   describe('json body - geopoint - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.

@@ -6,7 +6,7 @@
 'use strict';
 
 // This example shows using the helper for a type in a "post-definition" style.
-var helper = require('../../../').extend(module.exports);
+const helper = require('../../../').extend(module.exports);
 
 /**
  * A simple class that contains a name.

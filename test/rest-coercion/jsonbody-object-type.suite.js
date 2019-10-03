@@ -5,14 +5,14 @@
 
 'use strict';
 
-var jsonBodyContext = require('./_jsonbody.context');
-var customClassContext = require('./_custom-class.context.js');
+const jsonBodyContext = require('./_jsonbody.context');
+const customClassContext = require('./_custom-class.context.js');
 
 module.exports = function(ctx) {
   ctx = customClassContext(jsonBodyContext(ctx));
-  var ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
-  var CustomClass = ctx.CustomClass;
-  var verifyTestCases = ctx.verifyTestCases;
+  const ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
+  const CustomClass = ctx.CustomClass;
+  const verifyTestCases = ctx.verifyTestCases;
 
   describe('json body - CustomClass - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.
