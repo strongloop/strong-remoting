@@ -5,14 +5,14 @@
 
 'use strict';
 
-var extend = require('util')._extend;
+const extend = require('util')._extend;
 
 function CustomClass(data) {
   if (!(this instanceof CustomClass))
     return new CustomClass(data);
 
   if (data.invalid) {
-    var err = new Error('Invalid CustomClass value.');
+    const err = new Error('Invalid CustomClass value.');
     err.statusCode = 400;
     throw err;
   }
@@ -21,7 +21,7 @@ function CustomClass(data) {
     this.name = data.name;
   else
     this.empty = true;
-};
+}
 
 module.exports = function createCustomClassContext(ctx) {
   beforeEach(function registerCustomClass() {
@@ -40,9 +40,9 @@ module.exports = function createCustomClassContext(ctx) {
   });
 
   function verifyTestCases(argSpec, testCases) {
-    for (var ix in testCases) {
+    for (const ix in testCases) {
       if (testCases[ix].length === 1) {
-        var data = testCases[ix][0];
+        const data = testCases[ix][0];
         testCases[ix] = [data, new CustomClass(data)];
       }
     }

@@ -5,11 +5,11 @@
 
 'use strict';
 
-var expect = require('chai').expect;
-var TypeRegistry = require('../lib/type-registry');
+const expect = require('chai').expect;
+const TypeRegistry = require('../lib/type-registry');
 
 describe('TypeRegistry', function() {
-  var registry;
+  let registry;
   beforeEach(function() {
     registry = new TypeRegistry();
   });

@@ -5,17 +5,17 @@
 
 'use strict';
 
-var debug = require('debug')('test');
-var expect = require('chai').expect;
-var express = require('express');
-var fs = require('fs');
-var supertest = require('supertest');
-var path = require('path');
+const debug = require('debug')('test');
+const expect = require('chai').expect;
+const express = require('express');
+const fs = require('fs');
+const supertest = require('supertest');
+const path = require('path');
 
-var RemoteObjects = require('..');
+const RemoteObjects = require('..');
 
 describe('Coercion in RestAdapter', function() {
-  var ctx = {
+  const ctx = {
     remoteObjects: null,
     request: null,
     ERROR_BAD_REQUEST: new Error(400),
@@ -37,9 +37,9 @@ describe('Coercion in RestAdapter', function() {
 
   /** *** IMPLEMENTATION DETAILS *****/
 
-  var server; // eslint-disable-line one-var
+  let server; // eslint-disable-line one-var
   function setupRemoteServer(done) {
-    var app = express();
+    const app = express();
     app.use(function(req, res, next) {
       // create the handler for each request
       ctx.remoteObjects.handler('rest').apply(ctx.remoteObjects, arguments);
@@ -62,7 +62,7 @@ describe('Coercion in RestAdapter', function() {
   }
 
   function loadAllTestFiles() {
-    var _describe = global.describe;
+    const _describe = global.describe;
     global.describe = function(name, fn) {
       _describe.call(this, name, function() {
         beforeEach(function() {
@@ -73,16 +73,16 @@ describe('Coercion in RestAdapter', function() {
       });
     };
 
-    var testRoot = path.resolve(__dirname, 'rest-coercion');
-    var testFiles = fs.readdirSync(testRoot);
+    const testRoot = path.resolve(__dirname, 'rest-coercion');
+    let testFiles = fs.readdirSync(testRoot);
     testFiles = testFiles.filter(function(it) {
       return /\.suite\.js$/.test(it) &&
         !!require.extensions[path.extname(it).toLowerCase()];
     });
 
-    for (var ix in testFiles) {
-      var name = testFiles[ix];
-      var fullPath = path.resolve(testRoot, name);
+    for (const ix in testFiles) {
+      const name = testFiles[ix];
+      const fullPath = path.resolve(testRoot, name);
       debug('Loading test suite %s (%s)', name, fullPath);
       require(fullPath)(ctx);
     }
@@ -103,32 +103,32 @@ describe('Coercion in RestAdapter', function() {
 
   function verifyResultOnResponse(err, res, actualValue, expectedResult, done) {
     if (err && !res) return done(err);
-    var actual = res.statusCode === 200 ?
+    let actual = res.statusCode === 200 ?
       {value: actualValue} :
       {error: res.statusCode};
 
-    var actualCtor = actual.value && typeof actual.value === 'object' &&
+    const actualCtor = actual.value && typeof actual.value === 'object' &&
         actual.value.constructor;
     if (actualCtor && actualCtor !== Object && actualCtor.name) {
       actual = {};
       actual[actualCtor.name] = actualValue;
     }
 
-    var expected = expectedResult instanceof Error ?
+    let expected = expectedResult instanceof Error ?
       {error: +expectedResult.message} :
       {value: expectedResult};
 
-    var expectedCtor = expected.value && typeof expected.value === 'object' &&
+    const expectedCtor = expected.value && typeof expected.value === 'object' &&
         expected.value.constructor;
     if (expectedCtor && expectedCtor !== Object && expectedCtor.name) {
       expected = {};
       expected[expectedCtor.name] = expectedResult;
     }
 
-    var suiteName = ctx.runtime.currentSuiteName;
-    var input = ctx.runtime.currentInput;
+    const suiteName = ctx.runtime.currentSuiteName;
+    const input = ctx.runtime.currentInput;
     if (suiteName && input) {
-      var reportData = ctx.runtime._reportData;
+      const reportData = ctx.runtime._reportData;
       if (!reportData[suiteName])
         reportData[suiteName] = {};
       if (input in reportData[suiteName])
@@ -141,12 +141,12 @@ describe('Coercion in RestAdapter', function() {
   }
 
   function writeReport() {
-    var rows = [];
-    var reportData = ctx.runtime._reportData;
-    for (var sn in reportData) { // eslint-disable-line one-var
-      var suite = reportData[sn];
-      for (var tc in suite) { // eslint-disable-line one-var
-        var result = suite[tc];
+    const rows = [];
+    const reportData = ctx.runtime._reportData;
+    for (const sn in reportData) { // eslint-disable-line one-var
+      const suite = reportData[sn];
+      for (const tc in suite) { // eslint-disable-line one-var
+        let result = suite[tc];
         result = result.error ?
           '<HTTP Error ' + result.error + '>' :
           stringify(result.value);
@@ -154,8 +154,8 @@ describe('Coercion in RestAdapter', function() {
       }
     }
 
-    var report = rows.join('\n') + '\n';
-    var filePath = path.resolve(__dirname, 'rest-coercion/report.csv');
+    const report = rows.join('\n') + '\n';
+    const filePath = path.resolve(__dirname, 'rest-coercion/report.csv');
     fs.writeFileSync(filePath, report);
 
     function stringify(value) {

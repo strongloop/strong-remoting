@@ -5,11 +5,11 @@
 
 'use strict';
 
-var debug = require('debug')('test');
-var expect = require('chai').expect;
-var util = require('util');
-var format = util.format;
-var extend = util._extend;
+const debug = require('debug')('test');
+const expect = require('chai').expect;
+const util = require('util');
+const format = util.format;
+const extend = util._extend;
 
 module.exports = function createJsonBodyContext(ctx) {
   return extend(Object.create(ctx), {
@@ -47,16 +47,16 @@ module.exports = function createJsonBodyContext(ctx) {
    */
   function verifyTestCases(argSpec, testCases) {
     testCases.forEach(function(tc) {
-      var requestBody = tc[0];
-      var expectedValue = tc[1];
+      const requestBody = tc[0];
+      let expectedValue = tc[1];
       if (tc.length < 2)
         expectedValue = requestBody;
 
       // supertests sends string data verbatim
-      var niceInput = typeof requestBody === 'string' ?
+      const niceInput = typeof requestBody === 'string' ?
         requestBody : JSON.stringify(requestBody);
-      var niceExpectation = ctx.prettyExpectation(expectedValue);
-      var testName = format('coerces %s to %s', niceInput, niceExpectation);
+      const niceExpectation = ctx.prettyExpectation(expectedValue);
+      const testName = format('coerces %s to %s', niceInput, niceExpectation);
 
       it(testName, function(done) {
         ctx.runtime.currentInput = niceInput;
@@ -66,8 +66,8 @@ module.exports = function createJsonBodyContext(ctx) {
   }
 
   function testCoercion(argSpec, requestBody, expectedResult, done) {
-    var argValue;
-    var testClass = ctx.remoteObjects.exports.testClass = {
+    let argValue;
+    const testClass = ctx.remoteObjects.exports.testClass = {
       testMethod: function(arg, cb) {
         argValue = arg;
         return cb(null, true);

@@ -5,9 +5,9 @@
 
 'use strict';
 
-var urlEncodedContext = require('./_urlencoded.context');
+const urlEncodedContext = require('./_urlencoded.context');
 
-var INVALID_DATE = new Date(NaN);
+const INVALID_DATE = new Date(NaN);
 
 module.exports = function(ctx) {
   suite('query string', urlEncodedContext(ctx, 'qs'));
@@ -15,9 +15,9 @@ module.exports = function(ctx) {
 };
 
 function suite(prefix, ctx) {
-  var EMPTY_QUERY = ctx.EMPTY_QUERY;
-  var ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
-  var verifyTestCases = ctx.verifyTestCases;
+  const EMPTY_QUERY = ctx.EMPTY_QUERY;
+  const ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
+  const verifyTestCases = ctx.verifyTestCases;
 
   describe(prefix + ' - date - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.

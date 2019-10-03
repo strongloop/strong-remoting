@@ -5,7 +5,7 @@
 
 'use strict';
 
-var helper = require('../../../').extend(module.exports);
+const helper = require('../../../').extend(module.exports);
 
 /**
  * Returns a secret message.

@@ -5,26 +5,26 @@
 
 'use strict';
 
-var auth = require('http-auth');
-var crypto = require('crypto');
-var expect = require('./helpers/expect');
-var express = require('express');
-var fmt = require('util').format;
+const auth = require('http-auth');
+const crypto = require('crypto');
+const expect = require('./helpers/expect');
+const express = require('express');
+const fmt = require('util').format;
 
-var RemoteObjects = require('../');
-var User = require('./e2e/fixtures/user');
+const RemoteObjects = require('../');
+const User = require('./e2e/fixtures/user');
 
 describe('support for HTTP Authentication', function() {
-  var server;
-  var remotes = RemoteObjects.create();
+  let server;
+  const remotes = RemoteObjects.create();
   remotes.exports.User = User;
 
   before(function setupServer(done) {
-    var app = express();
-    var basic = auth.basic({realm: 'testing'}, function(u, p, cb) {
+    const app = express();
+    const basic = auth.basic({realm: 'testing'}, function(u, p, cb) {
       cb(u === 'basicuser' && p === 'basicpass');
     });
-    var digest = auth.digest({realm: 'testing'}, function(user, cb) {
+    const digest = auth.digest({realm: 'testing'}, function(user, cb) {
       cb(user === 'digestuser' ? md5('digestuser:testing:digestpass') : null);
     });
     app.use('/noAuth', remotes.handler('rest'));
@@ -74,7 +74,7 @@ describe('support for HTTP Authentication', function() {
 
   describe('remotes.auth', function() {
     it('should be populated from the url', function() {
-      var url = 'http://login:pass@myhost.com';
+      const url = 'http://login:pass@myhost.com';
       remotes.connect(url, 'rest');
       expect(remotes.auth.username).to.eql('login');
       expect(remotes.auth.password).to.eql('pass');
@@ -103,7 +103,7 @@ describe('support for HTTP Authentication', function() {
   }
 
   function invokeRemote(port, path, credentials, callback) {
-    var auth, split;
+    let auth, split;
 
     if (typeof credentials === 'string') {
       split = credentials && credentials.split(':');
@@ -117,9 +117,9 @@ describe('support for HTTP Authentication', function() {
       auth = credentials;
     }
 
-    var url = fmt('http://127.0.0.1:%d%s', port, path);
-    var method = 'User.login';
-    var args = [{username: 'joe', password: 'secret'}];
+    const url = fmt('http://127.0.0.1:%d%s', port, path);
+    const method = 'User.login';
+    const args = [{username: 'joe', password: 'secret'}];
     remotes.connect(url, 'rest');
     remotes.auth = auth;
     remotes.invoke(method, args, callback);
@@ -127,18 +127,19 @@ describe('support for HTTP Authentication', function() {
 });
 
 function md5(str) {
-  var hash = crypto.createHash('md5');
+  const hash = crypto.createHash('md5');
   hash.update(str);
   return hash.digest('hex');
 }
 
 function bearerMiddleware(token) {
   return function(req, res, next) {
-    var authorization = req.headers.authorization;
-    var AUTH_METHOD = 'Bearer';
-    var providedAuthMethodIsBearer = authorization &&
+    const authorization = req.headers.authorization;
+    const AUTH_METHOD = 'Bearer';
+    const providedAuthMethodIsBearer = authorization &&
         authorization.indexOf(AUTH_METHOD) === 0;
-    var providedToken = authorization && authorization.substr((AUTH_METHOD + ' ').length);
+    const providedToken = authorization &&
+      authorization.substr((AUTH_METHOD + ' ').length);
 
     if (!authorization || !providedAuthMethodIsBearer) {
       res.status(401).set('WWW-Authenticate', AUTH_METHOD).end();

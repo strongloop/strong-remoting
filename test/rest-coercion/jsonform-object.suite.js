@@ -5,13 +5,13 @@
 
 'use strict';
 
-var jsonFormContext = require('./_jsonform.context');
+const jsonFormContext = require('./_jsonform.context');
 
 module.exports = function(ctx) {
   ctx = jsonFormContext(ctx);
-  var EMPTY_BODY = ctx.EMPTY_BODY;
-  var ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
-  var verifyTestCases = ctx.verifyTestCases;
+  const EMPTY_BODY = ctx.EMPTY_BODY;
+  const ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
+  const verifyTestCases = ctx.verifyTestCases;
 
   describe('json form - object - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.

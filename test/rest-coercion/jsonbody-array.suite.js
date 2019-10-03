@@ -5,15 +5,15 @@
 
 'use strict';
 
-var GeoPoint = require('loopback-datatype-geopoint');
-var jsonBodyContext = require('./_jsonbody.context');
+const GeoPoint = require('loopback-datatype-geopoint');
+const jsonBodyContext = require('./_jsonbody.context');
 
-var INVALID_DATE = new Date(NaN);
+const INVALID_DATE = new Date(NaN);
 
 module.exports = function(ctx) {
   ctx = jsonBodyContext(ctx);
-  var ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
-  var verifyTestCases = ctx.verifyTestCases;
+  const ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
+  const verifyTestCases = ctx.verifyTestCases;
 
   describe('json body - array - required', function() {
     // The exact type is not important to test how required array parameters

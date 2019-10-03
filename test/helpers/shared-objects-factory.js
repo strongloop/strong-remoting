@@ -26,11 +26,11 @@
 
 'use strict';
 
-var extend = require('util')._extend;
+const extend = require('util')._extend;
 
 exports.createSharedClass = function createSharedClass(config) {
   // create a class that can be remoted
-  var SharedClass = function(id) {
+  const SharedClass = function(id) {
     this.id = id;
   };
   extend(SharedClass, config);

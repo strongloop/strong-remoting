@@ -5,7 +5,7 @@
 
 'use strict';
 
-var express = require('express');
+const express = require('express');
 
 // define a vanilla JavaScript class
 function Dog(name) {
@@ -33,12 +33,12 @@ Dog.prototype.speak.returns = {arg: 'result', type: 'string', root: true};
 Dog.prototype.speak.shared = true;
 
 // create a set of shared classes
-var remotes = require('../').create();
+const remotes = require('../').create();
 
 // expose the Dog class
 remotes.exports.dog = Dog;
 
-var app = express();
+const app = express();
 app.use(remotes.handler('rest'));
 
 app.listen(3000);

@@ -6,13 +6,12 @@
 'use strict';
 
 // This example shows using the helper for a type in a "definitive" fashion.
-var helper = require('../../../').extend(module.exports);
-var clshelper;
+const helper = require('../../../').extend(module.exports);
 
 /**
  * A simple class that contains a name, this time with a custom HTTP contract.
  */
-clshelper = helper.type(ContractClass, {
+const clshelper = helper.type(ContractClass, {
   accepts: [{name: 'name', type: 'string', required: true}],
   http: {path: '/:name'},
 });

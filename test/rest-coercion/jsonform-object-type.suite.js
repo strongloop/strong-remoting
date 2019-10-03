@@ -5,15 +5,15 @@
 
 'use strict';
 
-var jsonFormContext = require('./_jsonform.context');
-var customClassContext = require('./_custom-class.context.js');
+const jsonFormContext = require('./_jsonform.context');
+const customClassContext = require('./_custom-class.context.js');
 
 module.exports = function(ctx) {
   ctx = customClassContext(jsonFormContext(ctx));
-  var EMPTY_BODY = ctx.EMPTY_BODY;
-  var ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
-  var CustomClass = ctx.CustomClass;
-  var verifyTestCases = ctx.verifyTestCases;
+  const EMPTY_BODY = ctx.EMPTY_BODY;
+  const ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
+  const CustomClass = ctx.CustomClass;
+  const verifyTestCases = ctx.verifyTestCases;
 
   describe('json form - CustomClass - required', function() {
     // See verifyTestCases' jsdoc for details about the format of test cases.

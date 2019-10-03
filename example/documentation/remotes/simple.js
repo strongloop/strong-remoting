@@ -8,7 +8,7 @@
 // This helper adds methods to a module that we assume will be added to the remotes.
 // TODO(schoon) - Make this _the_ API, not a "helper".
 // TODO(schoon) - Document EVERYTHING
-var helper = require('../../../').extend(module.exports);
+const helper = require('../../../').extend(module.exports);
 
 /**
  * Returns a secret message.

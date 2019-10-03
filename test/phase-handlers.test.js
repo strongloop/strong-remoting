@@ -5,16 +5,16 @@
 
 'use strict';
 
-var expect = require('chai').expect;
-var express = require('express');
-var RemoteObjects = require('../');
-var User = require('./e2e/fixtures/user');
+const expect = require('chai').expect;
+const express = require('express');
+const RemoteObjects = require('../');
+const User = require('./e2e/fixtures/user');
 
 describe('phase handlers', function() {
-  var server, remotes, clientRemotes;
+  let server, remotes, clientRemotes;
 
   beforeEach(function setupServer(done) {
-    var app = express();
+    const app = express();
     remotes = RemoteObjects.create();
     remotes.exports.User = User;
     app.use(function(req, res, next) {
@@ -27,7 +27,7 @@ describe('phase handlers', function() {
   beforeEach(function setupClient() {
     clientRemotes = RemoteObjects.create();
     clientRemotes.exports.User = User;
-    var url = 'http://127.0.0.1:' + server.address().port;
+    const url = 'http://127.0.0.1:' + server.address().port;
     clientRemotes.connect(url, 'rest');
   });
 
@@ -40,13 +40,13 @@ describe('phase handlers', function() {
   });
 
   it('invokes phases in the correct order', function(done) {
-    var phasesRun = [];
-    var pushNameAndNext = function(name) {
+    const phasesRun = [];
+    const pushNameAndNext = function(name) {
       return function(ctx, next) { phasesRun.push(name); next(); };
     };
 
     remotes.phases.find('auth').use(pushNameAndNext('phaseHandler-auth'));
-    var invokePhase = remotes.phases.find('invoke');
+    const invokePhase = remotes.phases.find('invoke');
     invokePhase.before(pushNameAndNext('phaseHandler-invoke:before'));
     invokePhase.use(pushNameAndNext('phaseHandler-invoke:use'));
     invokePhase.after(pushNameAndNext('phaseHandler-invoke:after'));
@@ -75,7 +75,7 @@ describe('phase handlers', function() {
   });
 
   describe('registerPhaseHandler', function() {
-    var handlersRun;
+    let handlersRun;
 
     beforeEach(function() {
       User.static = function(cb) { cb(); };
@@ -132,7 +132,7 @@ describe('phase handlers', function() {
   });
 
   function invokeRemote(method, callback) {
-    var args = [];
+    const args = [];
     clientRemotes.invoke(method, args, callback);
   }
 });

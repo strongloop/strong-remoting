@@ -5,15 +5,15 @@
 
 'use strict';
 
-var jsonFormContext = require('./_jsonform.context');
+const jsonFormContext = require('./_jsonform.context');
 
-var INVALID_DATE = new Date(NaN);
+const INVALID_DATE = new Date(NaN);
 
 module.exports = function(ctx) {
   ctx = jsonFormContext(ctx);
-  var EMPTY_BODY = ctx.EMPTY_BODY;
-  var ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
-  var verifyTestCases = ctx.verifyTestCases;
+  const EMPTY_BODY = ctx.EMPTY_BODY;
+  const ERROR_BAD_REQUEST = ctx.ERROR_BAD_REQUEST;
+  const verifyTestCases = ctx.verifyTestCases;
 
   describe('json form - array - required', function() {
     // The exact type is not important to test how required array parameters

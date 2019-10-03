@@ -5,13 +5,13 @@
 
 'use strict';
 
-var g = require('strong-globalize')();
-var http = require('http');
-var remotes = require('./remotes');
-var meta = require('../../ext/meta');
-var swagger = require('../../ext/swagger');
-var port = process.argv[2] || 3000;
-var handler, adapter;
+const g = require('strong-globalize')();
+const http = require('http');
+const remotes = require('./remotes');
+const meta = require('../../ext/meta');
+const swagger = require('../../ext/swagger');
+const port = process.argv[2] || 3000;
+let handler, adapter;
 
 // The installation order sets which routes are captured by Swagger.
 swagger(remotes, {

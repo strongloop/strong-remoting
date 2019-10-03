@@ -5,12 +5,12 @@
 
 'use strict';
 
-var g = require('strong-globalize')();
+const g = require('strong-globalize')();
 // create a set of shared classes
-var remotes = require('../').create();
+const remotes = require('../').create();
 
 // expose a simple object
-var user = remotes.exports.user = {
+const user = remotes.exports.user = {
   greet: function(fn) {
     fn(null, 'hello, world!');
   },
@@ -62,7 +62,7 @@ remotes.before('user.*', function(ctx, next) {
 
 // do something before a dog instance method
 remotes.before('dog.prototype.*', function(ctx, next) {
-  var dog = this;
+  const dog = this;
   g.log('calling a method on %s', dog.name);
   next();
 });

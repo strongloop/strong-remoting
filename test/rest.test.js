@@ -5,25 +5,25 @@
 
 'use strict';
 
-var assert = require('assert');
-var extend = require('util')._extend;
-var inherits = require('util').inherits;
-var RemoteObjects = require('../');
-var SharedClass = RemoteObjects.SharedClass;
-var express = require('express');
-var request = require('supertest');
-var expect = require('./helpers/expect');
-var factory = require('./helpers/shared-objects-factory.js');
-var Promise = global.Promise || require('bluebird');
-var Readable = require('stream').Readable;
+const assert = require('assert');
+const extend = require('util')._extend;
+const inherits = require('util').inherits;
+const RemoteObjects = require('../');
+const SharedClass = RemoteObjects.SharedClass;
+const express = require('express');
+const request = require('supertest');
+const expect = require('./helpers/expect');
+const factory = require('./helpers/shared-objects-factory.js');
+const Promise = global.Promise || require('bluebird');
+const Readable = require('stream').Readable;
 
-var ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
-var TEST_ERROR = new Error('expected test error');
+const ACCEPT_XML_OR_ANY = 'application/xml,*/*;q=0.8';
+const TEST_ERROR = new Error('expected test error');
 
 describe('strong-remoting-rest', function() {
-  var app, appSupportingJsonOnly, server, objects, remotes, lastRequest, lastResponse,
+  let app, appSupportingJsonOnly, server, objects, remotes, lastRequest, lastResponse,
     restHandlerOptions;
-  var adapterName = 'rest';
+  const adapterName = 'rest';
 
   before(function(done) {
     app = express();
@@ -42,8 +42,8 @@ describe('strong-remoting-rest', function() {
     appSupportingJsonOnly = express();
     appSupportingJsonOnly.use(function(req, res, next) {
       // create the handler for each request
-      var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
-      var opts = {supportedTypes: supportedTypes};
+      const supportedTypes = ['json', 'application/javascript', 'text/javascript'];
+      const opts = {supportedTypes: supportedTypes};
       objects.handler(adapterName, opts).apply(objects, arguments);
     });
     server = appSupportingJsonOnly.listen(done);
@@ -99,7 +99,7 @@ describe('strong-remoting-rest', function() {
   describe('remoting options', function() {
     // The 1kb limit is set by RemoteObjects.create({json: {limit: '1kb'}});
     it('should reject json payload larger than 1kb', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function greet(msg, cb) {
           cb(null, msg);
         },
@@ -110,8 +110,8 @@ describe('strong-remoting-rest', function() {
       );
 
       // Build an object that is larger than 1kb
-      var name = '';
-      for (var i = 0; i < 2048; i++) {
+      let name = '';
+      for (let i = 0; i < 2048; i++) {
         name += '11111111111';
       }
 
@@ -123,8 +123,8 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow custom error handlers', function(done) {
-      var called = false;
-      var method = givenSharedStaticMethod(
+      let called = false;
+      const method = givenSharedStaticMethod(
         function(cb) {
           cb(new Error('foo'));
         }
@@ -147,7 +147,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should exclude stack traces by default', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) { cb(new Error('test-error')); }
       );
 
@@ -175,7 +175,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should turn off method-not-found handler', function(done) {
-      var method = givenSharedStaticMethod();
+      const method = givenSharedStaticMethod();
 
       objects.options.rest = {handleUnknownPaths: false};
       app.use(function(req, res, next) {
@@ -214,10 +214,10 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should configure custom REST content types', function(done) {
-      var supportedTypes = ['json', 'application/javascript', 'text/javascript'];
+      const supportedTypes = ['json', 'application/javascript', 'text/javascript'];
       objects.options.rest = {supportedTypes: supportedTypes};
 
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) {
           cb(null, {key: 'value'});
         },
@@ -226,7 +226,7 @@ describe('strong-remoting-rest', function() {
         }
       );
 
-      var browserAcceptHeader = [
+      const browserAcceptHeader = [
         'text/html',
         'application/xhtml+xml',
         'application/xml;q=0.9',
@@ -243,7 +243,7 @@ describe('strong-remoting-rest', function() {
     it('should disable XML content types by default', function(done) {
       delete objects.options.rest;
 
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) { cb(null, {key: 'value'}); },
         {returns: {arg: 'result', type: 'object'}}
       );
@@ -258,7 +258,7 @@ describe('strong-remoting-rest', function() {
     it('should enable XML types via `options.rest.xml`', function(done) {
       objects.options.rest = {xml: true};
 
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(value, cb) { cb(null, {key: value}); },
         {
           accepts: {arg: 'value', type: 'string'},
@@ -285,7 +285,7 @@ describe('strong-remoting-rest', function() {
     it('should enable XML via `options.rest.supportedTypes`', function(done) {
       objects.options.rest = {supportedTypes: ['application/xml']};
 
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) { cb(null, 'value'); },
         {returns: {arg: 'result', type: 'object'}}
       );
@@ -300,7 +300,7 @@ describe('strong-remoting-rest', function() {
     it('should treat application/vnd.api+json accept header correctly', function(done) {
       objects.options.rest = {supportedTypes: ['application/vnd.api+json']};
 
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) { cb(null, {value: 'value'}); },
         {returns: {arg: 'result', type: 'object'}}
       );
@@ -318,12 +318,12 @@ describe('strong-remoting-rest', function() {
   });
 
   describe('CORS', function() {
-    var method;
+    let method;
     beforeEach(function() {
       method = givenSharedStaticMethod(
         function greet(person, cb) {
           if (person === 'error') {
-            var err = new Error('error');
+            const err = new Error('error');
             err.statusCode = 400;
             cb(err);
           } else {
@@ -378,7 +378,7 @@ describe('strong-remoting-rest', function() {
     beforeEach(enableXmlSupport);
 
     it('should work', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function greet(msg, cb) {
           cb(null, msg);
         },
@@ -393,7 +393,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should honor Accept: header', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function greet2(msg, cb) {
           cb(null, msg);
         },
@@ -409,7 +409,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should handle returns of array', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function greet3(msg, cb) {
           cb(null, [msg]);
         },
@@ -425,7 +425,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should handle returns of array to XML', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function greet4(msg, cb) {
           cb(null, [msg]);
         },
@@ -441,7 +441,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow arguments in the path', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(a, b, cb) {
           cb(null, a + b);
         },
@@ -460,7 +460,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow arguments in the query', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(a, b, cb) {
           cb(null, a + b);
         },
@@ -479,7 +479,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow string[] arg in the query', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(a, b, cb) {
           cb(null, b.join('') + a);
         },
@@ -499,7 +499,7 @@ describe('strong-remoting-rest', function() {
 
     it('should allow string[] arg in the query with stringified value',
       function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, b, cb) {
             cb(null, b.join('') + a);
           },
@@ -518,7 +518,7 @@ describe('strong-remoting-rest', function() {
       });
 
     it('should allow custom argument functions', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(a, b, cb) {
           cb(null, a + b);
         },
@@ -539,8 +539,8 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should pass undefined if the argument is not supplied', function(done) {
-      var called = false;
-      var method = givenSharedStaticMethod(
+      let called = false;
+      const method = givenSharedStaticMethod(
         function bar(a, cb) {
           called = true;
           assert(a === undefined, 'a should be undefined');
@@ -560,7 +560,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow arguments in the body', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(a, cb) {
           cb(null, a);
         },
@@ -585,7 +585,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow arguments in the body with date', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(a, cb) {
           cb(null, a);
         },
@@ -598,7 +598,7 @@ describe('strong-remoting-rest', function() {
         }
       );
 
-      var data = {date: {$type: 'date', $data: new Date()}};
+      const data = {date: {$type: 'date', $data: new Date()}};
       request(app).post(method.classUrl)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
@@ -611,7 +611,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow arguments in the form', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(a, b, cb) {
           cb(null, a + b);
         },
@@ -634,7 +634,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow arguments in the header', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(a, b, cb) {
           cb(null, a + b);
         },
@@ -660,7 +660,7 @@ describe('strong-remoting-rest', function() {
 
     it('should allow arguments in the header without http source',
       function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, b, cb) {
             cb(null, a + b);
           },
@@ -685,7 +685,7 @@ describe('strong-remoting-rest', function() {
       });
 
     it('should allow arguments from http req and res', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(req, res, cb) {
           res.status(200).send(req.body);
         },
@@ -710,7 +710,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow arguments from http context', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(ctx, cb) {
           ctx.res.status(200).send(ctx.req.body);
         },
@@ -734,7 +734,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should respond with 204 if returns is not defined', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) { cb(null, 'value-to-ignore'); }
       );
 
@@ -743,7 +743,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should preserve non-200 status when responding with no content', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(ctx, cb) {
           ctx.res.status(302);
           cb();
@@ -766,7 +766,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should accept custom content-type header if respond with 204', function(done) {
-      var method = givenSharedStaticMethod();
+      const method = givenSharedStaticMethod();
       objects.before(method.name, function(ctx, next) {
         ctx.res.set('Content-Type',
           'application/json; charset=utf-8; profile=http://example.org/');
@@ -781,7 +781,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should respond with named results if returns has multiple args', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(a, b, cb) {
           cb(null, a, b);
         },
@@ -802,7 +802,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should remove any X-Powered-By header to LoopBack', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) { cb(null, 'value-to-ignore'); }
       );
 
@@ -821,7 +821,7 @@ describe('strong-remoting-rest', function() {
         },
       };
 
-      var fn = remotes.foo.bar;
+      const fn = remotes.foo.bar;
 
       fn.shared = true;
       fn.accepts = [
@@ -840,7 +840,7 @@ describe('strong-remoting-rest', function() {
         },
       };
 
-      var fn = remotes.foo.bar;
+      const fn = remotes.foo.bar;
 
       fn.shared = true;
       fn.accepts = [
@@ -859,7 +859,7 @@ describe('strong-remoting-rest', function() {
         },
       };
 
-      var fn = remotes.foo.bar;
+      const fn = remotes.foo.bar;
 
       fn.shared = true;
       fn.accepts = [
@@ -878,7 +878,7 @@ describe('strong-remoting-rest', function() {
         },
       };
 
-      var fn = remotes.foo.bar;
+      const fn = remotes.foo.bar;
 
       fn.shared = true;
       fn.accepts = [
@@ -901,7 +901,7 @@ describe('strong-remoting-rest', function() {
         },
       };
 
-      var fn = remotes.foo.bar;
+      const fn = remotes.foo.bar;
 
       fn.shared = true;
       fn.accepts = [
@@ -925,7 +925,7 @@ describe('strong-remoting-rest', function() {
           },
         };
 
-        var fn = remotes.foo.bar;
+        const fn = remotes.foo.bar;
 
         fn.shared = true;
         fn.accepts = [
@@ -942,7 +942,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('supports target type [integer]', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function(arg, cb) {
             cb(null, {value: arg});
           },
@@ -960,7 +960,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('supports return type [integer]', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function(arg, cb) {
             cb(null, [arg[0], arg[1]]);
           },
@@ -985,7 +985,7 @@ describe('strong-remoting-rest', function() {
         },
       };
 
-      var fn = remotes.foo.bar;
+      const fn = remotes.foo.bar;
 
       fn.shared = true;
       fn.accepts = [
@@ -1008,7 +1008,7 @@ describe('strong-remoting-rest', function() {
         },
       };
 
-      var fn = remotes.foo.bar;
+      const fn = remotes.foo.bar;
 
       fn.shared = true;
       fn.accepts = [
@@ -1024,7 +1024,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should not flatten arrays for target type "any"', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(arg, cb) { cb(null, {value: arg}); },
         {
           accepts: {arg: 'arg', type: 'any'},
@@ -1040,7 +1040,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should support taget type [any]', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(arg, cb) { cb(null, {value: arg}); },
         {
           accepts: {arg: 'arg', type: ['any']},
@@ -1056,7 +1056,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should support taget type `array` - of string', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(arg, cb) { cb(null, {value: arg}); },
         {
           accepts: {arg: 'arg', type: 'array'},
@@ -1072,7 +1072,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should support taget type `array` - of number', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(arg, cb) { cb(null, {value: arg}); },
         {
           accepts: {arg: 'arg', type: 'array'},
@@ -1088,7 +1088,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should support taget type `array` - of object', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(arg, cb) { cb(null, {value: arg}); },
         {
           accepts: {arg: 'arg', type: 'array'},
@@ -1110,7 +1110,7 @@ describe('strong-remoting-rest', function() {
         },
       };
 
-      var fn = remotes.foo.bar;
+      const fn = remotes.foo.bar;
 
       fn.shared = true;
       fn.accepts = [
@@ -1129,7 +1129,7 @@ describe('strong-remoting-rest', function() {
 
     it('should split array string when configured', function(done) {
       objects.options.rest = {arrayItemDelimiters: [',', '|']};
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(a, cb) { cb(null, a); },
         {
           accepts: {arg: 'a', type: ['number']},
@@ -1143,7 +1143,7 @@ describe('strong-remoting-rest', function() {
 
     it('should not create empty string array with empty string arg', function(done) {
       objects.options.rest = {arrayItemDelimiters: [',', '|']};
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(a, cb) { cb(null, a); },
         {
           accepts: {arg: 'a', type: ['number']},
@@ -1157,7 +1157,7 @@ describe('strong-remoting-rest', function() {
 
     it('should still support JSON arrays with arrayItemDelimiters', function(done) {
       objects.options.rest = {arrayItemDelimiters: [',', '|']};
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(a, cb) { cb(null, a); },
         {
           accepts: {arg: 'a', type: ['number']},
@@ -1170,9 +1170,9 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should call rest hooks', function(done) {
-      var hooksCalled = [];
+      const hooksCalled = [];
 
-      var method = givenSharedStaticMethod({
+      const method = givenSharedStaticMethod({
         rest: {
           before: createHook('beforeRest'),
           after: createHook('afterRest'),
@@ -1201,7 +1201,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should respect supported types', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) {
           cb(null, {key: 'value'});
         },
@@ -1220,7 +1220,7 @@ describe('strong-remoting-rest', function() {
       beforeEach(enableXmlSupport);
 
       it('should produce xml from json objects', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, cb) {
             cb(null, a);
           },
@@ -1246,7 +1246,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should produce xml from json array', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(cb) {
             cb(null, [1, 2, 3]);
           },
@@ -1270,9 +1270,9 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should produce xml from json objects with toJSON()', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, cb) {
-            var result = a;
+            const result = a;
             a.toJSON = function() {
               return {
                 foo: a.y,
@@ -1304,7 +1304,7 @@ describe('strong-remoting-rest', function() {
 
       it('should produce xml from json objects with toJSON() inside an array',
         function(done) {
-          var method = givenSharedStaticMethod(
+          const method = givenSharedStaticMethod(
             function bar(a, cb) {
               a.toJSON = function() {
                 return {
@@ -1338,7 +1338,7 @@ describe('strong-remoting-rest', function() {
         });
 
       it('should allow customized xml root element', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(cb) {
             cb(null, {a: 1, b: 2});
           },
@@ -1368,7 +1368,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow xml declaration to be disabled', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(cb) {
             cb(null, {a: 1, b: 2});
           },
@@ -1397,9 +1397,9 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow string results to output as xml', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(cb) {
-            var stringResult = 'a quick brown fox jumps over the lazy dog';
+            const stringResult = 'a quick brown fox jumps over the lazy dog';
             cb(null, stringResult);
           },
           {
@@ -1426,9 +1426,9 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should handle UTF-8 & special & reserved characters', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(cb) {
-            var stringA = 'foo\xC1\xE1\u0102\u03A9asd><=$~!@#$%^&*()-_=+/.,;\'"[]{}?';
+            const stringA = 'foo\xC1\xE1\u0102\u03A9asd><=$~!@#$%^&*()-_=+/.,;\'"[]{}?';
             cb(null, {a: stringA});
           },
           {
@@ -1456,9 +1456,9 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should produce xml from json objects with toXML()', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, cb) {
-            var result = a;
+            const result = a;
             a.toXML = function() {
               return '<?xml version="1.0" encoding="UTF-8"?>' +
                 '<root><x>10</x></root>';
@@ -1489,7 +1489,7 @@ describe('strong-remoting-rest', function() {
 
     describe('_format support', function() {
       it('should produce xml if _format is xml', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, cb) {
             cb(null, a);
           },
@@ -1515,7 +1515,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should produce json if _format is json', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, cb) {
             cb(null, a);
           },
@@ -1540,7 +1540,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should return a 400 if _format array', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, cb) {
             cb(null, a);
           },
@@ -1572,7 +1572,7 @@ describe('strong-remoting-rest', function() {
           },
         };
 
-        var fn = remotes.shouldThrow.bar;
+        const fn = remotes.shouldThrow.bar;
         fn.shared = true;
 
         json('get', '/shouldThrow/bar?a=1&b=2')
@@ -1581,8 +1581,8 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should return 500 if an array of errors is thrown', function(done) {
-        var testError = new Error('expected test error');
-        var errArray = [testError, testError];
+        const testError = new Error('expected test error');
+        const errArray = [testError, testError];
 
         function method(error) {
           return givenSharedStaticMethod(function(cb) {
@@ -1595,14 +1595,14 @@ describe('strong-remoting-rest', function() {
           .expect(500)
           .end(function(err, res) {
             if (err) return done(err);
-            var expectedDetail = res.body.error;
+            const expectedDetail = res.body.error;
 
             request(app).get(method(errArray).url)
               .set('Accept', 'application/json')
               .expect(500)
               .end(function(err, res) {
                 if (err) return done(err);
-                var error = res.body.error;
+                const error = res.body.error;
                 expect(error).to.have.property('message').that.match(/multiple errors/);
                 expect(error).to.include.keys('details');
                 expect(error.details).to.deep.include(expectedDetail);
@@ -1618,7 +1618,7 @@ describe('strong-remoting-rest', function() {
           },
         };
 
-        var fn = remotes.shouldThrow.bar;
+        const fn = remotes.shouldThrow.bar;
         fn.shared = true;
 
         json('get', '/shouldThrow/bar?a=1&b=2')
@@ -1628,7 +1628,7 @@ describe('strong-remoting-rest', function() {
 
       it('should return 500 for unhandled errors thrown from before hooks',
         function(done) {
-          var method = givenSharedStaticMethod();
+          const method = givenSharedStaticMethod();
 
           objects.before(method.name, function(ctx, next) {
             process.nextTick(next);
@@ -1646,7 +1646,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should return 500 when method returns an error', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) {
           cb(new Error('test-error'));
         }
@@ -1661,7 +1661,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should return 500 when "before" returns an error', function(done) {
-      var method = givenSharedStaticMethod();
+      const method = givenSharedStaticMethod();
       objects.before(method.name, function(ctx, next) {
         next(new Error('test-error'));
       });
@@ -1672,7 +1672,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should return 500 when "after" returns an error', function(done) {
-      var method = givenSharedStaticMethod();
+      const method = givenSharedStaticMethod();
       objects.after(method.name, function(ctx, next) {
         next(new Error('test-error'));
       });
@@ -1683,7 +1683,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should return 400 when a required arg is missing', function(done) {
-      var method = givenSharedPrototypeMethod(
+      const method = givenSharedPrototypeMethod(
         function(a, cb) {
           cb();
         },
@@ -1715,7 +1715,7 @@ describe('strong-remoting-rest', function() {
           },
         };
 
-        var fn = remotes.shouldThrow.bar;
+        const fn = remotes.shouldThrow.bar;
         fn.shared = true;
 
         json('get', '/shouldThrow/bar?a=1&b=2')
@@ -1730,7 +1730,7 @@ describe('strong-remoting-rest', function() {
           },
         };
 
-        var fn = remotes.shouldThrow.bar;
+        const fn = remotes.shouldThrow.bar;
         fn.shared = true;
 
         json('get', '/shouldThrow/bar?a=1&b=2')
@@ -1740,7 +1740,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should return 500 when method returns an error', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) {
           cb(new Error('test-error'));
         }
@@ -1757,7 +1757,7 @@ describe('strong-remoting-rest', function() {
 
   describe('call of prototype method', function() {
     it('should work', function(done) {
-      var method = givenSharedPrototypeMethod(
+      const method = givenSharedPrototypeMethod(
         function greet(msg, cb) {
           cb(null, this.id + ':' + msg);
         },
@@ -1772,7 +1772,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should have the correct scope', function(done) {
-      var method = givenSharedPrototypeMethod(
+      const method = givenSharedPrototypeMethod(
         function greet(msg, cb) {
           assert.equal(this.constructor, method.ctor);
           cb(null, this.id + ':' + msg);
@@ -1788,7 +1788,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow arguments in the path', function(done) {
-      var method = givenSharedPrototypeMethod(
+      const method = givenSharedPrototypeMethod(
         function bar(a, b, cb) {
           cb(null, this.id + ':' + (a + b));
         },
@@ -1807,7 +1807,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow jsonp requests', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(a, cb) {
           cb(null, a);
         },
@@ -1828,7 +1828,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow jsonp requests with null response', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function bar(a, cb) {
           cb(null, null);
         },
@@ -1848,7 +1848,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should allow arguments in the query', function(done) {
-      var method = givenSharedPrototypeMethod(
+      const method = givenSharedPrototypeMethod(
         function bar(a, b, cb) {
           cb(null, this.id + ':' + (a + b));
         },
@@ -1867,7 +1867,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should support methods on `/` path', function(done) {
-      var method = givenSharedPrototypeMethod({
+      const method = givenSharedPrototypeMethod({
         http: {path: '/', verb: 'get'},
       });
 
@@ -1877,7 +1877,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should respond with 204 if returns is not defined', function(done) {
-      var method = givenSharedPrototypeMethod(
+      const method = givenSharedPrototypeMethod(
         function(cb) { cb(null, 'value-to-ignore'); }
       );
 
@@ -1886,7 +1886,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should respond with named results if returns has multiple args', function(done) {
-      var method = givenSharedPrototypeMethod(
+      const method = givenSharedPrototypeMethod(
         function(a, b, cb) {
           cb(null, this.id, a, b);
         },
@@ -1908,7 +1908,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should respect supported types', function(done) {
-      var method = givenSharedPrototypeMethod(
+      const method = givenSharedPrototypeMethod(
         function(cb) {
           cb(null, {key: 'value'});
         },
@@ -1924,7 +1924,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should return 500 when method returns an error', function(done) {
-      var method = givenSharedPrototypeMethod(
+      const method = givenSharedPrototypeMethod(
         function(cb) {
           cb(new Error('test-error'));
         }
@@ -1936,7 +1936,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should return 500 when "before" returns an error', function(done) {
-      var method = givenSharedPrototypeMethod();
+      const method = givenSharedPrototypeMethod();
       objects.before(method.name, function(ctx, next) {
         next(new Error('test-error'));
       });
@@ -1947,7 +1947,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should return 500 when "after" returns an error', function(done) {
-      var method = givenSharedPrototypeMethod();
+      const method = givenSharedPrototypeMethod();
       objects.after(method.name, function(ctx, next) {
         next(new Error('test-error'));
       });
@@ -1958,8 +1958,8 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should resolve promise returned by a hook', function(done) {
-      var method = givenSharedPrototypeMethod();
-      var hooksCalled = [];
+      const method = givenSharedPrototypeMethod();
+      const hooksCalled = [];
       objects.before('**', function(ctx) {
         hooksCalled.push('first');
         return Promise.resolve();
@@ -1977,8 +1977,8 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should handle rejected promise returned by a hook', function(done) {
-      var testError = new Error('expected test error');
-      var method = givenSharedPrototypeMethod();
+      const testError = new Error('expected test error');
+      const method = givenSharedPrototypeMethod();
       objects.after('**', function(ctx) {
         return new Promise(function(resolve, reject) {
           reject(testError);
@@ -1994,7 +1994,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should set "req.remotingContext"', function(done) {
-      var method = givenSharedPrototypeMethod();
+      const method = givenSharedPrototypeMethod();
       json(method.url).end(function(err) {
         if (err) return done(err);
         expect(lastRequest)
@@ -2004,7 +2004,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should set "remotingContext.ctorArgs"', function(done) {
-      var method = givenSharedPrototypeMethod();
+      const method = givenSharedPrototypeMethod();
       json(method.getUrlForId(1234)).end(function(err) {
         if (err) return done(err);
         expect(lastRequest)
@@ -2015,15 +2015,15 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should prioritise auth errors over sharedCtor errors', function(done) {
-      var method = givenSharedPrototypeMethod();
+      const method = givenSharedPrototypeMethod();
       method.ctor._sharedCtor = function(ctx, next) {
-        var err = new Error('Not Found');
+        const err = new Error('Not Found');
         err.statusCode = 404;
         next(err);
       };
 
       objects.authorization = function(ctx, next) {
-        var err = new Error('Not Authorized');
+        const err = new Error('Not Authorized');
         err.statusCode = 401;
         next(err);
       };
@@ -2037,7 +2037,7 @@ describe('strong-remoting-rest', function() {
   describe('status codes', function() {
     describe('using a custom status code', function() {
       it('returns a custom status code', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function fn(cb) {
             cb();
           },
@@ -2049,7 +2049,7 @@ describe('strong-remoting-rest', function() {
           .expect(201, done);
       });
       it('returns a custom error status code', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function fn(cb) {
             cb(new Error('test error'));
           },
@@ -2061,9 +2061,9 @@ describe('strong-remoting-rest', function() {
           .expect(508, done);
       });
       it('returns a custom error status code (using the err object)', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function fn(cb) {
-            var err = new Error('test error');
+            const err = new Error('test error');
             err.status = 555;
             cb(err);
           },
@@ -2075,8 +2075,8 @@ describe('strong-remoting-rest', function() {
           .expect(555, done);
       });
       it('returns a custom status code from a callback arg', function(done) {
-        var exampleStatus = 222;
-        var method = givenSharedStaticMethod(
+        const exampleStatus = 222;
+        const method = givenSharedStaticMethod(
           function fn(status, cb) {
             cb(null, status);
           },
@@ -2092,9 +2092,9 @@ describe('strong-remoting-rest', function() {
           .expect(exampleStatus, done);
       });
       it('returns a custom status code from a promise returned value', function(done) {
-        var exampleStatus = 222;
-        var sentBody = {eiste: 'ligo', kopries: true};
-        var method = givenSharedStaticMethod(
+        const exampleStatus = 222;
+        const sentBody = {eiste: 'ligo', kopries: true};
+        const method = givenSharedStaticMethod(
           function fn() {
             return Promise.resolve([exampleStatus, sentBody]);
           },
@@ -2119,7 +2119,7 @@ describe('strong-remoting-rest', function() {
       });
     });
     it('returns 404 for unknown method of a shared class', function(done) {
-      var classUrl = givenSharedStaticMethod().classUrl;
+      const classUrl = givenSharedStaticMethod().classUrl;
 
       json(classUrl + '/unknown-method')
         .expect(404, done);
@@ -2134,8 +2134,8 @@ describe('strong-remoting-rest', function() {
 
   describe('result args as headers', function() {
     it('sets the header using the callback arg', function(done) {
-      var A_STRING_VALUE = 'foobar';
-      var method = givenSharedStaticMethod(
+      const A_STRING_VALUE = 'foobar';
+      const method = givenSharedStaticMethod(
         function fn(input, cb) {
           cb(null, input, input);
         },
@@ -2155,8 +2155,8 @@ describe('strong-remoting-rest', function() {
     });
 
     it('sets the header using the callback arg - root arg', function(done) {
-      var A_STRING_VALUE = 'foobar';
-      var method = givenSharedStaticMethod(
+      const A_STRING_VALUE = 'foobar';
+      const method = givenSharedStaticMethod(
         function fn(input, cb) {
           cb(null, {value: input}, input);
         },
@@ -2176,8 +2176,8 @@ describe('strong-remoting-rest', function() {
     });
 
     it('sets the custom header using the callback arg', function(done) {
-      var val = 'foobar';
-      var method = givenSharedStaticMethod(
+      const val = 'foobar';
+      const method = givenSharedStaticMethod(
         function fn(input, cb) {
           cb(null, input);
         },
@@ -2197,7 +2197,7 @@ describe('strong-remoting-rest', function() {
   });
 
   describe('returns type "file"', function() {
-    var METHOD_SIGNATURE = {
+    const METHOD_SIGNATURE = {
       returns: [
         {arg: 'body', type: 'file', root: true},
         {arg: 'Content-Type', type: 'string', http: {target: 'header'}},
@@ -2205,7 +2205,7 @@ describe('strong-remoting-rest', function() {
     };
 
     it('should send back Buffer body', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) { cb(null, new Buffer('some-text'), 'text/plain'); },
         METHOD_SIGNATURE
       );
@@ -2218,7 +2218,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should send back String body', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) { cb(null, 'some-text', 'text/plain'); },
         METHOD_SIGNATURE
       );
@@ -2231,9 +2231,9 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should send back Stream body', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) {
-          var stream = new Readable();
+          const stream = new Readable();
           stream.push('some-text');
           stream.push(null); // EOF
           cb(null, stream, 'text/plain');
@@ -2249,7 +2249,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should fail for unsupported value type', function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(cb) { cb(null, [1, 2]); },
         METHOD_SIGNATURE
       );
@@ -2276,20 +2276,20 @@ describe('strong-remoting-rest', function() {
     }
     inherits(TestError, Error);
 
-    var method = givenSharedStaticMethod(function(cb) { cb(new TestError()); });
+    const method = givenSharedStaticMethod(function(cb) { cb(new TestError()); });
 
     json(method.url)
       .expect(444)
       .end(function(err, result) {
         if (err) done(err);
         expect(result.body).to.have.keys(['error']);
-        var expected = {
+        const expected = {
           name: 'TestError',
           status: 444,
           message: 'a test error',
           aCustomProperty: 'a-custom-value',
         };
-        for (var prop in expected) {
+        for (const prop in expected) {
           expect(result.body.error[prop], prop).to.equal(expected[prop]);
         }
         expect(result.body.error.stack, 'stack').to.contain(__filename);
@@ -2298,7 +2298,7 @@ describe('strong-remoting-rest', function() {
   });
 
   it('coerces array values passed to a string argument', function(done) {
-    var method = givenSharedStaticMethod(
+    const method = givenSharedStaticMethod(
       function(arg, cb) { cb(null, arg); },
       {
         accepts: {arg: 'arg', type: 'string'},
@@ -2316,7 +2316,7 @@ describe('strong-remoting-rest', function() {
   });
 
   it('detects json type with charset definition', function(done) {
-    var method = givenSharedStaticMethod(
+    const method = givenSharedStaticMethod(
       function(arg, cb) { cb(null, arg); },
       {
         accepts: {arg: 'arg', type: 'any', http: {source: 'form'}},
@@ -2337,7 +2337,7 @@ describe('strong-remoting-rest', function() {
   });
 
   it('rejects multi-item array passed to a number argument', function(done) {
-    var method = givenSharedStaticMethod(
+    const method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
       {accepts: {arg: 'arg', type: 'number'}}
     );
@@ -2349,7 +2349,7 @@ describe('strong-remoting-rest', function() {
 
   it('rejects multi-item array passed to an integer argument',
     function(done) {
-      var method = givenSharedStaticMethod(
+      const method = givenSharedStaticMethod(
         function(arg, cb) { cb(); },
         {accepts: {arg: 'arg', type: 'integer'}}
       );
@@ -2360,7 +2360,7 @@ describe('strong-remoting-rest', function() {
     });
 
   it('supports "Object" type string', function(done) {
-    var method = givenSharedStaticMethod(
+    const method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
       {accepts: {arg: 'arg', type: 'Object'}}
     );
@@ -2372,7 +2372,7 @@ describe('strong-remoting-rest', function() {
   });
 
   it('supports custom type string', function(done) {
-    var method = givenSharedStaticMethod(
+    const method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
       {accepts: {arg: 'arg', type: 'Model'}}
     );
@@ -2384,7 +2384,7 @@ describe('strong-remoting-rest', function() {
   });
 
   it('returns correct content-type in an empty XML response', function(done) {
-    var method = givenSharedStaticMethod(
+    const method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
       {accepts: {arg: 'arg', type: 'Model'}}
     );
@@ -2399,7 +2399,7 @@ describe('strong-remoting-rest', function() {
   });
 
   it('defaults content-type to application/json', function(done) {
-    var method = givenSharedStaticMethod(
+    const method = givenSharedStaticMethod(
       function(arg, cb) { cb(); },
       {accepts: {arg: 'arg', type: 'Model'}}
     );
@@ -2450,7 +2450,7 @@ describe('strong-remoting-rest', function() {
   describe('client', function() {
     describe('call of constructor method', function() {
       it('should work', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function greet(msg, cb) {
             cb(null, msg);
           },
@@ -2460,7 +2460,7 @@ describe('strong-remoting-rest', function() {
           }
         );
 
-        var msg = 'hello';
+        const msg = 'hello';
         objects.invoke(method.name, [msg], function(err, resMsg) {
           if (err) return done(err);
           assert.equal(resMsg, msg);
@@ -2469,7 +2469,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow arguments in the path', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, b, cb) {
             cb(null, a + b);
           },
@@ -2491,7 +2491,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow arguments in the query', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, b, cb) {
             cb(null, a + b);
           },
@@ -2513,8 +2513,8 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should pass undefined if the argument is not supplied', function(done) {
-        var called = false;
-        var method = givenSharedStaticMethod(
+        let called = false;
+        const method = givenSharedStaticMethod(
           function bar(a, cb) {
             called = true;
             assert(a === undefined, 'a should be undefined');
@@ -2535,7 +2535,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow arguments in the body', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, cb) {
             cb(null, a);
           },
@@ -2548,7 +2548,7 @@ describe('strong-remoting-rest', function() {
           }
         );
 
-        var obj = {
+        const obj = {
           foo: 'bar',
         };
 
@@ -2560,7 +2560,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow arguments in the body with date', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, cb) {
             cb(null, a);
           },
@@ -2573,7 +2573,7 @@ describe('strong-remoting-rest', function() {
           }
         );
 
-        var data = {date: {$type: 'date', $data: new Date()}};
+        const data = {date: {$type: 'date', $data: new Date()}};
         objects.invoke(method.name, [data], function(err, resData) {
           if (err) return done(err);
           expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
@@ -2582,7 +2582,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow arguments in the form', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function bar(a, b, cb) {
             cb(null, a + b);
           },
@@ -2604,7 +2604,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should respond with correct args if returns has multiple args', function(done) {
-        var method = givenSharedStaticMethod(
+        const method = givenSharedStaticMethod(
           function(a, b, cb) {
             cb(null, a, b);
           },
@@ -2630,8 +2630,8 @@ describe('strong-remoting-rest', function() {
 
       describe('uncaught errors', function() {
         it('should return 500 if an error object is thrown', function(done) {
-          var errMsg = 'an error';
-          var method = givenSharedStaticMethod(
+          const errMsg = 'an error';
+          const method = givenSharedStaticMethod(
             function(a, b, cb) {
               throw new Error(errMsg);
             }
@@ -2699,7 +2699,7 @@ describe('strong-remoting-rest', function() {
 
     describe('call of prototype method', function() {
       it('should work', function(done) {
-        var method = givenSharedPrototypeMethod(
+        const method = givenSharedPrototypeMethod(
           function greet(msg, cb) {
             cb(null, this.id + ':' + msg);
           },
@@ -2709,7 +2709,7 @@ describe('strong-remoting-rest', function() {
           }
         );
 
-        var msg = 'hello';
+        const msg = 'hello';
         objects.invoke(method.name, ['anId'], [msg], function(err, resMsg) {
           if (err) return done(err);
           assert.equal(resMsg, 'anId:' + msg);
@@ -2718,7 +2718,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow arguments in the path', function(done) {
-        var method = givenSharedPrototypeMethod(
+        const method = givenSharedPrototypeMethod(
           function bar(a, b, cb) {
             cb(null, Number(this.id) + a + b);
           },
@@ -2740,7 +2740,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow arguments in the query', function(done) {
-        var method = givenSharedPrototypeMethod(
+        const method = givenSharedPrototypeMethod(
           function bar(a, b, cb) {
             cb(null, Number(this.id) + a + b);
           },
@@ -2762,8 +2762,8 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should pass undefined if the argument is not supplied', function(done) {
-        var called = false;
-        var method = givenSharedPrototypeMethod(
+        let called = false;
+        const method = givenSharedPrototypeMethod(
           function bar(a, cb) {
             called = true;
             assert(a === undefined, 'a should be undefined');
@@ -2784,7 +2784,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow arguments in the body', function(done) {
-        var method = givenSharedPrototypeMethod(
+        const method = givenSharedPrototypeMethod(
           function bar(a, cb) {
             cb(null, a);
           },
@@ -2797,7 +2797,7 @@ describe('strong-remoting-rest', function() {
           }
         );
 
-        var obj = {
+        const obj = {
           foo: 'bar',
         };
 
@@ -2809,7 +2809,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow arguments in the body with date', function(done) {
-        var method = givenSharedPrototypeMethod(
+        const method = givenSharedPrototypeMethod(
           function bar(a, cb) {
             cb(null, a);
           },
@@ -2822,7 +2822,7 @@ describe('strong-remoting-rest', function() {
           }
         );
 
-        var data = {date: {$type: 'date', $data: new Date()}};
+        const data = {date: {$type: 'date', $data: new Date()}};
         objects.invoke(method.name, [39], [data], function(err, resData) {
           if (err) return done(err);
           expect(resData).to.deep.equal({date: data.date.$data.toISOString()});
@@ -2831,7 +2831,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should allow arguments in the form', function(done) {
-        var method = givenSharedPrototypeMethod(
+        const method = givenSharedPrototypeMethod(
           function bar(a, b, cb) {
             cb(null, Number(this.id) + a + b);
           },
@@ -2853,7 +2853,7 @@ describe('strong-remoting-rest', function() {
       });
 
       it('should respond with correct args if returns has multiple args', function(done) {
-        var method = givenSharedPrototypeMethod(
+        const method = givenSharedPrototypeMethod(
           function(a, b, cb) {
             cb(null, this.id, a, b);
           },
@@ -2881,8 +2881,8 @@ describe('strong-remoting-rest', function() {
 
       describe('uncaught errors', function() {
         it('should return 500 if an error object is thrown', function(done) {
-          var errMsg = 'an error';
-          var method = givenSharedPrototypeMethod(
+          const errMsg = 'an error';
+          const method = givenSharedPrototypeMethod(
             function(a, b, cb) {
               throw new Error(errMsg);
             }
@@ -2946,10 +2946,10 @@ describe('strong-remoting-rest', function() {
     }
     return function(err, resp) {
       if (err) return done(err);
-      for (var prop in keyValues) {
+      for (const prop in keyValues) {
         expect(resp.body.error).to.have.property(prop, keyValues[prop]);
       }
-      for (var i = 0, n = excludedKeyValues.length; i < n; i++) {
+      for (let i = 0, n = excludedKeyValues.length; i < n; i++) {
         expect(resp.body.error).to.not.have.property(excludedKeyValues[i]);
       }
       done();
@@ -2977,10 +2977,10 @@ describe('strong-remoting-rest', function() {
 
       remotes.foo = foo;
 
-      var methodNames = [];
-      var methods = objects.methods();
+      const methodNames = [];
+      const methods = objects.methods();
 
-      for (var i = 0; i < methods.length; i++) {
+      for (let i = 0; i < methods.length; i++) {
         methodNames.push(methods[i].stringName);
       }
 
@@ -2992,7 +2992,7 @@ describe('strong-remoting-rest', function() {
 
   describe('afterError hook', function() {
     it('should be called when the method fails', function(done) {
-      var method = givenSharedStaticMethod(function(cb) {
+      const method = givenSharedStaticMethod(function(cb) {
         cb(TEST_ERROR);
       });
 
@@ -3000,7 +3000,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should be called when a "before" hook fails', function(done) {
-      var method = givenSharedStaticMethod();
+      const method = givenSharedStaticMethod();
 
       objects.before(method.name, function(ctx, next) {
         next(TEST_ERROR);
@@ -3010,7 +3010,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('should be called when an "after" hook fails', function(done) {
-      var method = givenSharedStaticMethod();
+      const method = givenSharedStaticMethod();
 
       objects.after(method.name, function(ctx, next) {
         next(TEST_ERROR);
@@ -3020,7 +3020,7 @@ describe('strong-remoting-rest', function() {
     });
 
     it('can replace the error object', function(done) {
-      var method = givenSharedStaticMethod(function(cb) {
+      const method = givenSharedStaticMethod(function(cb) {
         cb(new Error(
           'error from the method, should have been shadowed by the hook'
         ));
@@ -3039,8 +3039,8 @@ describe('strong-remoting-rest', function() {
     });
 
     it('is not called on success', function(done) {
-      var hookCalled = false;
-      var method = givenSharedStaticMethod(function(cb) {
+      let hookCalled = false;
+      const method = givenSharedStaticMethod(function(cb) {
         cb();
       });
 
@@ -3057,7 +3057,7 @@ describe('strong-remoting-rest', function() {
     });
 
     function verifyErrorHookIsCalled(method, expectedError, done) {
-      var hookContext = 'hook not called';
+      let hookContext = 'hook not called';
 
       objects.afterError(method.name, function(ctx, next) {
         if (Array.isArray(hookContext)) {

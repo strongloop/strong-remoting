@@ -5,7 +5,7 @@
 
 'use strict';
 
-var remotes = require('../../../').create();
+const remotes = require('../../../').create();
 
 /**
  * Example API

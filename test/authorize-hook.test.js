@@ -5,17 +5,17 @@
 
 'use strict';
 
-var expect = require('./helpers/expect');
-var express = require('express');
-var RemoteObjects = require('../');
-var User = require('./e2e/fixtures/user');
-var fmt = require('util').format;
+const expect = require('./helpers/expect');
+const express = require('express');
+const RemoteObjects = require('../');
+const User = require('./e2e/fixtures/user');
+const fmt = require('util').format;
 
 describe('authorization hook', function() {
-  var server, remotes;
+  let server, remotes;
 
   before(function setupServer(done) {
-    var app = express();
+    const app = express();
     remotes = RemoteObjects.create();
     remotes.exports.User = User;
     app.use(remotes.handler('rest'));
@@ -28,7 +28,7 @@ describe('authorization hook', function() {
 
   describe('given a remotes object with an authorization hook', function() {
     it('should be called when a remote method is invoked', function(done) {
-      var callStack = [];
+      const callStack = [];
       remotes.authorization = function(ctx, next) {
         callStack.push('authorization');
         next();
@@ -51,9 +51,9 @@ describe('authorization hook', function() {
   });
 
   function invokeRemote(port, callback) {
-    var url = 'http://127.0.0.1:' + port;
-    var method = 'User.login';
-    var args = [{username: 'joe', password: 'secret'}];
+    const url = 'http://127.0.0.1:' + port;
+    const method = 'User.login';
+    const args = [{username: 'joe', password: 'secret'}];
 
     remotes.connect(url, 'rest');
     remotes.invoke(method, args, callback);
