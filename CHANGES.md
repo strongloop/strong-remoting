@@ -1,4 +1,16 @@
-2019-05-10, Version 3.14.0
+2019-10-07, Version 3.15.0
+==========================
+
+ * Fix handling of anonymous object types (Miroslav Bajtoš)
+
+ * Update eslint & config to latest (Miroslav Bajtoš)
+
+ * Update dependencies to their latest versions (Miroslav Bajtoš)
+
+ * Drop support for Node.js 6.x (Miroslav Bajtoš)
+
+
+2019-05-09, Version 3.14.0
 ==========================
 
  * chore: update copyright years (Diana Lau)
