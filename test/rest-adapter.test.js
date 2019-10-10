@@ -584,6 +584,18 @@ describe('RestAdapter', function() {
       restAdapter.connect('foo');
     }
   });
+
+  describe('allRoutes', function() {
+    it('includes http', function() {
+      const remotes = RemoteObjects.create({cors: false});
+      remotes.exports.testClass = factory.createSharedClass();
+      remotes.exports.testClass.http = {path: '/testClass', verb: 'any'};
+
+      const restAdapter = new RestAdapter(remotes);
+      const allRoutes = restAdapter.allRoutes();
+      expect(allRoutes[0]).to.have.property('http');
+    });
+  });
 });
 
 function someFunc() {
