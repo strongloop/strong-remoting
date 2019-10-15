@@ -1,3 +1,15 @@
+2019-10-15, Version 3.16.0
+==========================
+
+ * Forward http definition to REST routes (Matthias Tylkowski)
+
+ * Configure stalebot (Miroslav Bajtoš)
+
+ * Introduce issue templates for bugs, features, etc. (Miroslav Bajtoš)
+
+ * Improve PULL_REQUEST_TEMPLATE (Miroslav Bajtoš)
+
+
 2019-10-07, Version 3.15.0
 ==========================
 
