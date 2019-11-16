@@ -48,7 +48,7 @@ describe('strong-remoting-rest', function() {
           {
             accepts: {arg: 'person', type: 'string'},
             returns: {arg: 'msg', type: 'string'},
-          }
+          },
         );
 
         const msg = 'hello';
@@ -70,7 +70,7 @@ describe('strong-remoting-rest', function() {
             ],
             returns: {arg: 'n', type: 'number'},
             http: {path: '/:a'},
-          }
+          },
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -91,7 +91,7 @@ describe('strong-remoting-rest', function() {
             ],
             returns: {arg: 'n', type: 'number'},
             http: {path: '/'},
-          }
+          },
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -112,7 +112,7 @@ describe('strong-remoting-rest', function() {
             ],
             returns: {arg: 'n', type: 'number'},
             http: {path: '/'},
-          }
+          },
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -133,7 +133,7 @@ describe('strong-remoting-rest', function() {
             accepts: [
               {arg: 'b', type: 'number'},
             ],
-          }
+          },
         );
 
         objects.invoke(method.name, [], function(err) {
@@ -153,7 +153,7 @@ describe('strong-remoting-rest', function() {
             ],
             returns: {arg: 'data', type: 'object', root: true},
             http: {path: '/'},
-          }
+          },
         );
 
         const obj = {
@@ -177,7 +177,7 @@ describe('strong-remoting-rest', function() {
             ],
             returns: {arg: 'data', type: 'object', root: true},
             http: {path: '/'},
-          }
+          },
         );
 
         const data = {date: {$type: 'date', $data: new Date()}};
@@ -199,7 +199,7 @@ describe('strong-remoting-rest', function() {
             ],
             returns: {arg: 'n', type: 'number'},
             http: {path: '/'},
-          }
+          },
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -220,7 +220,7 @@ describe('strong-remoting-rest', function() {
             ],
             returns: {arg: 'n', type: 'number'},
             http: {path: '/'},
-          }
+          },
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -243,7 +243,7 @@ describe('strong-remoting-rest', function() {
               {arg: 'a', type: 'number'},
               {arg: 'b', type: 'number'},
             ],
-          }
+          },
         );
 
         objects.invoke(method.name, [1, 2], function(err, a, b) {
@@ -269,7 +269,7 @@ describe('strong-remoting-rest', function() {
                 {arg: 'bool', type: 'boolean'},
               ],
               http: {path: '/'},
-            }
+            },
           );
 
           objects.invoke(method.name, [0, false], function(err, a, b) {
@@ -294,7 +294,7 @@ describe('strong-remoting-rest', function() {
                 {arg: 'str', type: 'string'},
               ],
               http: {path: '/'},
-            }
+            },
           );
 
           objects.invoke(method.name, [''], function(err, a, b, c) {
@@ -320,7 +320,7 @@ describe('strong-remoting-rest', function() {
               {arg: 'bool', type: 'boolean'},
             ],
             http: {path: '/'},
-          }
+          },
         );
 
         objects.invoke(method.name, ['', false, 0], function(err, a, b, c) {
@@ -347,7 +347,7 @@ describe('strong-remoting-rest', function() {
               root: true,
             },
             http: {path: '/'},
-          }
+          },
         );
 
         objects.invoke(method.name, [], (err, result) => {
@@ -367,7 +367,7 @@ describe('strong-remoting-rest', function() {
           const method = givenSharedStaticMethod(
             function(a, b, cb) {
               throw new Error(errMsg);
-            }
+            },
           );
 
           objects.invoke(method.name, function(err) {

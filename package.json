@@ -12,6 +12,7 @@
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "nyc mocha",
     "posttest": "npm run lint"
   },

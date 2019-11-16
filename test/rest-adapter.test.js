@@ -280,7 +280,7 @@ describe('RestAdapter', function() {
       it('returns class path + method path', function() {
         const method = givenRestStaticMethod(
           {http: {path: '/a-method'}},
-          {http: {path: '/a-class'}}
+          {http: {path: '/a-class'}},
         );
 
         expect(method.getFullPath()).to.equal('/a-class/a-method');
