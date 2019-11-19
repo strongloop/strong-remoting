@@ -22,7 +22,7 @@ describe('smoke test', function() {
           expect(err).to.not.exist();
           expect(session.userId).to.equal(123);
           done();
-        }
+        },
       );
     });
   });

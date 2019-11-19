@@ -26,7 +26,7 @@ describe('HttpInvocation', function() {
       expectNamedArgs(
         [{arg: 'a', type: 'number'}],
         [1],
-        {a: 1}
+        {a: 1},
       );
     });
 
@@ -34,7 +34,7 @@ describe('HttpInvocation', function() {
       expectNamedArgs(
         [{arg: 'a', type: 'number'}, {arg: 'str', type: 'string'}],
         [1, 'foo'],
-        {a: 1, str: 'foo'}
+        {a: 1, str: 'foo'},
       );
     });
 
@@ -42,7 +42,7 @@ describe('HttpInvocation', function() {
       expectNamedArgs(
         [{arg: 'a', type: 'number'}, {arg: 'str', type: 'string'}],
         [1],
-        {a: 1}
+        {a: 1},
       );
     });
 
