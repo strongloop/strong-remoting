@@ -1,3 +1,15 @@
+2020-03-06, Version 3.16.1
+==========================
+
+ * Update LTS status in README (Miroslav Bajtoš)
+
+ * chore: disable security issue reporting (Nora)
+
+ * chore: fix eslint violations (Nora)
+
+ * Fix misleaded property definitions (Daniel Pfisterer)
+
+
 2019-10-15, Version 3.16.0
 ==========================
 
