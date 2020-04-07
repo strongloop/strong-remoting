@@ -1,3 +1,9 @@
+2020-04-07, Version 3.16.2
+==========================
+
+ * Close event streams when requested as JSON (Peter Newman)
+
+
 2020-03-06, Version 3.16.1
 ==========================
 
