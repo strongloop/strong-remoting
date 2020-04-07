@@ -13,6 +13,7 @@ const express = require('express');
 const request = require('supertest');
 const fs = require('fs');
 const es = require('event-stream');
+const http = require('http');
 const EventSource = require('eventsource');
 
 describe('strong-remoting', function() {
@@ -177,6 +178,59 @@ describe('a function returning a ReadableStream', function() {
       });
 
       stream.on('end', done);
+    });
+  });
+
+  describe('an http client requesting a stream as JSON', function() {
+    let server, port;
+    before(function startTheApp(done) {
+      server = app.listen(() => {
+        port = server.address().port;
+        done();
+      });
+    });
+
+    after(function stopTheApp() {
+      server.close();
+    });
+
+    it('should close server stream on client disconnect', function(done) {
+      const req = http.request({
+        port,
+        path: '/StreamClass/createInfiniteStream',
+        timeout: 100,
+        headers: {
+          // Content-type is important! When the client accepts
+          // `text/event-stream` then all works well.
+          // In this test, we verify what happens when the client accepts
+          // only `application/json`.
+          accept: 'application/json',
+        },
+      });
+
+      req
+        .on('error', done)
+        .on('response', res => {
+          req.abort();
+
+          const timeout = 200;
+          const timer = setTimeout(() => {
+            // The stream was kept open, that's a bug
+            const msg = `Server stream was not closed within ${timeout}ms ` +
+              'after the connection was closed.';
+            done(new Error(msg));
+            // Prevent double call of the callback
+            done = undefined;
+          }, timeout);
+
+          streamClosed.then(() => {
+            if (!done) return;
+            // The event stream was properly closed, the test has passed.
+            clearTimeout(timer);
+            done();
+          });
+        })
+        .end();
     });
   });
 
