@@ -2447,6 +2447,22 @@ describe('strong-remoting-rest', function() {
       });
   });
 
+  it('does not default content-type to application/json if response is 302', () => {
+    const method = givenSharedStaticMethod(
+      (res) => {
+        res.status(302).end();
+        return Promise.resolve({});
+      },
+      {accepts: {arg: 'res', type: 'object', http: {source: 'res'}}},
+    );
+
+    return request(app).get(method.url)
+      .expect(302)
+      .then(res => {
+        expect(res.get('Content-type')).to.not.exist();
+      });
+  });
+
   describe('client', function() {
     describe('call of constructor method', function() {
       it('should work', function(done) {
