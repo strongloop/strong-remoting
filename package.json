@@ -8,7 +8,7 @@
     "REST"
   ],
   "author": "IBM Corp.",
-  "version": "3.16.2",
+  "version": "3.17.0",
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint .",

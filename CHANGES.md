@@ -1,3 +1,9 @@
+2020-06-26, Version 3.17.0
+==========================
+
+ * Make Content-Type optional for 3xx redirects (f-w)
+
+
 2020-04-07, Version 3.16.2
 ==========================
 
