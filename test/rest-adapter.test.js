@@ -595,6 +595,18 @@ describe('RestAdapter', function() {
       const allRoutes = restAdapter.allRoutes();
       expect(allRoutes[0]).to.have.property('http');
     });
+
+    it('does not alter / paths', function() {
+      const remotes = RemoteObjects.create({cors: false});
+      remotes.exports.testClass = factory.createSharedClass();
+      remotes.exports.testClass.http = {path: '/', verb: 'any'};
+      remotes.exports.testClass.sharedCtor.accepts = [];
+      remotes.exports.testClass.sharedCtor.http = {path: '/', verb: 'patch'};
+
+      const restAdapter = new RestAdapter(remotes);
+      const allRoutes = restAdapter.allRoutes();
+      expect(allRoutes[0].path).to.equal('/');
+    });
   });
 });
 
